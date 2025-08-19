@@ -1,0 +1,626 @@
+ 
+$primary-color: #3498db;
+$secondary-color: #2c3e50;
+$success-color: #27ae60;
+$warning-color: #f39c12;
+$danger-color: #e74c3c;
+$light-bg: #f8f9fa;
+$card-bg: #ffffff;
+$border-color: #e9ecef;
+$text-color: #2c3e50;
+$text-muted: #6c757d;
+$shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$shadow-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+.add-product-page {
+    padding: 2rem;
+    background: $light-bg;
+    min-height: calc(100vh - 70px);
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
+}
+
+// Page Header
+.page-header {
+    margin-bottom: 2rem;
+
+    .header-content {
+        background: $card-bg;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: $shadow;
+        border-left: 4px solid $primary-color;
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: $text-color;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+
+            &::before {
+                content: "📦";
+                font-size: 2.5rem;
+            }
+        }
+
+        p {
+            color: $text-muted;
+            font-size: 1rem;
+            margin: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        margin-bottom: 1.5rem;
+
+        .header-content {
+            padding: 1.5rem;
+
+            h1 {
+                font-size: 1.5rem;
+
+                &::before {
+                    font-size: 2rem;
+                }
+            }
+
+            p {
+                font-size: 0.875rem;
+            }
+        }
+    }
+}
+
+// Form Styles
+.add-product-form {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.form-section {
+    background: $card-bg;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: $shadow;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: $shadow-hover;
+    }
+
+    h2 {
+        font-size: 1.375rem;
+        font-weight: 600;
+        color: $text-color;
+        margin: 0 0 1.5rem 0;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid $border-color;
+        position: relative;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 4rem;
+            height: 2px;
+            background: $primary-color;
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+
+        h2 {
+            font-size: 1.25rem;
+        }
+    }
+}
+
+// Image Upload
+.image-upload-area {
+    border: 2px dashed $border-color;
+    border-radius: 1rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: lighten($light-bg, 2%);
+    position: relative;
+    overflow: hidden;
+
+    &:hover,
+    &.drag-active {
+        border-color: $primary-color;
+        background: rgba($primary-color, 0.05);
+        transform: translateY(-2px);
+    }
+
+    .upload-content {
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.6;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: $text-color;
+            margin: 0 0 0.5rem 0;
+            font-weight: 600;
+        }
+
+        p {
+            color: $text-muted;
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+
+            .browse-text {
+                color: $primary-color;
+                font-weight: 600;
+                text-decoration: underline;
+            }
+        }
+
+        small {
+            color: $text-muted;
+            font-size: 0.875rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 2rem 1rem;
+
+        .upload-content {
+            .upload-icon {
+                font-size: 3rem;
+            }
+
+            h3 {
+                font-size: 1.125rem;
+            }
+        }
+    }
+}
+
+.image-previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+}
+
+.image-preview {
+    position: relative;
+    background: $card-bg;
+    border: 1px solid $border-color;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-hover;
+    }
+
+    img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: rgba($danger-color, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: background 0.2s ease;
+
+        &:hover {
+            background: $danger-color;
+        }
+    }
+
+    .image-name {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        color: $text-muted;
+        background: rgba($light-bg, 0.5);
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+// Form Groups
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+
+    &.three-cols {
+        grid-template-columns: repeat(3, 1fr);
+
+        @media (max-width: 1024px) {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.form-group {
+    .slug-preview {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        color: #6c757d;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .variations-table {
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px solid $border-color;
+        border-radius: 0.5rem;
+        background: lighten($light-bg, 2%);
+
+        h4 {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+            color: $text-color;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+
+            th,
+            td {
+                padding: 0.75rem;
+                text-align: left;
+                border-bottom: 1px solid $border-color;
+            }
+
+            th {
+                font-weight: 600;
+                background: rgba($primary-color, 0.05);
+            }
+
+            input {
+                width: 80px;
+                padding: 0.5rem;
+                border: 1px solid $border-color;
+                border-radius: 0.25rem;
+            }
+        }
+    }
+
+    .total-stock {
+        text-align: right;
+        font-weight: 600;
+        color: $primary-color;
+        padding: 0.5rem;
+        background: rgba($success-color, 0.1);
+        border-radius: 0.25rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        color: $text-color;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+
+        .required {
+            color: $danger-color;
+            font-weight: bold;
+        }
+    }
+
+    input,
+    textarea,
+    select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid $border-color;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        color: $text-color;
+        background: $card-bg;
+        transition: all 0.3s ease;
+
+        &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+            transform: translateY(-1px);
+        }
+
+        &::placeholder {
+            color: $text-muted;
+        }
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+    }
+
+    select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='m0 0 2 2 2-2z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 0.75rem;
+        appearance: none;
+    }
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.75rem;
+    color: $text-muted;
+    margin-top: 0.25rem;
+}
+
+.price-input {
+    position: relative;
+
+    .currency {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $text-muted;
+        font-weight: 600;
+        font-size: 0.875rem;
+        pointer-events: none;
+    }
+
+    input {
+        padding-right: 3rem;
+    }
+}
+
+// Size Selection
+.size-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.size-btn {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid $border-color;
+    border-radius: 0.5rem;
+    background: $card-bg;
+    color: $text-color;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 60px;
+
+    &:hover {
+        border-color: $primary-color;
+        background: rgba($primary-color, 0.05);
+        transform: translateY(-1px);
+    }
+
+    &.selected {
+        border-color: $primary-color;
+        background: $primary-color;
+        color: white;
+        box-shadow: 0 2px 8px rgba($primary-color, 0.3);
+    }
+}
+
+.selected-sizes {
+    color: $text-muted;
+    font-size: 0.875rem;
+
+    strong {
+        color: $primary-color;
+    }
+}
+
+// Checkbox
+.form-options {
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        font-weight: 500;
+        color: $text-color;
+        padding: 1rem;
+        border: 2px solid $border-color;
+        border-radius: 0.75rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            border-color: $primary-color;
+            background: rgba($primary-color, 0.05);
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid $border-color;
+            border-radius: 0.25rem;
+            position: relative;
+            transition: all 0.2s ease;
+
+            &::after {
+                content: "✓";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0);
+                color: white;
+                font-size: 0.75rem;
+                font-weight: bold;
+                transition: transform 0.2s ease;
+            }
+        }
+
+        input:checked + .checkmark {
+            background: $primary-color;
+            border-color: $primary-color;
+
+            &::after {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+    }
+}
+
+// Form Actions
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 2rem;
+    background: $card-bg;
+    border-radius: 1rem;
+    box-shadow: $shadow;
+
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+        flex-direction: column-reverse;
+    }
+}
+
+.btn {
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    justify-content: center;
+
+    &.btn-secondary {
+        background: $border-color;
+        color: $text-color;
+
+        &:hover {
+            background: darken($border-color, 10%);
+            transform: translateY(-1px);
+        }
+    }
+
+    &.btn-primary {
+        background: linear-gradient(135deg, $primary-color, lighten($primary-color, 5%));
+        color: white;
+        box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+
+        &:hover {
+            background: linear-gradient(135deg, darken($primary-color, 5%), $primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba($primary-color, 0.4);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    .btn-icon {
+        font-size: 1.125rem;
+    }
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+// Loading states
+.form-section.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+// Success/Error states
+.form-group.error {
+    input,
+    textarea,
+    select {
+        border-color: $danger-color;
+        box-shadow: 0 0 0 3px rgba($danger-color, 0.1);
+    }
+}
+
+.form-group.success {
+    input,
+    textarea,
+    select {
+        border-color: $success-color;
+        box-shadow: 0 0 0 3px rgba($success-color, 0.1);
+    }
+}
+
+// Animations
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-section {
+    animation: slideInUp 0.3s ease;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./NavBar.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,14 +7,30 @@ import {
   faUser,
   faBars,
   faTimes,
+  faChevronDown,
+  faChevronUp,
+  faAddressCard,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
-import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/actions/userAction";
+
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [hasUser, setHasUser] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [cartItems, setCartItems] = useState(99);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropDownRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.userLogin);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/auth");
+  };
 
   const formatCartCount = (count) => {
     if (count === 0) return null;
@@ -69,6 +85,17 @@ const Navbar = () => {
       document.body.style.overflow = "unset";
     };
   }, [isSidebarOpen]);
+  useEffect(() => {
+    const handleClickOutSide = (event) => {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutSide);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutSide);
+    };
+  }, []);
 
   const navLinks = [
     { to: "/", label: "Trang chủ" },
@@ -135,11 +162,40 @@ const Navbar = () => {
                 )}
               </NavLink>
 
-              {hasUser ? (
-                <NavLink to="/profile" className="nav-action" title="Tài khoản">
+              {userInfo ? (
+                <div
+                  ref={dropDownRef}
+                  className="nav-action"
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                >
                   <FontAwesomeIcon icon={faUser} />
-                  <span className="nav-username">Tài khoản</span>
-                </NavLink>
+                  <span className="nav-username">
+                    {userInfo?.data?.user?.fullName}{" "}
+                  </span>
+                  <FontAwesomeIcon
+                    icon={showDropdown ? faChevronUp : faChevronDown}
+                    className="chevron"
+                  />
+
+                  {showDropdown && (
+                    <div className="user-dropdown">
+                      <NavLink to="/profile" className="dropdown-item">
+                        <FontAwesomeIcon
+                          icon={faAddressCard}
+                          className="icon"
+                        />{" "}
+                        Hồ sơ
+                      </NavLink>
+                      <button onClick={handleLogout} className="dropdown-item">
+                        <FontAwesomeIcon
+                          icon={faRightFromBracket}
+                          className="icon"
+                        />{" "}
+                        Đăng xuất
+                      </button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <NavLink to="/auth" className="nav-action">
                   <button className="btn-login">Đăng nhập</button>
@@ -205,14 +261,14 @@ const Navbar = () => {
                 <FontAwesomeIcon icon={faShoppingCart} />
                 <span>Giỏ hàng</span>
               </NavLink>
-              {hasUser ? (
+              {userInfo ? (
                 <NavLink
                   to="/profile"
                   className="sidebar-action"
                   onClick={closeSidebar}
                 >
                   <FontAwesomeIcon icon={faUser} />
-                  <span>Tài khoản</span>
+                  <span>{userInfo?.data?.user?.fullName}</span>
                 </NavLink>
               ) : (
                 <NavLink to="/login" onClick={closeSidebar}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -15,10 +15,11 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/userService";
 import "./Auth.scss";
 import { toast } from "react-toastify";
+import { login } from "../../redux/actions/userAction";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -26,6 +27,9 @@ const Auth = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ type: "", message: "" });
+  const dispatch = useDispatch();
+  const { userInfo, error } = useSelector((state) => state.userLogin);
+  const navigate = useNavigate();
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -86,17 +90,27 @@ const Auth = () => {
       setNotification({ type: "", message: "" });
     }, 3000);
   };
+
+  useEffect(() => {
+    if (error) toast.error(error);
+    if (userInfo) {
+      setLoginForm({ email: "", password: "" });
+      console.log(userInfo);
+
+      if (userInfo.data.user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [error, userInfo]);
   const handleLoginSubmit = (event) => {
     event.preventDefault();
     if (!validateLoginForm()) return;
 
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      showNotification("success", "Login successful!");
-      // Redirect or perform further actions
-    }, 2000);
+    dispatch(login(loginForm));
+    setIsLoading(false);
   };
   const handleRegisterSubmit = async (event) => {
     event.preventDefault();
@@ -123,8 +137,6 @@ const Auth = () => {
       showNotification("success", `${provider} login successful!`);
     }, 2000);
   };
-
-  //Clear form when switching
 
   useEffect(() => {
     setLoginForm({

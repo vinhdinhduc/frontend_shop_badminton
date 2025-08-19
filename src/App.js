@@ -3,6 +3,9 @@ import { Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/user/Home";
 import { ToastContainer } from "react-toastify";
 import Auth from "./pages/auth/Auth";
+import Dashboard from "./pages/admin/Dashboard";
+import AddProduct from "./pages/admin/products/AddProduct";
+import AdminLayout from "./pages/admin/layout/AdminLayout";
 function App() {
   return (
     <>
@@ -10,6 +13,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/admin/*" element={<AdminLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="add-product" element={<AddProduct />} />
+          </Route>
         </Routes>
       </div>
       <ToastContainer
