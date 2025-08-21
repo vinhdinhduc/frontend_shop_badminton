@@ -101,7 +101,7 @@ const Navbar = () => {
     { to: "/", label: "Trang chủ" },
     { to: "/products", label: "Sản phẩm" },
     { to: "/intro", label: "Giới thiệu" },
-    { to: "/about", label: "Liên hệ" },
+    { to: "/contact", label: "Liên hệ" },
   ];
 
   return (
