@@ -12,7 +12,7 @@ const AddProduct = () => {
     brand: "Yonex",
     category_id: 1,
     price: "",
-    discount_price: "",
+    discount_price: 0,
     variations: [],
     images: [],
     is_featured: false,

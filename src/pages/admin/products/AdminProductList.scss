@@ -1,0 +1,611 @@
+$primary-color: #3b82f6;
+$primary-hover: #2563eb;
+$danger-color: #dc2626;
+$danger-light: #fef2f2;
+$danger-hover: #fee2e2;
+$warning-color: #d97706;
+$warning-light: #fef3c7;
+$success-color: #059669;
+$success-light: #d1fae5;
+$edit-color: #0369a1;
+$edit-light: #f0f9ff;
+$edit-hover: #e0f2fe;
+
+$gray-50: #f8fafc;
+$gray-100: #f1f5f9;
+$gray-200: #e2e8f0;
+$gray-300: #cbd5e1;
+$gray-400: #94a3b8;
+$gray-500: #64748b;
+$gray-600: #475569;
+$gray-700: #334155;
+$gray-800: #1e293b;
+$gray-900: #0f172a;
+
+$white: #ffffff;
+$black: #000000;
+
+$border-radius: 8px;
+$border-radius-lg: 12px;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+// Breakpoints
+$breakpoint-xs: 480px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin transition($property: all, $duration: 0.2s, $timing: ease) {
+    transition: $property $duration $timing;
+}
+
+@mixin button-base {
+    border: none;
+    border-radius: $border-radius;
+    cursor: pointer;
+    font-weight: 500;
+    @include transition();
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+}
+
+@mixin responsive($breakpoint) {
+    @media (max-width: $breakpoint) {
+        @content;
+    }
+}
+
+@mixin responsive-up($breakpoint) {
+    @media (min-width: $breakpoint) {
+        @content;
+    }
+}
+
+.admin-product-list-container {
+    padding: 24px;
+    background: $gray-50;
+    min-height: 100vh;
+
+    @include responsive($breakpoint-md) {
+        padding: 16px;
+    }
+
+    @include responsive($breakpoint-xs) {
+        padding: 12px;
+    }
+    .admin-product-list-header {
+        @include flex-between;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        @include responsive($breakpoint-md) {
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 12px;
+        }
+
+        .header-left {
+            .page-title {
+                font-size: 24px;
+                font-weight: 600;
+                color: $gray-900;
+                margin: 0;
+                line-height: 1.2;
+
+                @include responsive($breakpoint-md) {
+                    font-size: 20px;
+                }
+
+                @include responsive($breakpoint-xs) {
+                    font-size: 18px;
+                }
+            }
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            @include responsive($breakpoint-md) {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            @include responsive($breakpoint-xs) {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .product-count {
+                color: $gray-500;
+                font-size: 14px;
+                white-space: nowrap;
+
+                @include responsive($breakpoint-xs) {
+                    font-size: 13px;
+                }
+            }
+
+            .add-btn {
+                @include button-base;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: $primary-color;
+                color: $white;
+                padding: 10px 16px;
+                font-size: 14px;
+
+                &:hover {
+                    background: $primary-hover;
+                }
+
+                @include responsive($breakpoint-xs) {
+                    align-self: stretch;
+                    justify-content: center;
+                    padding: 12px 16px;
+                }
+            }
+        }
+    }
+
+    // Search Styles
+    .admin-search-container {
+        margin-bottom: 24px;
+
+        @include responsive($breakpoint-md) {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 400px;
+
+            @include responsive($breakpoint-md) {
+                max-width: 100%;
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: $gray-400;
+                font-size: 16px;
+                z-index: 1;
+            }
+
+            .search-input {
+                width: 100%;
+                padding: 12px 12px 12px 40px;
+                border: 1px solid $gray-300;
+                border-radius: $border-radius;
+                font-size: 14px;
+                background: $white;
+                @include transition(border-color);
+
+                &::placeholder {
+                    color: $gray-400;
+                }
+
+                &:focus {
+                    outline: none;
+                    border-color: $primary-color;
+                    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+                }
+
+                @include responsive($breakpoint-xs) {
+                    padding: 14px 12px 14px 40px;
+                    font-size: 16px; // Prevent zoom on iOS
+                }
+            }
+        }
+    }
+
+    // Table Styles
+    .table-container {
+        background: $white;
+        border-radius: $border-radius-lg;
+        box-shadow: $shadow;
+        overflow: hidden;
+
+        @include responsive($breakpoint-md) {
+            display: none;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+
+            th {
+                background: $gray-50;
+                padding: 16px;
+                text-align: left;
+                font-weight: 600;
+                color: $gray-700;
+                border-bottom: 1px solid $gray-200;
+                white-space: nowrap;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.025em;
+
+                @include responsive($breakpoint-lg) {
+                    padding: 12px;
+                    font-size: 12px;
+                }
+            }
+
+            td {
+                padding: 16px;
+                border-bottom: 1px solid $gray-100;
+                vertical-align: middle;
+
+                @include responsive($breakpoint-lg) {
+                    padding: 12px;
+                }
+            }
+
+            tr {
+                @include transition(background-color);
+
+                &:hover {
+                    background: $gray-50;
+                }
+
+                &:last-child td {
+                    border-bottom: none;
+                }
+            }
+
+            // Cell specific styles
+            .image-cell {
+                width: 80px;
+
+                @include responsive($breakpoint-lg) {
+                    width: 60px;
+                }
+            }
+
+            .name-cell {
+                min-width: 200px;
+
+                @include responsive($breakpoint-lg) {
+                    min-width: 150px;
+                }
+            }
+
+            .brand-cell {
+                width: 120px;
+
+                @include responsive($breakpoint-lg) {
+                    width: 100px;
+                }
+            }
+
+            .price-cell {
+                width: 120px;
+
+                @include responsive($breakpoint-lg) {
+                    width: 100px;
+                }
+            }
+
+            .actions-cell {
+                width: 100px;
+
+                @include responsive($breakpoint-lg) {
+                    width: 80px;
+                }
+            }
+        }
+    }
+
+    // Product Image
+    .product-image {
+        width: 60px;
+        height: 60px;
+        border-radius: $border-radius;
+        overflow: hidden;
+        background: $gray-100;
+        @include flex-center;
+        border: 1px solid $gray-200;
+
+        @include responsive($breakpoint-lg) {
+            width: 50px;
+            height: 50px;
+        }
+
+        @include responsive($breakpoint-md) {
+            width: 60px;
+            height: 60px;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    // Product Name
+    .product-name {
+        color: $gray-900;
+        font-weight: 500;
+        line-height: 1.4;
+        display: block;
+
+        @include responsive($breakpoint-lg) {
+            font-size: 13px;
+        }
+    }
+
+    // Brand Badge
+    .brand-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+
+        @include responsive($breakpoint-lg) {
+            padding: 3px 10px;
+            font-size: 11px;
+        }
+
+        &.lining {
+            background: lighten($primary-color, 45%);
+            color: darken($primary-color, 10%);
+        }
+
+        &.victor {
+            background: $warning-light;
+            color: $warning-color;
+        }
+
+        &.yonex {
+            background: $success-light;
+            color: $success-color;
+        }
+    }
+
+    // Price
+    .price {
+        color: $danger-color;
+        font-weight: 600;
+        font-size: 16px;
+
+        @include responsive($breakpoint-lg) {
+            font-size: 14px;
+        }
+    }
+
+    // Action Buttons
+    .actions {
+        display: flex;
+        gap: 8px;
+
+        @include responsive($breakpoint-lg) {
+            gap: 6px;
+        }
+    }
+
+    .edit-btn,
+    .delete-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        @include flex-center;
+        @include transition();
+
+        @include responsive($breakpoint-lg) {
+            width: 32px;
+            height: 32px;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .edit-btn {
+        background: $edit-light;
+        color: $edit-color;
+
+        &:hover {
+            background: $edit-hover;
+            transform: translateY(-1px);
+        }
+    }
+
+    .delete-btn {
+        background: $danger-light;
+        color: $danger-color;
+
+        &:hover {
+            background: $danger-hover;
+            transform: translateY(-1px);
+        }
+    }
+
+    // Empty State
+    .empty-state {
+        padding: 48px;
+        text-align: center;
+        color: $gray-500;
+
+        @include responsive($breakpoint-md) {
+            padding: 32px 16px;
+        }
+
+        p {
+            margin: 0;
+            font-size: 16px;
+
+            @include responsive($breakpoint-md) {
+                font-size: 14px;
+            }
+        }
+    }
+
+    // Mobile Cards
+    .mobile-cards {
+        display: none;
+
+        @include responsive($breakpoint-md) {
+            display: block;
+            gap: 16px;
+        }
+    }
+
+    .product-card {
+        background: $white;
+        border-radius: $border-radius-lg;
+        padding: 16px;
+        box-shadow: $shadow;
+        margin-bottom: 16px;
+        border: 1px solid $gray-200;
+
+        @include responsive($breakpoint-xs) {
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card-header {
+            @include flex-between;
+            margin-bottom: 12px;
+
+            .card-actions {
+                display: flex;
+                gap: 8px;
+            }
+        }
+
+        .card-body {
+            .product-name {
+                font-size: 16px;
+                margin-bottom: 8px;
+                font-weight: 500;
+
+                @include responsive($breakpoint-xs) {
+                    font-size: 15px;
+                }
+            }
+
+            .card-meta {
+                @include flex-between;
+                gap: 12px;
+
+                .brand-badge {
+                    flex-shrink: 0;
+                }
+
+                .price {
+                    font-size: 16px;
+                    font-weight: 600;
+
+                    @include responsive($breakpoint-xs) {
+                        font-size: 15px;
+                    }
+                }
+            }
+        }
+    }
+
+    // Loading State
+    .loading-spinner {
+        @include flex-center;
+        padding: 48px;
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid $gray-200;
+            border-top-color: $primary-color;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    // Hover Effects
+    @include responsive-up($breakpoint-md) {
+        .product-card {
+            @include transition(transform);
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+        }
+    }
+
+    // Focus States for Accessibility
+    .search-input:focus,
+    .add-btn:focus,
+    .edit-btn:focus,
+    .delete-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    // High Contrast Mode Support
+    @media (prefers-contrast: high) {
+        .brand-badge {
+            border: 1px solid currentColor;
+        }
+
+        .product-table th {
+            border-bottom: 2px solid $gray-400;
+        }
+
+        .product-table td {
+            border-bottom: 1px solid $gray-400;
+        }
+    }
+
+    // Reduced Motion Support
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}

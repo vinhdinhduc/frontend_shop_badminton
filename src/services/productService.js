@@ -4,4 +4,7 @@ const createProduct = (data) => {
   return axios.post("/product/add", data);
 };
 
-export { createProduct };
+const getAllProduct = () => {
+  return axios.get("/product/get-all");
+};
+export { createProduct, getAllProduct };

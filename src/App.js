@@ -9,6 +9,7 @@ import AdminLayout from "./pages/admin/layout/AdminLayout";
 import ProductList from "./pages/user/products/ProductList";
 import About from "./components/about/About";
 import Contact from "./components/contact/Contact";
+import AdminProductList from "./pages/admin/products/AdminProductList";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="add-product" element={<AddProduct />} />
+            <Route path="list-products" element={<AdminProductList />} />
           </Route>
         </Routes>
       </div>

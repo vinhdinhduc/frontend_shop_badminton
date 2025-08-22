@@ -8,18 +8,48 @@ const ProductCard = ({ product }) => {
       currency: "VND",
     }).format(price);
   };
+  const getSpecifications = () => {
+    try {
+      if (!product.specifications) return {};
+      return typeof product.specifications === "string"
+        ? JSON.parse(product.specifications)
+        : product.specifications;
+    } catch (error) {
+      console.error("Error parsing specifications:", error);
+      return {};
+    }
+  };
+
+  const specifications = getSpecifications();
+  const getImages = () => {
+    try {
+      if (!product.images) return [];
+      return typeof product.images === "string"
+        ? JSON.parse(product.images)
+        : product.images;
+    } catch (error) {
+      console.error("Error parsing images:", error);
+      return [];
+    }
+  };
+  const images = getImages();
+  console.log("product", product);
 
   return (
     <div className="product-card">
       <div className="product-image-container">
-        <img
-          src={
-            (product.images && product.images[0]?.url) ||
-            "/placeholder-product.jpg"
-          }
-          alt={product.name}
-          className="product-image"
-        />
+        {images.length > 0 ? (
+          <img
+            src={`http://localhost:8080${images[0].url}`}
+            alt={product.name}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "../../../assets/images/no-image.jfif";
+            }}
+          />
+        ) : (
+          <div className="no-image">No Image</div>
+        )}
         {product.discount_price && (
           <div className="discount-badge">
             -{Math.round((1 - product.discount_price / product.price) * 100)}%
@@ -45,19 +75,17 @@ const ProductCard = ({ product }) => {
           )}
         </div>
         <div className="product-specs">
-          {product.specifications?.weight && (
+          {specifications?.weight && (
             <div className="spec-item">
               <span className="spec-label">Trọng lượng:</span>
-              <span className="spec-value">
-                {product.specifications.weight}g
-              </span>
+              <span className="spec-value">{specifications.weight}g</span>
             </div>
           )}
           {product.specifications?.balance_point && (
             <div className="spec-item">
               <span className="spec-label">Điểm cân bằng:</span>
               <span className="spec-value">
-                {product.specifications.balance_point}mm
+                {specifications.balance_point}mm
               </span>
             </div>
           )}

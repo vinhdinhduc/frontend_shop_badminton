@@ -9,12 +9,13 @@ import {
   faEyeSlash,
   faRightLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const location = useLocation();
-
+  const { totalProducts } = useSelector((state) => state.productList);
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
@@ -34,6 +35,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   useEffect(() => {
+    const updatedMenuItems = menuItems.map((item) => {
+      if (item.id === "product-list") {
+        return {
+          ...item,
+          badge: totalProducts?.toString() || "0",
+        };
+      }
+      return item;
+    });
+    // Update your menuItems state if needed
+  }, [totalProducts]);
+  useEffect(() => {
     document.documentElement.style.setProperty(
       "--sidebar-width-expanded",
       isCollapsed ? "70px" : "250px"
@@ -45,6 +58,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       setSidebarOpen(false);
     }
   };
+  console.log("check total ", totalProducts);
 
   const menuItems = [
     {
@@ -65,8 +79,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       id: "product-list",
       title: "Danh sách sản phẩm",
       icon: "📋",
-      path: "/admin/products",
-      badge: "16",
+      path: "/admin/list-products",
+      badge: totalProducts?.toString(),
     },
     {
       id: "order-list",
