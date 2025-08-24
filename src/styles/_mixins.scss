@@ -1,0 +1,441 @@
+// Button Base Mixin
+@mixin button-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+    transition: all $duration-200 $ease-in-out;
+    user-select: none;
+    white-space: nowrap;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// Button Variants
+@mixin button-primary {
+    @include button-base;
+    background: $primary-color;
+    color: $text-white;
+    box-shadow: $button-shadow;
+
+    &:hover:not(:disabled) {
+        background: $primary-dark;
+        box-shadow: $button-shadow-hover;
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@mixin button-secondary {
+    @include button-base;
+    background: $background-primary;
+    color: $text-secondary;
+    border: 1px solid $border-medium;
+
+    &:hover:not(:disabled) {
+        background: $background-light;
+        border-color: $border-dark;
+    }
+}
+
+@mixin button-success {
+    @include button-base;
+    background: $success-color;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+        background: $success-dark;
+    }
+}
+
+@mixin button-danger {
+    @include button-base;
+    background: $error-color;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+        background: $error-dark;
+    }
+}
+
+@mixin button-warning {
+    @include button-base;
+    background: $warning-color;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+        background: $warning-dark;
+    }
+}
+
+// Button Sizes
+@mixin button-sm {
+    padding: $spacing-sm $spacing-md;
+    font-size: $text-sm;
+    border-radius: $radius-md;
+    min-height: 32px;
+}
+
+@mixin button-md {
+    padding: $spacing-sm $spacing-lg;
+    font-size: $text-base;
+    border-radius: $radius-lg;
+    min-height: 40px;
+}
+
+@mixin button-lg {
+    padding: $spacing-md $spacing-xl;
+    font-size: $text-lg;
+    border-radius: $radius-lg;
+    min-height: 48px;
+}
+
+// Card Mixin
+@mixin card {
+    background: $background-primary;
+    border-radius: $radius-xl;
+    box-shadow: $card-shadow;
+    overflow: hidden;
+
+    &:hover {
+        box-shadow: $card-shadow-hover;
+    }
+}
+
+// Input Base Mixin
+@mixin input-base {
+    width: 100%;
+    padding: $spacing-md;
+    border: 1px solid $input-border;
+    border-radius: $radius-lg;
+    font-size: $text-base;
+    transition: all $duration-200 $ease-in-out;
+    background: $background-primary;
+    color: $text-primary;
+
+    &:focus {
+        outline: none;
+        border-color: $input-border-focus;
+        box-shadow: $input-shadow-focus;
+    }
+
+    &::placeholder {
+        color: $text-muted;
+    }
+
+    &:disabled {
+        background: $background-light;
+        color: $text-muted;
+        cursor: not-allowed;
+    }
+}
+
+// Loading Spinner Mixin
+@mixin loading-spinner($size: 24px, $color: $primary-color) {
+    width: $size;
+    height: $size;
+    border: 2px solid rgba($color, 0.2);
+    border-top: 2px solid $color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+// Badge Mixin
+@mixin badge-base {
+    display: inline-flex;
+    align-items: center;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-full;
+    font-size: $text-xs;
+    font-weight: $font-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+@mixin badge-success {
+    @include badge-base;
+    background: $success-100;
+    color: $success-dark;
+}
+
+@mixin badge-error {
+    @include badge-base;
+    background: $error-100;
+    color: $error-dark;
+}
+
+@mixin badge-warning {
+    @include badge-base;
+    background: $warning-100;
+    color: $warning-dark;
+}
+
+@mixin badge-info {
+    @include badge-base;
+    background: $info-100;
+    color: $info-dark;
+}
+
+// Responsive Breakpoints
+@mixin mobile-only {
+    @media (max-width: #{$breakpoint-sm - 1px}) {
+        @content;
+    }
+}
+
+@mixin tablet-up {
+    @media (min-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin tablet-only {
+    @media (min-width: $breakpoint-sm) and (max-width: #{$breakpoint-lg - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop-up {
+    @media (min-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+@mixin desktop-only {
+    @media (min-width: $breakpoint-lg) and (max-width: #{$breakpoint-xl - 1px}) {
+        @content;
+    }
+}
+
+@mixin large-desktop-up {
+    @media (min-width: $breakpoint-xl) {
+        @content;
+    }
+}
+
+// Flexbox Utilities
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+// Text Utilities
+@mixin text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+// Positioning Utilities
+@mixin absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@mixin absolute-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+// Table Mixins
+@mixin table-base {
+    width: 100%;
+    border-collapse: collapse;
+    background: $background-primary;
+
+    th,
+    td {
+        padding: $spacing-md;
+        text-align: left;
+        border-bottom: 1px solid $table-border;
+    }
+
+    th {
+        background: $table-header-bg;
+        color: $text-white;
+        font-weight: $font-semibold;
+        font-size: $text-sm;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    tbody tr {
+        transition: background-color $duration-150 $ease-in-out;
+
+        &:hover {
+            background: $table-row-hover;
+        }
+    }
+}
+
+// Animation Mixins
+@mixin fade-in($duration: $duration-300) {
+    animation: fadeIn $duration $ease-out;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+@mixin slide-in-right($duration: $duration-300) {
+    animation: slideInRight $duration $ease-out;
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+}
+
+@mixin slide-in-up($duration: $duration-300) {
+    animation: slideInUp $duration $ease-out;
+
+    @keyframes slideInUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+}
+
+@mixin scale-in($duration: $duration-200) {
+    animation: scaleIn $duration $ease-out;
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+}
+
+// Shadow Utilities
+@mixin elevation-1 {
+    box-shadow: $shadow-sm;
+}
+
+@mixin elevation-2 {
+    box-shadow: $shadow-md;
+}
+
+@mixin elevation-3 {
+    box-shadow: $shadow-lg;
+}
+
+@mixin elevation-4 {
+    box-shadow: $shadow-xl;
+}
+
+// Focus Styles
+@mixin focus-ring($color: $primary-color) {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba($color, 0.1);
+}
+
+// Scrollbar Styling
+@mixin custom-scrollbar($thumb-color: $border-dark, $track-color: $background-light) {
+    scrollbar-width: thin;
+    scrollbar-color: $thumb-color $track-color;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $track-color;
+        border-radius: $radius-md;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $thumb-color;
+        border-radius: $radius-md;
+
+        &:hover {
+            background: darken($thumb-color, 10%);
+        }
+    }
+}
+
+// Dark Mode Utilities
+@mixin dark-mode {
+    @media (prefers-color-scheme: dark) {
+        @content;
+    }
+}
+
+// Reduced Motion
+@mixin reduce-motion {
+    @media (prefers-reduced-motion: reduce) {
+        @content;
+    }
+}
+
+// High Contrast
+@mixin high-contrast {
+    @media (prefers-contrast: high) {
+        @content;
+    }
+}

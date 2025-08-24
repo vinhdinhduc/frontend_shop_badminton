@@ -2,24 +2,21 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { PaginationComponent } from "../../../components/ui/Pagination";
-import { Search, Trash2, Edit, Plus, Archive } from "lucide-react";
+import { PaginationComponent } from "../../../../components/ui/Pagination";
+import { Search, RotateCcw, Trash2, Eye } from "lucide-react";
 
-import "./AdminProductList.scss";
+import "./AdminDeletedProductList.scss";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchProduct,
-  softDeleteAction,
-} from "../../../redux/actions/productAction";
+import { fetchSoftDeletedList } from "../../../../redux/actions/productAction";
 
-const AdminProductList = () => {
+const AdminDeletedProductList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [products, setProducts] = useState([]);
+  const [deletedProducts, setDeletedProducts] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const { arrProduct, loading, error } = useSelector(
+  const { arrDeletedProduct, loading, error } = useSelector(
     (state) => state.productList
   );
 
@@ -27,14 +24,16 @@ const AdminProductList = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
-    dispatch(fetchProduct());
+    dispatch(fetchSoftDeletedList());
   }, [dispatch]);
 
+  console.log("Check arrDeletedProduct", arrDeletedProduct);
+
   useEffect(() => {
-    if (arrProduct && arrProduct.data) {
-      setProducts(arrProduct.data);
+    if (arrDeletedProduct && arrDeletedProduct.data) {
+      setDeletedProducts(arrDeletedProduct.data);
     }
-  }, [arrProduct]);
+  }, [arrDeletedProduct]);
 
   // Handle success message from navigation state
   useEffect(() => {
@@ -60,13 +59,13 @@ const AdminProductList = () => {
       : product.images;
   };
 
-  const filteredProducts = products.filter(
+  const filteredProducts = deletedProducts.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm?.toLowerCase()) ||
       product.brand.toLowerCase().includes(searchTerm?.toLowerCase())
   );
   const productCount = filteredProducts.length;
-  const totalProducts = products.length;
+  const totalProducts = deletedProducts.length;
 
   const getCurrentPageItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -87,25 +86,54 @@ const AdminProductList = () => {
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  const handleEdit = (id) => {
-    navigate(`/admin/edit-product/${id}`);
+  const handleView = (id) => {
+    navigate(`/admin/view-product/${id}`);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      dispatch(softDeleteAction(id));
+  const handleRestore = (id, productName) => {
+    if (
+      window.confirm(
+        `Bạn có chắc chắn muốn khôi phục sản phẩm "${productName}"?`
+      )
+    ) {
+      //   dispatch(restoreProductAction(id));
+      setSuccessMessage(`Đã khôi phục sản phẩm "${productName}" thành công!`);
     }
   };
-  const handleViewDeletedProducts = () => {
-    navigate("/admin/trash-products");
+
+  const handlePermanentDelete = (id, productName) => {
+    if (
+      window.confirm(
+        `⚠️ CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm "${productName}"? Hành động này không thể hoàn tác!`
+      )
+    ) {
+      if (
+        window.confirm(
+          "Xác nhận lần cuối: Sản phẩm sẽ bị xóa vĩnh viễn và không thể khôi phục!"
+        )
+      ) {
+        // dispatch(permanentDeleteAction(id));
+        setSuccessMessage(`Đã xóa vĩnh viễn sản phẩm "${productName}"!`);
+      }
+    }
   };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ";
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
-    <div className="admin-product-list-container">
+    <div className="admin-deleted-product-list-container">
       {/* Success Message */}
       {successMessage && (
         <div className="success-message">
@@ -122,36 +150,26 @@ const AdminProductList = () => {
         </div>
       )}
 
-      <div className="admin-product-list-header">
+      <div className="admin-deleted-product-list-header">
         <div className="header-left">
-          <h1 className="page-title">Danh sách tất cả sản phẩm</h1>
+          <h1 className="page-title">
+            <Trash2 size={24} />
+            Sản phẩm đã xóa
+          </h1>
+          <p className="page-subtitle">Quản lý các sản phẩm đã bị xóa mềm</p>
         </div>
         <div className="header-right">
           <span className="product-count">
             {searchTerm
-              ? `Tìm thấy ${productCount} sản phẩm.`
-              : `Danh sách có tất cả ${totalProducts} sản phẩm`}
+              ? `Tìm thấy ${productCount} sản phẩm đã xóa.`
+              : `Có ${totalProducts} sản phẩm đã bị xóa`}
           </span>
-          <div className="header-buttons">
-            {/* Trash Button */}
-            <button
-              className="trash-btn"
-              onClick={handleViewDeletedProducts}
-              title="Xem sản phẩm đã xóa"
-            >
-              <Archive size={16} />
-              Thùng rác
-              {/* {deletedProductsCount > 0 && (
-                <span className="trash-count">{deletedProductsCount}</span>
-              )} */}
-            </button>
-          </div>
           <button
-            className="add-btn"
-            onClick={() => navigate("/admin/add-product")}
+            className="back-btn"
+            onClick={() => navigate("/admin/products")}
           >
-            <Plus size={16} />
-            Thêm sản phẩm
+            <Eye size={16} />
+            Xem sản phẩm hoạt động
           </button>
         </div>
       </div>
@@ -161,7 +179,7 @@ const AdminProductList = () => {
           <FontAwesomeIcon className="search-icon" icon={faSearch} />
           <input
             type="text"
-            placeholder="Tìm kiếm sản phẩm theo tên hoặc hãng ..."
+            placeholder="Tìm kiếm sản phẩm đã xóa theo tên hoặc hãng..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -173,7 +191,7 @@ const AdminProductList = () => {
         <div className="loading-container">
           <div className="loading-spinner">
             <div className="spinner"></div>
-            <p>Đang tải danh sách sản phẩm...</p>
+            <p>Đang tải danh sách sản phẩm đã xóa...</p>
           </div>
         </div>
       )}
@@ -185,7 +203,7 @@ const AdminProductList = () => {
             <p>{error}</p>
             <button
               className="retry-btn"
-              onClick={() => dispatch(fetchProduct())}
+              //   onClick={() => dispatch(fetchDeletedProducts())}
             >
               Thử lại
             </button>
@@ -197,7 +215,7 @@ const AdminProductList = () => {
         <>
           <div className="table-container">
             <div className="table-wrapper">
-              <table className="product-table">
+              <table className="deleted-product-table">
                 <thead>
                   <tr>
                     <th>Hình ảnh</th>
@@ -205,7 +223,7 @@ const AdminProductList = () => {
                     <th>Hãng</th>
                     <th>Giá</th>
                     <th>Tồn kho</th>
-                    <th>Trạng thái</th>
+                    <th>Ngày xóa</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
@@ -214,9 +232,9 @@ const AdminProductList = () => {
                     const productImages = getImages(product);
 
                     return (
-                      <tr key={product.id}>
+                      <tr key={product.id} className="deleted-row">
                         <td className="image-cell">
-                          <div className="product-image">
+                          <div className="product-image deleted">
                             {productImages.length > 0 ? (
                               <img
                                 src={`http://localhost:8080${productImages[0].url}`}
@@ -230,28 +248,29 @@ const AdminProductList = () => {
                             ) : (
                               <div className="no-image">No Image</div>
                             )}
+                            <div className="deleted-overlay">
+                              <Trash2 size={16} />
+                            </div>
                           </div>
                         </td>
                         <td className="name-cell">
-                          <div className="product-info">
+                          <div className="product-info deleted">
                             <span className="product-name">{product.name}</span>
                             <span className="product-slug">
                               /{product.slug}
                             </span>
-                            {product.is_featured && (
-                              <span className="featured-badge">Bán chạy</span>
-                            )}
+                            <span className="deleted-badge">Đã xóa</span>
                           </div>
                         </td>
                         <td className="brand-cell">
                           <span
-                            className={`brand-badge ${product.brand.toLowerCase()}`}
+                            className={`brand-badge deleted ${product.brand.toLowerCase()}`}
                           >
                             {product.brand}
                           </span>
                         </td>
                         <td className="price-cell">
-                          <div className="price-info">
+                          <div className="price-info deleted">
                             <span className="price">
                               {formatPrice(product.price)}
                             </span>
@@ -264,36 +283,34 @@ const AdminProductList = () => {
                           </div>
                         </td>
                         <td className="stock-cell">
-                          <span
-                            className={`stock ${
-                              product.stock <= 5 ? "low-stock" : ""
-                            }`}
-                          >
+                          <span className="stock deleted">
                             {product.stock || 0}
                           </span>
                         </td>
-                        <td className="status-cell">
-                          <span
-                            className={`status ${
-                              product.stock > 0 ? "in-stock" : "out-of-stock"
-                            }`}
-                          >
-                            {product.stock > 0 ? "Còn hàng" : "Hết hàng"}
+                        <td className="date-cell">
+                          <span className="delete-date">
+                            {product.deleted_at
+                              ? formatDate(product.deleted_at)
+                              : "N/A"}
                           </span>
                         </td>
                         <td className="actions-cell">
                           <div className="actions">
                             <button
-                              className="edit-btn"
-                              onClick={() => handleEdit(product.id)}
-                              title="Chỉnh sửa"
+                              className="restore-btn"
+                              onClick={() =>
+                                handleRestore(product.id, product.name)
+                              }
+                              title="Khôi phục sản phẩm"
                             >
-                              <Edit size={16} />
+                              <RotateCcw size={16} />
                             </button>
                             <button
-                              className="delete-btn"
-                              onClick={() => handleDelete(product.id)}
-                              title="Xóa"
+                              className="permanent-delete-btn"
+                              onClick={() =>
+                                handlePermanentDelete(product.id, product.name)
+                              }
+                              title="Xóa vĩnh viễn"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -310,20 +327,20 @@ const AdminProductList = () => {
             {filteredProducts.length === 0 && !loading && (
               <div className="empty-state">
                 <div className="empty-content">
-                  <div className="empty-icon">📦</div>
-                  <h3>Không tìm thấy sản phẩm</h3>
+                  <div className="empty-icon">🗑️</div>
+                  <h3>Không có sản phẩm đã xóa</h3>
                   <p>
                     {searchTerm
-                      ? `Không có sản phẩm nào phù hợp với "${searchTerm}"`
-                      : "Chưa có sản phẩm nào trong hệ thống"}
+                      ? `Không có sản phẩm đã xóa nào phù hợp với "${searchTerm}"`
+                      : "Chưa có sản phẩm nào bị xóa trong hệ thống"}
                   </p>
                   {!searchTerm && (
                     <button
                       className="empty-action-btn"
-                      onClick={() => navigate("/admin/add-product")}
+                      onClick={() => navigate("/admin/products")}
                     >
-                      <Plus size={16} />
-                      Thêm sản phẩm đầu tiên
+                      <Eye size={16} />
+                      Xem danh sách sản phẩm
                     </button>
                   )}
                 </div>
@@ -343,7 +360,7 @@ const AdminProductList = () => {
               showPageInfo={true}
               showPageSizeSelector={true}
               maxVisiblePages={5}
-              className="products-pagination"
+              className="deleted-products-pagination"
             />
           )}
 
@@ -353,9 +370,9 @@ const AdminProductList = () => {
               const productImages = getImages(product);
 
               return (
-                <div key={product.id} className="product-card">
+                <div key={product.id} className="product-card deleted">
                   <div className="card-header">
-                    <div className="product-image">
+                    <div className="product-image deleted">
                       {productImages.length > 0 ? (
                         <img
                           src={`http://localhost:8080${productImages[0].url}`}
@@ -369,17 +386,24 @@ const AdminProductList = () => {
                       ) : (
                         <div className="no-image">No Image</div>
                       )}
+                      <div className="deleted-overlay">
+                        <Trash2 size={16} />
+                      </div>
                     </div>
                     <div className="card-actions">
                       <button
-                        className="edit-btn"
-                        onClick={() => handleEdit(product.id)}
+                        className="restore-btn"
+                        onClick={() => handleRestore(product.id, product.name)}
+                        title="Khôi phục"
                       >
-                        <Edit size={16} />
+                        <RotateCcw size={16} />
                       </button>
                       <button
-                        className="delete-btn"
-                        onClick={() => handleDelete(product.id)}
+                        className="permanent-delete-btn"
+                        onClick={() =>
+                          handlePermanentDelete(product.id, product.name)
+                        }
+                        title="Xóa vĩnh viễn"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -389,7 +413,7 @@ const AdminProductList = () => {
                     <h3 className="product-name">{product.name}</h3>
                     <div className="card-meta">
                       <span
-                        className={`brand-badge ${product.brand.toLowerCase()}`}
+                        className={`brand-badge deleted ${product.brand.toLowerCase()}`}
                       >
                         {product.brand}
                       </span>
@@ -398,20 +422,18 @@ const AdminProductList = () => {
                       </span>
                     </div>
                     <div className="card-stock">
-                      <span
-                        className={`stock ${
-                          product.stock <= 5 ? "low-stock" : ""
-                        }`}
-                      >
+                      <span className="stock deleted">
                         Tồn kho: {product.stock || 0}
                       </span>
-                      <span
-                        className={`status ${
-                          product.stock > 0 ? "in-stock" : "out-of-stock"
-                        }`}
-                      >
-                        {product.stock > 0 ? "Còn hàng" : "Hết hàng"}
+                      <span className="delete-date">
+                        Xóa:{" "}
+                        {product.deleted_at
+                          ? formatDate(product.deleted_at)
+                          : "N/A"}
                       </span>
+                    </div>
+                    <div className="card-status">
+                      <span className="deleted-badge">Đã xóa</span>
                     </div>
                   </div>
                 </div>
@@ -424,4 +446,4 @@ const AdminProductList = () => {
   );
 };
 
-export default AdminProductList;
+export default AdminDeletedProductList;

@@ -10,6 +10,8 @@ import ProductList from "./pages/user/products/ProductList";
 import About from "./components/about/About";
 import Contact from "./components/contact/Contact";
 import AdminProductList from "./pages/admin/products/AdminProductList";
+import EditProduct from "./pages/admin/products/EditProduct";
+import AdminDeletedProductList from "./pages/admin/products/trash/AdminDeletedProductList";
 
 function App() {
   return (
@@ -24,7 +26,12 @@ function App() {
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="add-product" element={<AddProduct />} />
+            <Route path="edit-product/:id" element={<EditProduct />} />
             <Route path="list-products" element={<AdminProductList />} />
+            <Route
+              path="trash-products"
+              element={<AdminDeletedProductList />}
+            />
           </Route>
         </Routes>
       </div>

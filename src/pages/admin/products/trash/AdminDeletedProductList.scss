@@ -1,0 +1,976 @@
+@import "../../../../styles/variables.scss";
+@import "../../../../styles/mixins.scss";
+
+.admin-deleted-product-list-container {
+    padding: 0 20px;
+    min-height: 100vh;
+    background: $background-light;
+
+    // Success Message
+    .success-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: $success-color;
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        animation: slideIn 0.3s ease-out;
+
+        .success-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            font-weight: 500;
+
+            .success-icon {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .close-success {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+                padding: 0;
+                margin-left: 8px;
+                opacity: 0.8;
+                transition: opacity 0.2s;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    // Header
+    .admin-deleted-product-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 24px;
+        padding-top: 20px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 16px;
+
+        .header-left {
+            .page-title {
+                font-size: 28px;
+                font-weight: 700;
+                color: $error-color;
+                margin: 0 0 8px 0;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .page-subtitle {
+                color: $text-muted;
+                margin: 0;
+                font-size: 16px;
+            }
+        }
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+
+            .product-count {
+                color: $text-muted;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .back-btn {
+                @include button-base;
+                background: $primary-color;
+                color: white;
+                padding: 10px 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+                border-radius: 6px;
+                transition: all 0.2s;
+
+                &:hover {
+                    background: darken($primary-color, 10%);
+                    transform: translateY(-1px);
+                }
+            }
+        }
+    }
+
+    // Search
+    .admin-search-container {
+        margin-bottom: 24px;
+
+        .search-box {
+            position: relative;
+            max-width: 400px;
+
+            .search-icon {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: $text-muted;
+                font-size: 16px;
+            }
+
+            .search-input {
+                width: 100%;
+                padding: 12px 16px 12px 40px;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: border-color 0.2s;
+
+                &:focus {
+                    outline: none;
+                    border-color: $primary-color;
+                }
+
+                &::placeholder {
+                    color: $text-muted;
+                }
+            }
+        }
+    }
+
+    // Loading & Error
+    .loading-container,
+    .error-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+
+        .loading-spinner,
+        .error-content {
+            text-align: center;
+
+            .spinner {
+                width: 40px;
+                height: 40px;
+                border: 3px solid #f3f3f3;
+                border-top: 3px solid $error-color;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 16px;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            p,
+            h3 {
+                margin: 8px 0;
+                color: $text-secondary;
+            }
+
+            .retry-btn {
+                @include button-base;
+                background: $error-color;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 6px;
+                margin-top: 16px;
+
+                &:hover {
+                    background: darken($error-color, 10%);
+                }
+            }
+        }
+    }
+
+    // Table
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 24px;
+
+        .table-wrapper {
+            overflow-x: auto;
+
+            .deleted-product-table {
+                width: 100%;
+                border-collapse: collapse;
+
+                thead {
+                    background: linear-gradient(135deg, $error-color, darken($error-color, 10%));
+
+                    th {
+                        padding: 16px;
+                        text-align: left;
+                        font-weight: 600;
+                        color: white;
+                        font-size: 14px;
+                        white-space: nowrap;
+                        border-bottom: 2px solid darken($error-color, 20%);
+                    }
+                }
+
+                tbody {
+                    tr.deleted-row {
+                        border-bottom: 1px solid #f3f4f6;
+                        background: rgba($error-color, 0.02);
+                        transition: background-color 0.2s;
+
+                        &:hover {
+                            background: rgba($error-color, 0.05);
+                        }
+
+                        td {
+                            padding: 16px;
+                            vertical-align: middle;
+                            opacity: 0.8;
+                        }
+                    }
+                }
+
+                // Image Cell
+                .image-cell {
+                    .product-image {
+                        position: relative;
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 8px;
+                        overflow: hidden;
+
+                        &.deleted {
+                            filter: grayscale(50%);
+                        }
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                        }
+
+                        .no-image {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 100%;
+                            height: 100%;
+                            background: #f3f4f6;
+                            color: $text-muted;
+                            font-size: 12px;
+                        }
+
+                        .deleted-overlay {
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            background: rgba($error-color, 0.9);
+                            color: white;
+                            padding: 4px;
+                            border-radius: 0 8px 0 8px;
+                        }
+                    }
+                }
+
+                // Name Cell
+                .name-cell {
+                    min-width: 200px;
+
+                    .product-info {
+                        &.deleted {
+                            .product-name {
+                                text-decoration: line-through;
+                                color: $text-muted;
+                            }
+                        }
+
+                        .product-name {
+                            display: block;
+                            font-weight: 600;
+                            color: $text-primary;
+                            margin-bottom: 4px;
+                            font-size: 14px;
+                        }
+
+                        .product-slug {
+                            display: block;
+                            color: $text-muted;
+                            font-size: 12px;
+                            font-family: monospace;
+                        }
+
+                        .deleted-badge {
+                            display: inline-block;
+                            background: rgba($error-color, 0.1);
+                            color: $error-color;
+                            padding: 2px 8px;
+                            border-radius: 12px;
+                            font-size: 11px;
+                            font-weight: 500;
+                            margin-top: 4px;
+                        }
+                    }
+                }
+
+                // Brand Cell
+                .brand-cell {
+                    .brand-badge {
+                        display: inline-block;
+                        padding: 4px 12px;
+                        border-radius: 16px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+
+                        &.deleted {
+                            opacity: 0.7;
+                        }
+
+                        // Brand colors
+                        &.apple {
+                            background: rgba(0, 122, 255, 0.1);
+                            color: #007aff;
+                        }
+                        &.samsung {
+                            background: rgba(20, 115, 230, 0.1);
+                            color: #1473e6;
+                        }
+                        &.xiaomi {
+                            background: rgba(255, 103, 0, 0.1);
+                            color: #ff6700;
+                        }
+                        &.oppo {
+                            background: rgba(26, 188, 156, 0.1);
+                            color: #1abc9c;
+                        }
+                        &.vivo {
+                            background: rgba(155, 89, 182, 0.1);
+                            color: #9b59b6;
+                        }
+                        &.huawei {
+                            background: rgba(231, 76, 60, 0.1);
+                            color: #e74c3c;
+                        }
+                    }
+                }
+
+                // Price Cell
+                .price-cell {
+                    .price-info {
+                        &.deleted {
+                            opacity: 0.7;
+                        }
+
+                        .price {
+                            display: block;
+                            font-weight: 600;
+                            color: $primary-color;
+                            font-size: 14px;
+                        }
+
+                        .discount-price {
+                            display: block;
+                            color: $error-color;
+                            font-size: 12px;
+                            text-decoration: line-through;
+                            margin-top: 2px;
+                        }
+                    }
+                }
+
+                // Stock Cell
+                .stock-cell {
+                    .stock {
+                        font-weight: 600;
+
+                        &.deleted {
+                            color: $text-muted;
+                        }
+                    }
+                }
+
+                // Date Cell
+                .date-cell {
+                    .delete-date {
+                        color: $error-color;
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+                }
+
+                // Actions Cell
+                .actions-cell {
+                    .actions {
+                        display: flex;
+                        gap: 8px;
+
+                        .restore-btn {
+                            @include button-base;
+                            background: $success-color;
+                            color: white;
+                            padding: 8px;
+                            border-radius: 6px;
+                            transition: all 0.2s;
+
+                            &:hover {
+                                background: darken($success-color, 10%);
+                                transform: scale(1.05);
+                            }
+                        }
+
+                        .permanent-delete-btn {
+                            @include button-base;
+                            background: $error-color;
+                            color: white;
+                            padding: 8px;
+                            border-radius: 6px;
+                            transition: all 0.2s;
+
+                            &:hover {
+                                background: darken($error-color, 10%);
+                                transform: scale(1.05);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Empty State
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+
+            .empty-content {
+                max-width: 400px;
+                margin: 0 auto;
+
+                .empty-icon {
+                    font-size: 48px;
+                    margin-bottom: 16px;
+                    opacity: 0.5;
+                }
+
+                h3 {
+                    color: $text-primary;
+                    margin-bottom: 8px;
+                    font-size: 20px;
+                }
+
+                p {
+                    color: $text-muted;
+                    margin-bottom: 24px;
+                    line-height: 1.6;
+                }
+
+                .empty-action-btn {
+                    @include button-base;
+                    background: $primary-color;
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+
+                    &:hover {
+                        background: darken($primary-color, 10%);
+                    }
+                }
+            }
+        }
+    }
+
+    // Mobile Cards (Hidden on desktop, shown on mobile)
+    .mobile-cards {
+        display: none;
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+
+            &.deleted {
+                border-left: 4px solid $error-color;
+                background: rgba($error-color, 0.01);
+            }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 16px;
+
+                .product-image {
+                    position: relative;
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 8px;
+                    overflow: hidden;
+
+                    &.deleted {
+                        filter: grayscale(50%);
+                    }
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+
+                    .no-image {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        height: 100%;
+                        background: #f3f4f6;
+                        color: $text-muted;
+                        font-size: 12px;
+                    }
+
+                    .deleted-overlay {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        background: rgba($error-color, 0.9);
+                        color: white;
+                        padding: 4px;
+                        border-radius: 0 8px 0 8px;
+                    }
+                }
+
+                .card-actions {
+                    display: flex;
+                    gap: 8px;
+
+                    .restore-btn {
+                        @include button-base;
+                        background: $success-color;
+                        color: white;
+                        padding: 8px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+
+                        &:hover {
+                            background: darken($success-color, 10%);
+                            transform: scale(1.05);
+                        }
+                    }
+
+                    .permanent-delete-btn {
+                        @include button-base;
+                        background: $error-color;
+                        color: white;
+                        padding: 8px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+
+                        &:hover {
+                            background: darken($error-color, 10%);
+                            transform: scale(1.05);
+                        }
+                    }
+                }
+            }
+
+            .card-body {
+                padding: 0 16px 16px;
+
+                .product-name {
+                    font-weight: 600;
+                    color: $text-primary;
+                    margin-bottom: 12px;
+                    font-size: 16px;
+                    text-decoration: line-through;
+                    opacity: 0.8;
+                }
+
+                .card-meta {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+
+                    .brand-badge {
+                        display: inline-block;
+                        padding: 4px 12px;
+                        border-radius: 16px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+
+                        &.deleted {
+                            opacity: 0.7;
+                        }
+
+                        // Brand colors
+                        &.apple {
+                            background: rgba(0, 122, 255, 0.1);
+                            color: #007aff;
+                        }
+                        &.samsung {
+                            background: rgba(20, 115, 230, 0.1);
+                            color: #1473e6;
+                        }
+                        &.xiaomi {
+                            background: rgba(255, 103, 0, 0.1);
+                            color: #ff6700;
+                        }
+                        &.oppo {
+                            background: rgba(26, 188, 156, 0.1);
+                            color: #1abc9c;
+                        }
+                        &.vivo {
+                            background: rgba(155, 89, 182, 0.1);
+                            color: #9b59b6;
+                        }
+                        &.huawei {
+                            background: rgba(231, 76, 60, 0.1);
+                            color: #e74c3c;
+                        }
+                    }
+
+                    .price {
+                        font-weight: 600;
+                        color: $primary-color;
+                        font-size: 16px;
+                        opacity: 0.8;
+                    }
+                }
+
+                .card-stock {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 8px;
+
+                    .stock {
+                        font-size: 14px;
+                        font-weight: 500;
+
+                        &.deleted {
+                            color: $text-muted;
+                        }
+                    }
+
+                    .delete-date {
+                        color: $error-color;
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+                }
+
+                .card-status {
+                    .deleted-badge {
+                        display: inline-block;
+                        background: rgba($error-color, 0.1);
+                        color: $error-color;
+                        padding: 4px 12px;
+                        border-radius: 16px;
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+
+    // Responsive Design
+    @media (max-width: 1024px) {
+        .admin-deleted-product-list-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+
+            .header-right {
+                align-items: flex-start;
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+
+                .product-count {
+                    order: 2;
+                }
+
+                .back-btn {
+                    order: 1;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 0 16px;
+
+        .admin-deleted-product-list-header {
+            .header-left {
+                .page-title {
+                    font-size: 24px;
+                }
+
+                .page-subtitle {
+                    font-size: 14px;
+                }
+            }
+
+            .header-right {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+
+                .product-count {
+                    font-size: 13px;
+                }
+            }
+        }
+
+        .admin-search-container {
+            .search-box {
+                max-width: 100%;
+
+                .search-input {
+                    font-size: 16px; // Prevent zoom on iOS
+                }
+            }
+        }
+
+        // Hide table, show cards
+        .table-container {
+            .table-wrapper {
+                display: none;
+            }
+        }
+
+        .mobile-cards {
+            display: block;
+        }
+
+        // Success message responsive
+        .success-message {
+            left: 16px;
+            right: 16px;
+            top: 16px;
+
+            .success-content {
+                font-size: 14px;
+                padding: 10px 12px;
+                gap: 8px;
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        padding: 0 12px;
+
+        .admin-deleted-product-list-header {
+            .header-left {
+                .page-title {
+                    font-size: 20px;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+                }
+            }
+
+            .header-right {
+                .back-btn {
+                    width: 100%;
+                    justify-content: center;
+                    padding: 12px 16px;
+                }
+            }
+        }
+
+        .mobile-cards {
+            .product-card {
+                .card-header {
+                    padding: 12px;
+
+                    .product-image {
+                        width: 60px;
+                        height: 60px;
+                    }
+
+                    .card-actions {
+                        gap: 6px;
+
+                        button {
+                            padding: 6px;
+                        }
+                    }
+                }
+
+                .card-body {
+                    padding: 0 12px 12px;
+
+                    .product-name {
+                        font-size: 14px;
+                    }
+
+                    .card-meta {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 8px;
+
+                        .price {
+                            font-size: 14px;
+                        }
+                    }
+
+                    .card-stock {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 4px;
+                    }
+                }
+            }
+        }
+    }
+
+    // Print styles
+    @media print {
+        .success-message,
+        .admin-search-container,
+        .actions-cell,
+        .mobile-cards .card-header .card-actions {
+            display: none !important;
+        }
+
+        .table-container {
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+
+        .deleted-product-table {
+            thead {
+                background: #f8f9fa !important;
+                color: #000 !important;
+            }
+
+            tbody tr.deleted-row {
+                background: #f8f9fa !important;
+            }
+        }
+    }
+
+    // Dark mode support
+    @media (prefers-color-scheme: dark) {
+        background: #1a1a1a;
+
+        .table-container,
+        .mobile-cards .product-card {
+            background: #2d2d2d;
+            color: #e5e5e5;
+        }
+
+        .deleted-product-table {
+            tbody tr.deleted-row {
+                background: rgba($error-color, 0.05);
+                border-bottom-color: #404040;
+
+                &:hover {
+                    background: rgba($error-color, 0.1);
+                }
+            }
+
+            .product-info .product-name {
+                color: #e5e5e5;
+            }
+
+            .product-slug {
+                color: #9ca3af;
+            }
+        }
+
+        .admin-search-container .search-box .search-input {
+            background: #2d2d2d;
+            border-color: #404040;
+            color: #e5e5e5;
+
+            &::placeholder {
+                color: #9ca3af;
+            }
+        }
+
+        .empty-state .empty-content {
+            h3 {
+                color: #e5e5e5;
+            }
+
+            p {
+                color: #9ca3af;
+            }
+        }
+    }
+
+    // High contrast mode
+    @media (prefers-contrast: high) {
+        .deleted-product-table {
+            tbody tr.deleted-row {
+                border-bottom: 2px solid #000;
+            }
+        }
+
+        .brand-badge,
+        .deleted-badge {
+            border: 1px solid currentColor;
+        }
+
+        .restore-btn,
+        .permanent-delete-btn,
+        .back-btn,
+        .empty-action-btn {
+            border: 2px solid currentColor;
+        }
+    }
+
+    // Reduced motion
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+
+        .success-message {
+            animation: none;
+        }
+
+        .loading-spinner .spinner {
+            animation: none;
+            border: 3px solid $error-color;
+        }
+    }
+}

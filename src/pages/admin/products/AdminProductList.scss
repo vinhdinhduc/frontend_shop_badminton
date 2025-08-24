@@ -1,3 +1,5 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/mixins.scss";
 $primary-color: #3b82f6;
 $primary-hover: #2563eb;
 $danger-color: #dc2626;
@@ -127,6 +129,63 @@ $breakpoint-xl: 1280px;
             display: flex;
             align-items: center;
             gap: 16px;
+            .header-buttons {
+                display: flex;
+                gap: $spacing-md;
+                align-items: center;
+
+                .trash-btn {
+                    @include button-base;
+                    background: $warning-color;
+                    color: $text-white;
+                    padding: $spacing-sm $spacing-lg;
+                    @include flex-center;
+                    gap: 2px;
+                    font-size: $text-sm;
+                    border-radius: $radius-lg;
+                    position: relative;
+                    transition: all $duration-200;
+                    box-shadow: $button-shadow;
+
+                    &:hover {
+                        background: $warning-dark;
+                        box-shadow: $button-shadow-hover;
+                        transform: translateY(-1px);
+                    }
+
+                    .trash-count {
+                        position: absolute;
+                        top: -8px;
+                        right: -8px;
+                        background: $error-color;
+                        color: $text-white;
+                        font-size: $text-xs;
+                        font-weight: $font-bold;
+                        padding: 2px 6px;
+                        border-radius: $radius-full;
+                        min-width: 20px;
+                        height: 20px;
+                        @include flex-center;
+                        animation: pulse 2s infinite;
+                        box-shadow: 0 0 0 0 rgba($error-color, 0.7);
+
+                        @keyframes pulse {
+                            0% {
+                                transform: scale(1);
+                                box-shadow: 0 0 0 0 rgba($error-color, 0.7);
+                            }
+                            70% {
+                                transform: scale(1.1);
+                                box-shadow: 0 0 0 4px rgba($error-color, 0);
+                            }
+                            100% {
+                                transform: scale(1);
+                                box-shadow: 0 0 0 0 rgba($error-color, 0);
+                            }
+                        }
+                    }
+                }
+            }
 
             @include responsive($breakpoint-md) {
                 width: 100%;
