@@ -16,8 +16,14 @@ const updateProductService = (productData) => {
 const softDelete = (id) => {
   return axios.delete(`/product/soft-delete/${id}`);
 };
+const hardDelete = (id) => {
+  return axios.delete(`/product/hard-delete/${id}`);
+};
 const getSoftDeletedList = () => {
   return axios.get("/product/get-deleted");
+};
+const restoreProductService = (id) => {
+  return axios.patch(`/product/restore/${id}`);
 };
 export {
   createProduct,
@@ -26,4 +32,6 @@ export {
   getProductById,
   softDelete,
   getSoftDeletedList,
+  hardDelete,
+  restoreProductService,
 };

@@ -17,6 +17,12 @@ import {
   FETCH_SOFT_DELETE_PRODUCT_REQUEST,
   FETCH_SOFT_DELETE_PRODUCT_SUCCESS,
   FETCH_SOFT_DELETE_PRODUCT_FAIL,
+  HARD_DELETE_PRODUCT_REQUEST,
+  HARD_DELETE_PRODUCT_SUCCESS,
+  HARD_DELETE_PRODUCT_FAIL,
+  RESTORE_PRODUCT_REQUEST,
+  RESTORE_PRODUCT_SUCCESS,
+  RESTORE_PRODUCT_FAIL,
 } from "../constants/productConstant";
 
 const initialState = {
@@ -123,6 +129,39 @@ const productReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         arrDeletedProduct: [],
+        error: action.payload,
+      };
+    case HARD_DELETE_PRODUCT_REQUEST:
+      return { ...state, loading: true };
+
+    case HARD_DELETE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case HARD_DELETE_PRODUCT_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case RESTORE_PRODUCT_REQUEST:
+      return { ...state, loading: true };
+
+    case RESTORE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case RESTORE_PRODUCT_FAIL:
+      return {
+        ...state,
+        loading: false,
         error: action.payload,
       };
     default:

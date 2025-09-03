@@ -17,6 +17,12 @@ import {
   FETCH_SOFT_DELETE_PRODUCT_REQUEST,
   FETCH_SOFT_DELETE_PRODUCT_SUCCESS,
   FETCH_SOFT_DELETE_PRODUCT_FAIL,
+  HARD_DELETE_PRODUCT_REQUEST,
+  HARD_DELETE_PRODUCT_SUCCESS,
+  HARD_DELETE_PRODUCT_FAIL,
+  RESTORE_PRODUCT_REQUEST,
+  RESTORE_PRODUCT_SUCCESS,
+  RESTORE_PRODUCT_FAIL,
 } from "../constants/productConstant";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
@@ -26,6 +32,9 @@ import {
   getProductById,
   updateProductService,
   softDelete,
+  getSoftDeletedList,
+  hardDelete,
+  restoreProductService,
 } from "../../services/productService";
 
 export const addProduct = (productData) => async (dispatch) => {
@@ -140,11 +149,9 @@ export const softDeleteAction = (id) => async (dispatch) => {
 export const fetchSoftDeletedList = () => async (dispatch) => {
   try {
     dispatch({ type: FETCH_SOFT_DELETE_PRODUCT_REQUEST });
-    const res = await getAllProduct();
+    const res = await getSoftDeletedList();
 
     if (res && res.code === 0) {
-      console.log("res-product", res);
-
       dispatch({
         type: FETCH_SOFT_DELETE_PRODUCT_SUCCESS,
         payload: {
@@ -159,5 +166,48 @@ export const fetchSoftDeletedList = () => async (dispatch) => {
       payload: error.response?.data?.message || error.message,
     });
     toast.error(`Lỗi khi lấy sản phẩm đã xoá! "${error.message}"`);
+  }
+};
+export const hardDeleteProduct = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: HARD_DELETE_PRODUCT_REQUEST });
+    const res = await hardDelete(id);
+
+    if (res && res.code === 0) {
+      dispatch({
+        type: HARD_DELETE_PRODUCT_SUCCESS,
+        payload: res,
+      });
+      toast.success("Xoá vĩnh viễn sản phẩm thành công!");
+      dispatch(fetchSoftDeletedList());
+    }
+  } catch (error) {
+    dispatch({
+      type: HARD_DELETE_PRODUCT_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
+    toast.error(`Lỗi khi xoá sản phẩm! "${error.message}"`);
+  }
+};
+export const restoreProductAction = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: RESTORE_PRODUCT_REQUEST });
+    const res = await restoreProductService(id);
+
+    if (res && res.code === 0) {
+      dispatch({
+        type: RESTORE_PRODUCT_SUCCESS,
+        payload: res,
+      });
+      dispatch(fetchSoftDeletedList());
+
+      toast.success("Khôi phục sản phẩm thành công!");
+    }
+  } catch (error) {
+    dispatch({
+      type: RESTORE_PRODUCT_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
+    toast.error(`Lỗi khi khôi phục sản phẩm! "${error.message}"`);
   }
 };

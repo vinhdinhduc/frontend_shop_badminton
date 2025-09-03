@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProduct,
   softDeleteAction,
+  fetchSoftDeletedList,
 } from "../../../redux/actions/productAction";
 
 const AdminProductList = () => {
@@ -19,7 +20,7 @@ const AdminProductList = () => {
   const [products, setProducts] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const { arrProduct, loading, error } = useSelector(
+  const { arrProduct, arrDeletedProduct, loading, error } = useSelector(
     (state) => state.productList
   );
 
@@ -28,31 +29,14 @@ const AdminProductList = () => {
 
   useEffect(() => {
     dispatch(fetchProduct());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (arrProduct && arrProduct.data) {
       setProducts(arrProduct.data);
     }
   }, [arrProduct]);
-
-  // Handle success message from navigation state
-  useEffect(() => {
-    if (location.state?.message) {
-      setSuccessMessage(location.state.message);
-
-      // Clear the message after 5 seconds
-      const timer = setTimeout(() => {
-        setSuccessMessage("");
-      }, 5000);
-
-      // Clear the location state
-      navigate(location.pathname, { replace: true });
-
-      return () => clearTimeout(timer);
-    }
-  }, [location.state, navigate, location.pathname]);
-
+ 
   const getImages = (product) => {
     if (!product.images) return [];
     return typeof product.images === "string"
@@ -67,7 +51,9 @@ const AdminProductList = () => {
   );
   const productCount = filteredProducts.length;
   const totalProducts = products.length;
+  console.log("CHeck arrDeletedPro", arrDeletedProduct);
 
+  const deletedProductsCount = arrDeletedProduct.products?.data?.length;
   const getCurrentPageItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -107,20 +93,6 @@ const AdminProductList = () => {
   return (
     <div className="admin-product-list-container">
       {/* Success Message */}
-      {successMessage && (
-        <div className="success-message">
-          <div className="success-content">
-            <span className="success-icon">✓</span>
-            {successMessage}
-            <button
-              className="close-success"
-              onClick={() => setSuccessMessage("")}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
 
       <div className="admin-product-list-header">
         <div className="header-left">
@@ -141,9 +113,9 @@ const AdminProductList = () => {
             >
               <Archive size={16} />
               Thùng rác
-              {/* {deletedProductsCount > 0 && (
+              {deletedProductsCount > 0 && (
                 <span className="trash-count">{deletedProductsCount}</span>
-              )} */}
+              )}
             </button>
           </div>
           <button

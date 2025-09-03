@@ -7,7 +7,11 @@ import { Search, RotateCcw, Trash2, Eye } from "lucide-react";
 
 import "./AdminDeletedProductList.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSoftDeletedList } from "../../../../redux/actions/productAction";
+import {
+  fetchSoftDeletedList,
+  hardDeleteProduct,
+  restoreProductAction,
+} from "../../../../redux/actions/productAction";
 
 const AdminDeletedProductList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,35 +29,21 @@ const AdminDeletedProductList = () => {
 
   useEffect(() => {
     dispatch(fetchSoftDeletedList());
-  }, [dispatch]);
+  }, []);
 
-  console.log("Check arrDeletedProduct", arrDeletedProduct);
+  console.log("Check arrDeletedProduct fro, admin", arrDeletedProduct);
 
   useEffect(() => {
-    if (arrDeletedProduct && arrDeletedProduct.data) {
-      setDeletedProducts(arrDeletedProduct.data);
+    if (arrDeletedProduct && arrDeletedProduct.products) {
+      setDeletedProducts(arrDeletedProduct.products.data);
     }
   }, [arrDeletedProduct]);
 
-  // Handle success message from navigation state
-  useEffect(() => {
-    if (location.state?.message) {
-      setSuccessMessage(location.state.message);
-
-      // Clear the message after 5 seconds
-      const timer = setTimeout(() => {
-        setSuccessMessage("");
-      }, 5000);
-
-      // Clear the location state
-      navigate(location.pathname, { replace: true });
-
-      return () => clearTimeout(timer);
-    }
-  }, [location.state, navigate, location.pathname]);
-
   const getImages = (product) => {
     if (!product.images) return [];
+
+    console.log("check product imgaes", product.images);
+
     return typeof product.images === "string"
       ? JSON.parse(product.images)
       : product.images;
@@ -96,15 +86,14 @@ const AdminDeletedProductList = () => {
         `Bạn có chắc chắn muốn khôi phục sản phẩm "${productName}"?`
       )
     ) {
-      //   dispatch(restoreProductAction(id));
-      setSuccessMessage(`Đã khôi phục sản phẩm "${productName}" thành công!`);
+      dispatch(restoreProductAction(id));
     }
   };
 
   const handlePermanentDelete = (id, productName) => {
     if (
       window.confirm(
-        `⚠️ CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm "${productName}"? Hành động này không thể hoàn tác!`
+        `CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm "${productName}"? Hành động này không thể hoàn tác!`
       )
     ) {
       if (
@@ -112,8 +101,7 @@ const AdminDeletedProductList = () => {
           "Xác nhận lần cuối: Sản phẩm sẽ bị xóa vĩnh viễn và không thể khôi phục!"
         )
       ) {
-        // dispatch(permanentDeleteAction(id));
-        setSuccessMessage(`Đã xóa vĩnh viễn sản phẩm "${productName}"!`);
+        dispatch(hardDeleteProduct(id));
       }
     }
   };
@@ -134,22 +122,6 @@ const AdminDeletedProductList = () => {
 
   return (
     <div className="admin-deleted-product-list-container">
-      {/* Success Message */}
-      {successMessage && (
-        <div className="success-message">
-          <div className="success-content">
-            <span className="success-icon">✓</span>
-            {successMessage}
-            <button
-              className="close-success"
-              onClick={() => setSuccessMessage("")}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
       <div className="admin-deleted-product-list-header">
         <div className="header-left">
           <h1 className="page-title">
@@ -203,7 +175,7 @@ const AdminDeletedProductList = () => {
             <p>{error}</p>
             <button
               className="retry-btn"
-              //   onClick={() => dispatch(fetchDeletedProducts())}
+              onClick={() => dispatch(fetchSoftDeletedList())}
             >
               Thử lại
             </button>
@@ -230,6 +202,7 @@ const AdminDeletedProductList = () => {
                 <tbody>
                   {currentPageItems.map((product) => {
                     const productImages = getImages(product);
+                    console.log("check list dleted product", product);
 
                     return (
                       <tr key={product.id} className="deleted-row">
