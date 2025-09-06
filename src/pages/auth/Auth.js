@@ -95,7 +95,6 @@ const Auth = () => {
     if (error) toast.error(error);
     if (userInfo) {
       setLoginForm({ email: "", password: "" });
-      console.log(userInfo);
 
       if (userInfo.data.user.role === "admin") {
         navigate("/admin/dashboard");
@@ -154,7 +153,14 @@ const Auth = () => {
     });
     setNotification({ type: "", message: "" });
   }, [isLogin]);
-
+  const handleOnKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (isLogin) {
+        handleLoginSubmit(e);
+      }
+      handleRegisterSubmit(e);
+    }
+  };
   return (
     <div className="login-page-container">
       {/* Background Elements */}
@@ -249,6 +255,7 @@ const Auth = () => {
                       onChange={handleLoginChange}
                       placeholder="Nhập mật khẩu"
                       required
+                      onKeyDown={handleOnKeyDown}
                     />
                     <button
                       type="button"
@@ -388,6 +395,7 @@ const Auth = () => {
                         onChange={handleRegisterChange}
                         placeholder="Nhập lại mật khẩu"
                         required
+                        onKeyDown={handleOnKeyDown}
                       />
                       <button
                         type="button"

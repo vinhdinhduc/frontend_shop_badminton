@@ -12,6 +12,9 @@ import Contact from "./components/contact/Contact";
 import AdminProductList from "./pages/admin/products/AdminProductList";
 import EditProduct from "./pages/admin/products/EditProduct";
 import AdminDeletedProductList from "./pages/admin/products/trash/AdminDeletedProductList";
+import AdminRoute from "./routes/AdminRoute";
+import NotFound from "./pages/user/not found/NotFound";
+import ManageCustomer from "./pages/customer/ManageCustomer";
 
 function App() {
   return (
@@ -23,16 +26,28 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/intro" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/admin/*" element={<AdminLayout />}>
+
+          <Route
+            path="/admin/*"
+            element={
+              <AdminRoute>
+                {" "}
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="add-product" element={<AddProduct />} />
             <Route path="edit-product/:id" element={<EditProduct />} />
             <Route path="list-products" element={<AdminProductList />} />
+            <Route path="customers" element={<ManageCustomer />} />
             <Route
               path="trash-products"
               element={<AdminDeletedProductList />}
             />
+            <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
       <ToastContainer

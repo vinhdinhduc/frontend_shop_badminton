@@ -1,8 +1,4 @@
 import {
-  USER_LOGIN_REQUEST,
-  USER_LOGIN_SUCCESS,
-  USER_LOGIN_FAIL,
-  USER_LOGOUT,
   FETCH_USER_REQUEST,
   FETCH_USER_SUCCESS,
   FETCH_USER_FAIL,
@@ -10,34 +6,25 @@ import {
 
 const initialState = {
   loading: false,
-  userInfo: null,
   error: null,
+  arrUsers: [],
 };
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case USER_LOGIN_REQUEST:
+    case FETCH_USER_REQUEST:
       return { ...state, loading: true };
 
-    case USER_LOGIN_SUCCESS:
+    case FETCH_USER_SUCCESS:
       return {
         ...state,
         loading: false,
-        userInfo: action.payload,
+        arrUsers: action.payload,
         error: null,
       };
 
-    case USER_LOGIN_FAIL:
-      return {
-        ...state,
-        loading: false,
-        userInfo: null,
-        error: action.payload,
-      };
-
-    case USER_LOGOUT:
-      return { ...state, loading: false, userInfo: null, error: null };
-
+    case FETCH_USER_FAIL:
+      return { ...state, loading: false, arrUsers: [], error: action.payload };
     default:
       return state;
   }

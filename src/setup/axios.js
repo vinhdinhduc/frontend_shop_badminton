@@ -13,8 +13,10 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     // Lấy token từ localStorage
-    const token = localStorage.getItem("access_token");
+    let token = localStorage.getItem("userInfo");
+    token = JSON.parse(token);
     if (token) {
+      console.log("Bearer token gửi lên:", token);
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

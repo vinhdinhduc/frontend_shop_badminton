@@ -6,4 +6,8 @@ const registerUser = (data) => {
 const loginUser = (data) => {
   return axios.post("/login", data);
 };
-export { registerUser, loginUser };
+
+const getAllUserService = () => {
+  return axios.get("/users/get-all-users");
+};
+export { registerUser, loginUser, getAllUserService };

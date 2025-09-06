@@ -1,0 +1,515 @@
+// Variables
+$primary-color: #3b82f6;
+$primary-hover: #2563eb;
+$secondary-color: #6b7280;
+$success-color: #10b981;
+$danger-color: #ef4444;
+$warning-color: #f59e0b;
+$bg-light: #f9fafb;
+$bg-white: #ffffff;
+$bg-overlay: rgba(0, 0, 0, 0.5);
+$border-color: #e5e7eb;
+$text-primary: #111827;
+$text-secondary: #6b7280;
+$border-radius: 8px;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin button-base {
+    padding: 8px 16px;
+    border: none;
+    border-radius: $border-radius;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+@mixin form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 14px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    background-color: $bg-white;
+    color: $text-primary;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &.error {
+        border-color: $danger-color;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    &:disabled {
+        background-color: $bg-light;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    &::placeholder {
+        color: $text-secondary;
+    }
+}
+
+// Responsive breakpoints
+@mixin mobile {
+    @media (max-width: 767px) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: 768px) and (max-width: 1023px) {
+        @content;
+    }
+}
+
+// Modal overlay
+.customer-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $bg-overlay;
+    @include flex-center;
+    z-index: 1000;
+    padding: 16px;
+    animation: fadeIn 0.2s ease-out;
+    backdrop-filter: blur(4px);
+}
+
+// Modal container
+.customer-modal {
+    background: $bg-white;
+    border-radius: 12px;
+    box-shadow: $shadow-lg;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-out;
+    border: 1px solid $border-color;
+
+    @include mobile {
+        max-width: none;
+        margin: 8px;
+        max-height: calc(100vh - 16px);
+        border-radius: 8px;
+    }
+
+    // Header
+    &__header {
+        @include flex-between;
+        padding: 20px 24px;
+        border-bottom: 1px solid $border-color;
+        background-color: $bg-light;
+
+        @include mobile {
+            padding: 16px 20px;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: $text-primary;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        @include mobile {
+            font-size: 16px;
+        }
+    }
+
+    &__title-icon {
+        color: $primary-color;
+        flex-shrink: 0;
+    }
+
+    &__close-btn {
+        @include button-base;
+        padding: 8px;
+        background: none;
+        color: $text-secondary;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:hover:not(:disabled) {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: $danger-color;
+            transform: scale(1.05);
+        }
+
+        &:disabled {
+            opacity: 0.3;
+        }
+    }
+
+    // Form
+    &__form {
+        display: flex;
+        flex-direction: column;
+        max-height: calc(90vh - 140px);
+
+        @include mobile {
+            max-height: calc(100vh - 120px);
+        }
+    }
+
+    &__body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+
+        @include mobile {
+            padding: 20px;
+        }
+
+        // Custom scrollbar
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: $bg-light;
+            border-radius: 3px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $border-color;
+            border-radius: 3px;
+
+            &:hover {
+                background: $text-secondary;
+            }
+        }
+    }
+
+    &__footer {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding: 20px 24px;
+        border-top: 1px solid $border-color;
+        background-color: $bg-light;
+
+        @include mobile {
+            flex-direction: column-reverse;
+            padding: 16px 20px;
+        }
+    }
+}
+
+// Form elements
+.form-group {
+    margin-bottom: 20px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: $text-primary;
+    font-size: 14px;
+
+    svg {
+        color: $text-secondary;
+        flex-shrink: 0;
+    }
+}
+
+.optional-text {
+    font-size: 12px;
+    font-weight: 400;
+    color: $text-secondary;
+    margin-left: 4px;
+}
+
+.form-input {
+    @include form-input;
+}
+
+.form-select {
+    @include form-input;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 44px;
+    appearance: none;
+}
+
+// Password input with toggle
+.password-input-wrapper {
+    position: relative;
+
+    .form-input {
+        padding-right: 44px;
+    }
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: $text-secondary;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    @include flex-center;
+
+    &:hover:not(:disabled) {
+        color: $text-primary;
+        background-color: $bg-light;
+    }
+
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+}
+
+// Avatar preview
+.avatar-preview {
+    margin-top: 8px;
+
+    img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid $border-color;
+        background-color: $bg-light;
+    }
+}
+
+// Error text
+.error-text {
+    display: block;
+    color: $danger-color;
+    font-size: 12px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &::before {
+        content: "⚠";
+        font-size: 10px;
+    }
+}
+
+// Buttons
+.btn {
+    @include button-base;
+    min-width: 100px;
+    font-weight: 600;
+
+    @include mobile {
+        width: 100%;
+        justify-content: center;
+    }
+
+    &--primary {
+        background-color: $primary-color;
+        color: white;
+
+        &:hover:not(:disabled) {
+            background-color: $primary-hover;
+            transform: translateY(-1px);
+            box-shadow: $shadow-md;
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0);
+        }
+    }
+
+    &--secondary {
+        background-color: transparent;
+        color: $text-secondary;
+        border: 1px solid $border-color;
+
+        &:hover:not(:disabled) {
+            background-color: $bg-light;
+            color: $text-primary;
+            border-color: $text-secondary;
+        }
+    }
+}
+
+// Loading spinner
+.loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 4px;
+}
+
+// Animations
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Focus management
+.customer-modal {
+    &:focus {
+        outline: none;
+    }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+    .customer-modal {
+        border-width: 2px;
+    }
+
+    .form-input,
+    .form-select {
+        border-width: 2px;
+
+        &:focus {
+            border-width: 3px;
+        }
+    }
+
+    .btn {
+        border-width: 2px;
+    }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+    .customer-modal-overlay,
+    .customer-modal,
+    .loading-spinner,
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-white: #1f2937;
+        --bg-light: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
+        --bg-overlay: rgba(0, 0, 0, 0.7);
+    }
+
+    .customer-modal {
+        background-color: var(--bg-white);
+        border-color: var(--border-color);
+    }
+
+    .customer-modal__header,
+    .customer-modal__footer {
+        background-color: var(--bg-light);
+        border-color: var(--border-color);
+    }
+
+    .customer-modal__title,
+    .form-label {
+        color: var(--text-primary);
+    }
+
+    .form-input,
+    .form-select {
+        background-color: var(--bg-light);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+
+        &::placeholder {
+            color: var(--text-secondary);
+        }
+
+        &:disabled {
+            background-color: var(--bg-white);
+        }
+    }
+
+    .customer-modal-overlay {
+        background-color: var(--bg-overlay);
+    }
+}
+

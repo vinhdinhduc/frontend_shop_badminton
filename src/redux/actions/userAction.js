@@ -3,10 +3,13 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGOUT,
+  FETCH_USER_REQUEST,
+  FETCH_USER_SUCCESS,
+  FETCH_USER_FAIL,
 } from "../constants/userConstant";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
-import { loginUser } from "../../services/userService";
+import { getAllUserService, loginUser } from "../../services/userService";
 
 export const login = (userData) => async (dispatch) => {
   try {
@@ -15,7 +18,7 @@ export const login = (userData) => async (dispatch) => {
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
     toast.success("Đăng nhập thành công!");
 
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorage.setItem("userInfo", JSON.stringify(data.data.token));
     localStorage.setItem("loginTime", new Date().toISOString());
   } catch (error) {
     dispatch({
@@ -27,6 +30,8 @@ export const login = (userData) => async (dispatch) => {
 };
 export const logout = () => async (dispatch) => {
   dispatch({ type: USER_LOGOUT });
-  localStorage.removeItem("token");
+  localStorage.removeItem("userInfo");
   toast.info("Bạn đã đăng xuất!");
 };
+
+
