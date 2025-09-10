@@ -36,7 +36,7 @@ const AdminProductList = () => {
       setProducts(arrProduct.data);
     }
   }, [arrProduct]);
- 
+
   const getImages = (product) => {
     if (!product.images) return [];
     return typeof product.images === "string"
@@ -51,7 +51,6 @@ const AdminProductList = () => {
   );
   const productCount = filteredProducts.length;
   const totalProducts = products.length;
-  console.log("CHeck arrDeletedPro", arrDeletedProduct);
 
   const deletedProductsCount = arrDeletedProduct.products?.data?.length;
   const getCurrentPageItems = () => {

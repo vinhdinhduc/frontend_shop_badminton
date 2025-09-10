@@ -15,6 +15,7 @@ import AdminDeletedProductList from "./pages/admin/products/trash/AdminDeletedPr
 import AdminRoute from "./routes/AdminRoute";
 import NotFound from "./pages/user/not found/NotFound";
 import ManageCustomer from "./pages/customer/ManageCustomer";
+import TrashCustomer from "./pages/customer/TrashCustomer";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
               path="trash-products"
               element={<AdminDeletedProductList />}
             />
+            <Route path="trash-customers" element={<TrashCustomer />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="*" element={<NotFound />} />

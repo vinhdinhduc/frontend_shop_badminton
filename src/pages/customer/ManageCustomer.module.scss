@@ -1,0 +1,607 @@
+$manage-customer-primary-color: #3b82f6;
+$manage-customer-primary-hover: #2563eb;
+$manage-customer-secondary-color: #6b7280;
+$manage-customer-success-color: #10b981;
+$manage-customer-danger-color: #ef4444;
+$manage-customer-warning-color: #f59e0b;
+$manage-customer-bg-light: #f9fafb;
+$manage-customer-bg-white: #ffffff;
+$manage-customer-border-color: #e5e7eb;
+$manage-customer-text-primary: #111827;
+$manage-customer-text-secondary: #6b7280;
+$manage-customer-border-radius: 8px;
+$manage-customer-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$manage-customer-shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+// Component-specific mixins
+@mixin manage-customer-flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin manage-customer-flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin manage-customer-button-base {
+    padding: 8px 16px;
+    border: none;
+    border-radius: $manage-customer-border-radius;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+@mixin manage-customer-form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $manage-customer-border-color;
+    border-radius: $manage-customer-border-radius;
+    font-size: 14px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:focus {
+        outline: none;
+        border-color: $manage-customer-primary-color;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &.error {
+        border-color: $manage-customer-danger-color;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+}
+
+// Responsive breakpoints
+@mixin manage-customer-mobile {
+    @media (max-width: 767px) {
+        @content;
+    }
+}
+
+@mixin manage-customer-tablet {
+    @media (min-width: 768px) and (max-width: 1023px) {
+        @content;
+    }
+}
+
+@mixin manage-customer-desktop {
+    @media (min-width: 1024px) {
+        @content;
+    }
+}
+
+// BEM Block: manage-customer
+.manage-customer {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @include manage-customer-mobile {
+        padding: 16px 12px;
+    }
+
+    .manage-customer-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+    }
+    .trash-btn-customer {
+        @include manage-customer-button-base;
+        background-color: $manage-customer-warning-color;
+        color: white;
+
+        &:hover {
+            background-color: $manage-customer-warning-color;
+            transform: translateY(-1px);
+            box-shadow: $manage-customer-shadow-md;
+        }
+    }
+    // Header section
+    &-header {
+        @include manage-customer-flex-between;
+        margin-bottom: 32px;
+        gap: 16px;
+
+        @include manage-customer-mobile {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+    }
+
+    &-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: $manage-customer-text-primary;
+        margin: 0;
+
+        @include manage-customer-mobile {
+            font-size: 24px;
+        }
+    }
+
+    &-add-btn {
+        @include manage-customer-button-base;
+        background-color: $manage-customer-primary-color;
+        color: white;
+
+        &:hover {
+            background-color: $manage-customer-primary-hover;
+            transform: translateY(-1px);
+            box-shadow: $manage-customer-shadow-md;
+        }
+
+        @include manage-customer-mobile {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    // Filters section
+    &-filters {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+
+        @include manage-customer-mobile {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @include manage-customer-tablet {
+            flex-wrap: wrap;
+        }
+    }
+
+    // Table container
+    &-table-container {
+        background: $manage-customer-bg-white;
+        border-radius: $manage-customer-border-radius;
+        box-shadow: $manage-customer-shadow-sm;
+        border: 1px solid $manage-customer-border-color;
+        overflow: hidden;
+
+        @include manage-customer-mobile {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        // Custom scrollbar
+        &::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: $manage-customer-bg-light;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $manage-customer-border-color;
+            border-radius: 4px;
+
+            &:hover {
+                background: $manage-customer-text-secondary;
+            }
+        }
+    }
+}
+
+// Search box component
+.manage-customer-search-box {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+
+    @include manage-customer-mobile {
+        max-width: none;
+    }
+
+    &-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $manage-customer-text-secondary;
+        pointer-events: none;
+    }
+
+    &-input {
+        @include manage-customer-form-input;
+        padding-left: 44px;
+
+        &::placeholder {
+            color: $manage-customer-text-secondary;
+        }
+    }
+}
+
+// Role filter
+.manage-customer-role-filter {
+    @include manage-customer-form-input;
+    width: auto;
+    min-width: 180px;
+
+    @include manage-customer-mobile {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+// Customer table
+.manage-customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+
+    @include manage-customer-mobile {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+
+        // Transform table to cards on mobile
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+            display: block;
+        }
+
+        thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        tr {
+            background: $manage-customer-bg-white;
+            border: 1px solid $manage-customer-border-color;
+            border-radius: $manage-customer-border-radius;
+            margin-bottom: 16px;
+            padding: 16px;
+            display: block;
+            box-shadow: $manage-customer-shadow-sm;
+        }
+
+        td {
+            border: none;
+            position: relative;
+            padding: 12px 0 !important;
+            text-align: left !important;
+            white-space: normal;
+
+            &::before {
+                content: attr(data-label) ": ";
+                font-weight: 600;
+                color: $manage-customer-text-secondary;
+                margin-right: 8px;
+                display: inline-block;
+                min-width: 100px;
+            }
+        }
+    }
+
+    @include manage-customer-tablet {
+        min-width: 700px;
+    }
+
+    @include manage-customer-desktop {
+        min-width: 800px;
+    }
+
+    th,
+    td {
+        padding: 16px 12px;
+        text-align: left;
+        border-bottom: 1px solid $manage-customer-border-color;
+
+        @include manage-customer-mobile {
+            padding: 8px 0;
+        }
+    }
+
+    th {
+        background-color: $manage-customer-bg-light;
+        font-weight: 600;
+        color: $manage-customer-text-primary;
+        font-size: 14px;
+
+        @include manage-customer-mobile {
+            display: none;
+        }
+    }
+
+    td {
+        color: $manage-customer-text-primary;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+
+            @include manage-customer-mobile {
+                background-color: $manage-customer-bg-white;
+            }
+        }
+    }
+}
+
+// Customer info components
+.manage-customer-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: $manage-customer-bg-light;
+        @include manage-customer-flex-center;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        svg {
+            color: $manage-customer-text-secondary;
+        }
+    }
+
+    &-details {
+        flex: 1;
+    }
+
+    &-name {
+        font-weight: 500;
+        color: $manage-customer-text-primary;
+    }
+}
+
+// Email text
+.manage-customer-email-text {
+    font-family: monospace;
+    font-size: 13px;
+    color: $manage-customer-text-primary;
+}
+
+// Role badge
+.manage-customer-role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+
+    &--user {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: $manage-customer-success-color;
+    }
+
+    &--admin {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: $manage-customer-primary-color;
+    }
+}
+
+// Action buttons
+.manage-customer-action-buttons {
+    display: flex;
+    gap: 8px;
+
+    @include manage-customer-mobile {
+        justify-content: flex-start;
+        margin-top: 8px;
+    }
+}
+
+.manage-customer-action-btn {
+    @include manage-customer-button-base;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+
+    &--edit {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: $manage-customer-warning-color;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+
+        &:hover {
+            background-color: rgba(245, 158, 11, 0.2);
+            box-shadow: $manage-customer-shadow-sm;
+        }
+    }
+
+    &--delete {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: $manage-customer-danger-color;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+
+        &:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+            box-shadow: $manage-customer-shadow-sm;
+        }
+    }
+}
+
+// Loading state
+.manage-customer-loading {
+    @include manage-customer-flex-center;
+    padding: 40px;
+    color: $manage-customer-text-secondary;
+
+    &-spinner {
+        width: 24px;
+        height: 24px;
+        border: 2px solid rgba($manage-customer-primary-color, 0.2);
+        border-top: 2px solid $manage-customer-primary-color;
+        border-radius: 50%;
+        animation: manage-customer-spin 1s linear infinite;
+        margin-right: 12px;
+    }
+}
+
+// Empty state
+.manage-customer-empty-state {
+    @include manage-customer-flex-center;
+    flex-direction: column;
+    padding: 60px 20px;
+    color: $manage-customer-text-secondary;
+
+    h3 {
+        margin: 16px 0 8px;
+        color: $manage-customer-text-primary;
+    }
+
+    p {
+        margin: 0;
+        text-align: center;
+        max-width: 300px;
+    }
+}
+
+// Animations
+@keyframes manage-customer-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Responsive utilities
+.manage-customer-hide-mobile {
+    @include manage-customer-mobile {
+        display: none !important;
+    }
+}
+
+.manage-customer-hide-desktop {
+    @include manage-customer-desktop {
+        display: none !important;
+    }
+}
+
+.manage-customer-show-mobile {
+    display: none;
+
+    @include manage-customer-mobile {
+        display: block !important;
+    }
+}
+
+// Print styles
+@media print {
+    .manage-customer {
+        &-add-btn,
+        &-filters {
+            display: none;
+        }
+    }
+
+    .manage-customer-action-buttons {
+        display: none;
+    }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+    .manage-customer-table {
+        th,
+        td {
+            border-width: 2px;
+        }
+    }
+
+    .manage-customer-role-badge {
+        border: 2px solid currentColor;
+    }
+
+    .manage-customer-action-btn {
+        border-width: 2px;
+    }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+// Dark mode support
+// @media (prefers-color-scheme: dark) {
+//     :root {
+//         --manage-customer-bg-white: #1f2937;
+//         --manage-customer-bg-light: #374151;
+//         --manage-customer-text-primary: #f9fafb;
+//         --manage-customer-text-secondary: #d1d5db;
+//         --manage-customer-border-color: #4b5563;
+//     }
+
+//     .manage-customer {
+//         background-color: var(--manage-customer-bg-white);
+//         color: var(--manage-customer-text-primary);
+//     }
+
+//     .manage-customer-table {
+//         th {
+//             background-color: var(--manage-customer-bg-light);
+//         }
+
+//         tbody tr:hover {
+//             background-color: rgba(59, 130, 246, 0.1);
+//         }
+//     }
+
+//     .manage-customer-search-box-input,
+//     .manage-customer-role-filter {
+//         background-color: var(--manage-customer-bg-light);
+//         border-color: var(--manage-customer-border-color);
+//         color: var(--manage-customer-text-primary);
+
+//         &::placeholder {
+//             color: var(--manage-customer-text-secondary);
+//         }
+//     }
+
+//     .manage-customer-table-container {
+//         background-color: var(--manage-customer-bg-white);
+//         border-color: var(--manage-customer-border-color);
+//     }
+// }

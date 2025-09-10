@@ -7,6 +7,7 @@ const CustomerModal = ({
   onClose,
   customer = null,
   onSubmit,
+  loading,
   existingEmail,
 }) => {
   const [formData, setFormData] = useState({
@@ -14,11 +15,12 @@ const CustomerModal = ({
     email: "",
     password: "",
     phone_number: "",
-    role: "user",
+    role: "customer",
     avatar: "",
   });
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditing = !!customer;
 
@@ -33,15 +35,23 @@ const CustomerModal = ({
           role: customer.role || "",
           avatar: customer.avatar || "",
         });
+        if (customer.avatar) {
+          if (customer.avatar.startsWith("/uploads/avatars/")) {
+            setAvatarPreview(`http://localhost:8080${customer.avatar}`);
+          } else {
+            setAvatarPreview(customer.avatar);
+          }
+        }
       } else {
         setFormData({
           fullName: "",
           email: "",
           password: "",
           phone_number: "",
-          role: "user",
+          role: "customer",
           avatar: "",
         });
+        setAvatarPreview("");
       }
       setFormErrors({});
       setShowPassword(false);
@@ -112,7 +122,6 @@ const CustomerModal = ({
     try {
       const submitData = { ...formData };
 
-      // Remove password if empty when editing
       if (isEditing && !submitData.password) {
         delete submitData.password;
       }
@@ -121,7 +130,6 @@ const CustomerModal = ({
       handleClose();
     } catch (error) {
       console.error("Error submitting form:", error);
-      // Handle error - could set form errors here
     } finally {
       setIsSubmitting(false);
     }
@@ -143,6 +151,72 @@ const CustomerModal = ({
       }));
     }
   };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validation file
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!validTypes.includes(file.type)) {
+        setFormErrors((prev) => ({
+          ...prev,
+          avatar: "Chỉ chấp nhận file ảnh (JPG, PNG, GIF)",
+        }));
+        return;
+      }
+
+      if (file.size > maxSize) {
+        setFormErrors((prev) => ({
+          ...prev,
+          avatar: "Kích thước file không được vượt quá 5MB",
+        }));
+        return;
+      }
+
+      // Clear previous error
+      setFormErrors((prev) => ({
+        ...prev,
+        avatar: "",
+      }));
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const base64String = ev.target.result;
+        setFormData((prev) => ({
+          ...prev,
+          avatar: base64String,
+        }));
+        setAvatarPreview(base64String);
+      };
+      reader.onerror = () => {
+        setFormErrors((prev) => ({
+          ...prev,
+          avatar: "Lỗi khi đọc file ảnh",
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Hàm xóa avatar
+  const handleRemoveAvatar = () => {
+    setFormData((prev) => ({
+      ...prev,
+      avatar: "",
+    }));
+    setAvatarPreview("");
+    setFormErrors((prev) => ({
+      ...prev,
+      avatar: "",
+    }));
+    // Reset file input
+    const fileInput = document.getElementById("avatar");
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  };
+
   const handleClose = () => {
     if (!isSubmitting) {
       onClose();
@@ -292,7 +366,7 @@ const CustomerModal = ({
                 className={`form-input ${
                   formErrors.phone_number ? "error" : ""
                 }`}
-                placeholder="0901234567"
+                placeholder="Nhập số điện thoại..."
                 disabled={isSubmitting}
                 maxLength={20}
               />
@@ -315,39 +389,54 @@ const CustomerModal = ({
                 className="form-select"
                 disabled={isSubmitting}
               >
-                <option value="user">Người dùng</option>
+                <option value="customer">Người dùng</option>
                 <option value="admin">Quản trị viên</option>
               </select>
             </div>
 
-            {/* Avatar URL */}
             <div className="form-group">
               <label htmlFor="avatar" className="form-label">
                 <User size={16} />
-                Avatar URL
+                Avatar
               </label>
               <input
-                type="url"
+                type="file"
                 id="avatar"
                 name="avatar"
-                value={formData.avatar}
-                onChange={handleInputChange}
+                onChange={handleFileChange}
                 className={`form-input ${formErrors.avatar ? "error" : ""}`}
-                placeholder="https://example.com/avatar.jpg"
                 disabled={isSubmitting}
+                accept="image/jpeg,image/jpg,image/png,image/gif"
               />
+              <small className="form-helper-text">
+                Chấp nhận file JPG, PNG, GIF. Tối đa 5MB.
+              </small>
               {formErrors.avatar && (
                 <span className="error-text">{formErrors.avatar}</span>
               )}
-              {formData.avatar && !formErrors.avatar && (
+              {/* Avatar Preview */}
+              {avatarPreview && !formErrors.avatar && (
                 <div className="avatar-preview">
-                  <img
-                    src={formData.avatar}
-                    alt="Avatar preview"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
+                  <div className="avatar-preview-container">
+                    <img
+                      src={avatarPreview}
+                      alt="Avatar preview"
+                      className="avatar-preview-image"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="avatar-remove-btn"
+                      onClick={handleRemoveAvatar}
+                      disabled={isSubmitting}
+                      title="Xóa ảnh"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                  <span className="avatar-preview-label">Xem trước</span>
                 </div>
               )}
             </div>
