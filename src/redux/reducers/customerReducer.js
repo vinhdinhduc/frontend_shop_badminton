@@ -8,9 +8,21 @@ import {
   UPDATE_USER_REQUEST,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAIL,
+  SOFT_DELETE_USER_REQUEST,
+  SOFT_DELETE_USER_SUCCESS,
+  SOFT_DELETE_USER_FAIL,
   FETCH_USER_SOFT_DELETED_REQUEST,
   FETCH_USER_SOFT_DELETED_SUCCESS,
   FETCH_USER_SOFT_DELETED_FAIL,
+  HARD_DELETE_USER_REQUEST,
+  HARD_DELETE_USER_SUCCESS,
+  HARD_DELETE_USER_FAIL,
+  RESTORE_USER_REQUEST,
+  RESTORE_USER_SUCCESS,
+  RESTORE_USER_FAIL,
+  BULK_HARD_DELETE_USER_REQUEST,
+  BULK_HARD_DELETE_USER_SUCCESS,
+  BULK_HARD_DELETE_USER_FAIL,
 } from "../constants/userConstant";
 
 const initialState = {
@@ -77,6 +89,54 @@ const userReducer = (state = initialState, action) => {
         listUserDeleted: [],
         error: action.payload,
       };
+    case SOFT_DELETE_USER_REQUEST:
+      return { ...state, loading: true };
+
+    case SOFT_DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case SOFT_DELETE_USER_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    case HARD_DELETE_USER_REQUEST:
+      return { ...state, loading: true };
+
+    case HARD_DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case HARD_DELETE_USER_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    case RESTORE_USER_REQUEST:
+      return { ...state, loading: true };
+
+    case RESTORE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case RESTORE_USER_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    case BULK_HARD_DELETE_USER_REQUEST:
+      return { ...state, loading: true };
+
+    case BULK_HARD_DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case BULK_HARD_DELETE_USER_FAIL:
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }

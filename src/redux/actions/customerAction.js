@@ -20,6 +20,9 @@ import {
   RESTORE_USER_REQUEST,
   RESTORE_USER_SUCCESS,
   RESTORE_USER_FAIL,
+  BULK_HARD_DELETE_USER_REQUEST,
+  BULK_HARD_DELETE_USER_SUCCESS,
+  BULK_HARD_DELETE_USER_FAIL,
 } from "../constants/userConstant";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
@@ -31,6 +34,7 @@ import {
   getUserSoftDeleted,
   hardDeleteUser,
   restoreUser,
+  bulkHardDeleteUser,
 } from "../../services/userService";
 
 export const getAllUser =
@@ -148,7 +152,7 @@ export const permanentDeleteUserAction = (id) => async (dispatch) => {
     if (res && res.code === 0) {
       dispatch({ type: HARD_DELETE_USER_SUCCESS, payload: res });
 
-      dispatch(getDeletedUsers());
+     
     }
   } catch (error) {
     dispatch({
@@ -158,18 +162,18 @@ export const permanentDeleteUserAction = (id) => async (dispatch) => {
     toast.error(error.message);
   }
 };
-export const permanentDeleteMultipleUsersAction = (id) => async (dispatch) => {
+export const permanentDeleteMultipleUsersAction = (ids) => async (dispatch) => {
   try {
-    dispatch({ type: SOFT_DELETE_USER_REQUEST });
-    const res = await softDeleteUser(id);
+    dispatch({ type: BULK_HARD_DELETE_USER_REQUEST });
+    const res = await bulkHardDeleteUser(ids);
     if (res && res.code === 0) {
-      dispatch({ type: SOFT_DELETE_USER_SUCCESS, payload: res });
-      toast.success("Xoá người dùng thành công!");
-      dispatch(getAllUser());
+      dispatch({ type: BULK_HARD_DELETE_USER_SUCCESS, payload: res });
+
+      
     }
   } catch (error) {
     dispatch({
-      type: SOFT_DELETE_USER_FAIL,
+      type: BULK_HARD_DELETE_USER_FAIL,
       payload: error.response?.data?.message || error.message,
     });
     toast.error(error.message);

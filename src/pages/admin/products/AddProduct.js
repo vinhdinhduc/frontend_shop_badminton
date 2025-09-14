@@ -7,11 +7,7 @@ const AddProduct = () => {
   const navigate = useNavigate();
 
   const handleSuccess = () => {
-    // Navigate back to product list after successful creation
-    navigate("/admin/products", {
-      replace: true,
-      state: { message: "Sản phẩm đã được thêm thành công!" },
-    });
+    navigate("/admin/list-products");
   };
 
   const handleCancel = () => {

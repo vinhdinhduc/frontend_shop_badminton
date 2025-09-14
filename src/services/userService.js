@@ -29,6 +29,10 @@ const restoreUser = (id) => {
 const getUserSoftDeleted = (params) => {
   return axios.get("/users/get-user-soft-deleted", { params });
 };
+
+const bulkHardDeleteUser = (ids) => {
+  return axios.delete("/bulk-hard-delete", { data: { id: ids } });
+};
 export {
   registerUser,
   loginUser,
@@ -39,4 +43,5 @@ export {
   hardDeleteUser,
   restoreUser,
   getUserSoftDeleted,
+  bulkHardDeleteUser,
 };

@@ -21,6 +21,9 @@ import {
   permanentDeleteMultipleUsersAction,
 } from "../../redux/actions/customerAction";
 import ConfirmDialog from "./ConfirmDialog";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const TrashCustomer = () => {
   const [deletedUsers, setDeletedUsers] = useState([]);
@@ -32,7 +35,7 @@ const TrashCustomer = () => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [isSelectAll, setIsSelectAll] = useState(false);
-
+  const navigate = useNavigate();
   const { listUserDeleted, loading } = useSelector(
     (state) => state.customerList
   );
@@ -250,6 +253,10 @@ const TrashCustomer = () => {
     return <User size={24} />;
   };
 
+  const handleBackPre = () => {
+    navigate(-1);
+  };
+
   if (loading) {
     return (
       <div className={styles["trash-customer"]}>
@@ -269,6 +276,12 @@ const TrashCustomer = () => {
       />
 
       <div className={styles["trash-customer"]}>
+        <button
+          className={styles["trash-customer-back"]}
+          onClick={() => handleBackPre()}
+        >
+          <FontAwesomeIcon icon={faArrowCircleLeft} />
+        </button>
         <div className={styles["trash-customer-header"]}>
           <h1 className={styles["trash-customer-title"]}>
             Thùng rác ({deletedUsers.length})

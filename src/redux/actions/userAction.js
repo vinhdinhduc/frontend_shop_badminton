@@ -18,7 +18,7 @@ export const login = (userData) => async (dispatch) => {
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
     toast.success("Đăng nhập thành công!");
 
-    localStorage.setItem("userInfo", JSON.stringify(data.data.token));
+    localStorage.setItem("userInfo", JSON.stringify(data));
     localStorage.setItem("loginTime", new Date().toISOString());
   } catch (error) {
     dispatch({
@@ -33,5 +33,3 @@ export const logout = () => async (dispatch) => {
   localStorage.removeItem("userInfo");
   toast.info("Bạn đã đăng xuất!");
 };
-
-

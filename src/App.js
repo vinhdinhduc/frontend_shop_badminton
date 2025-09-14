@@ -16,6 +16,7 @@ import AdminRoute from "./routes/AdminRoute";
 import NotFound from "./pages/user/not found/NotFound";
 import ManageCustomer from "./pages/customer/ManageCustomer";
 import TrashCustomer from "./pages/customer/TrashCustomer";
+import ProductDetail from "./pages/user/products/ProductDetail";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/products" element={<ProductList />} />
+          <Route path="/product-detail/:id" element={<ProductDetail />} />
           <Route path="/intro" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 

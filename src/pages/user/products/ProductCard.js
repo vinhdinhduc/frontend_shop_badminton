@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./ProductList.scss";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -33,10 +35,12 @@ const ProductCard = ({ product }) => {
     }
   };
   const images = getImages();
-  console.log("product", product);
+  const handleViewDetail = (productId) => {
+    navigate(`/product-detail/${productId}`);
+  };
 
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={() => handleViewDetail(product.id)}>
       <div className="product-image-container">
         {images.length > 0 ? (
           <img

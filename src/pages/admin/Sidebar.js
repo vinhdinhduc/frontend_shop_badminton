@@ -15,7 +15,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const location = useLocation();
-  const { totalProducts } = useSelector((state) => state.productList);
+  const { arrProduct } = useSelector((state) => state.productList);
+  const { arrUsers } = useSelector((state) => state.customerList);
+  const { userInfo } = useSelector((state) => state.userLogin);
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
@@ -34,18 +36,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  useEffect(() => {
-    const updatedMenuItems = menuItems.map((item) => {
-      if (item.id === "product-list") {
-        return {
-          ...item,
-          badge: totalProducts?.toString() || "0",
-        };
-      }
-      return item;
-    });
-    // Update your menuItems state if needed
-  }, [totalProducts]);
+  // useEffect(() => {
+  //   const updatedMenuItems = menuItems.map((item) => {
+  //     if (item.id === "product-list") {
+  //       return {
+  //         ...item,
+  //         badge: totalProducts?.toString() || "0",
+  //       };
+  //     }
+  //     return item;
+  //   });
+  //   // Update your menuItems state if needed
+  // }, [totalProducts]);
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--sidebar-width-expanded",
@@ -53,12 +55,24 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     );
   }, [isCollapsed]);
 
+  const getTotalUsers = () => {
+    return arrUsers ? arrUsers.data?.users?.length : 0;
+  };
+  const getTotalProducts = () => {
+    console.log("arrProduct:", arrProduct);
+
+    return arrProduct ? arrProduct.data?.length : 0;
+  };
+  console.log("Check user", userInfo);
+
+  const getTextRole =
+    userInfo?.data?.user?.role === "admin" ? "Quản trị viên" : "Khách hàng";
+
   const handleMenuItemClick = () => {
     if (isMobile) {
       setSidebarOpen(false);
     }
   };
-  console.log("check total ", totalProducts);
 
   const menuItems = [
     {
@@ -80,7 +94,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       title: "Danh sách sản phẩm",
       icon: "📋",
       path: "/admin/list-products",
-      badge: totalProducts?.toString(),
+      badge: getTotalProducts(),
     },
     {
       id: "order-list",
@@ -94,7 +108,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       title: "Quản lý khách hàng",
       icon: "👥",
       path: "/admin/customers",
-      badge: "11",
+      badge: getTotalUsers(),
     },
     {
       id: "reports",
@@ -240,8 +254,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             {!isCollapsed && (
               <div className="user-details">
-                <p className="username">Admin User</p>
-                <p className="role">Quản trị viên</p>
+                <p className="username">{userInfo?.data?.user?.fullName} </p>
+                <p className="role"> {getTextRole}</p>
                 <div className="user-actions">
                   <button className="profile-btn" title="Hồ sơ">
                     <span>👤</span>

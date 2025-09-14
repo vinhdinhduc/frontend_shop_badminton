@@ -12,13 +12,24 @@ const axiosClient = axios.create({
 // Interceptor cho request
 axiosClient.interceptors.request.use(
   (config) => {
-    // Lấy token từ localStorage
-    let token = localStorage.getItem("userInfo");
-    token = JSON.parse(token);
-    if (token) {
-      console.log("Bearer token gửi lên:", token);
-      config.headers.Authorization = `Bearer ${token}`;
+    const userInfoStr = localStorage.getItem("userInfo");
+
+    if (userInfoStr) {
+      try {
+        const userInfo = JSON.parse(userInfoStr);
+        console.log("userInfo from localStorage:", userInfo);
+
+        const token = userInfo?.data?.token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } catch (error) {
+        console.error("Error parsing userInfo from localStorage:", error);
+        // Xóa dữ liệu lỗi
+        localStorage.removeItem("userInfo");
+      }
     }
+
     return config;
   },
   (error) => {

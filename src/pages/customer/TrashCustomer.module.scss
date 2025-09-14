@@ -96,6 +96,11 @@ $trash-customer-shadow-lg:
     @include trash-customer-mobile {
         padding: 16px 12px;
     }
+    &-back {
+        @include trash-customer-button-base;
+        background-color: $trash-customer-primary-color;
+        color: white;
+    }
 
     // Header section
     &-header {
