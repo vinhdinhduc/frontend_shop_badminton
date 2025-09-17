@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
   };
   const images = getImages();
   const handleViewDetail = (productId) => {
-    navigate(`/product-detail/${productId}`);
+    navigate(`/products/${productId}`);
   };
 
   return (

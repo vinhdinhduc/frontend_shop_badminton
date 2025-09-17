@@ -1,0 +1,65 @@
+/* BreadCrumb.scss */
+.breadcrumb {
+    width: 100%;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+    .breadcrumb-list {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #6c757d;
+
+            .breadcrumb-separator {
+                margin: 0 10px;
+                color: #adb5bd;
+                &::before {
+                    content: "›"; /* hoặc "/" nếu thích */
+                    font-size: 14px;
+                }
+            }
+
+            .breadcrumb-link {
+                color: #007bff;
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #0056b3;
+                    text-decoration: underline;
+                }
+            }
+
+            .breadcrumb-current {
+                font-weight: 600;
+                color: #212529;
+            }
+        }
+    }
+}
+
+/* Responsive: nhỏ gọn hơn trên màn hình nhỏ */
+@media (max-width: 768px) {
+    .breadcrumb {
+        padding: 10px 12px;
+
+        .breadcrumb-list {
+            font-size: 13px;
+
+            .breadcrumb-separator {
+                margin: 0 6px;
+            }
+        }
+    }
+}

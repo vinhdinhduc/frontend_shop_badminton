@@ -9,6 +9,25 @@ import {
   faEyeSlash,
   faRightLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  DollarSign,
+  Package,
+  Users,
+  ShoppingBag,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Truck,
+  Plus,
+  List,
+  BarChart3,
+  ShoppingCart,
+  User,
+  Package2,
+  LayoutDashboard,
+  Cog,
+  CircleQuestionMark,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
@@ -78,42 +97,42 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     {
       id: "dashboard",
       title: "Dashboard",
-      icon: "📊",
+      icon: <LayoutDashboard />,
       path: "/admin/dashboard",
       badge: null,
     },
     {
       id: "add-product",
       title: "Thêm sản phẩm",
-      icon: "➕",
+      icon: <Plus size={30} color="blue" />,
       path: "/admin/add-product",
       badge: null,
     },
     {
       id: "product-list",
       title: "Danh sách sản phẩm",
-      icon: "📋",
+      icon: <List size={30} />,
       path: "/admin/list-products",
       badge: getTotalProducts(),
     },
     {
       id: "order-list",
       title: "Danh sách đơn hàng",
-      icon: "📦",
+      icon: <Package size={30} />,
       path: "/admin/orders",
       badge: "15",
     },
     {
       id: "customer",
       title: "Quản lý khách hàng",
-      icon: "👥",
+      icon: <Users size={30} />,
       path: "/admin/customers",
       badge: getTotalUsers(),
     },
     {
       id: "reports",
       title: "Thống kê & Báo cáo",
-      icon: "📈",
+      icon: <BarChart3 size={30} />,
       path: "/admin/reports",
       badge: null,
     },
@@ -123,13 +142,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     {
       id: "settings",
       title: "Cài đặt",
-      icon: "⚙️",
+      icon: <Cog />,
       path: "/admin/settings",
     },
     {
       id: "help",
       title: "Trợ giúp",
-      icon: "❓",
+      icon: <CircleQuestionMark />,
       path: "/admin/help",
     },
   ];

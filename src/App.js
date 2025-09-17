@@ -17,6 +17,8 @@ import NotFound from "./pages/user/not found/NotFound";
 import ManageCustomer from "./pages/customer/ManageCustomer";
 import TrashCustomer from "./pages/customer/TrashCustomer";
 import ProductDetail from "./pages/user/products/ProductDetail";
+import OrderManagement from "./pages/admin/order/OrderManagement";
+import Cart from "./pages/user/cart/Cart";
 
 function App() {
   return (
@@ -26,7 +28,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/products" element={<ProductList />} />
-          <Route path="/product-detail/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/intro" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 
@@ -43,6 +46,7 @@ function App() {
             <Route path="add-product" element={<AddProduct />} />
             <Route path="edit-product/:id" element={<EditProduct />} />
             <Route path="list-products" element={<AdminProductList />} />
+            <Route path="orders" element={<OrderManagement />} />
             <Route path="customers" element={<ManageCustomer />} />
             <Route
               path="trash-products"

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../../../components/common/Navbar";
 import { fetchProductById } from "../../../redux/actions/productAction";
 import { useParams } from "react-router-dom";
+import BreadCrumb from "../../../components/ui/BreadCrumb";
 
 const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -219,11 +220,7 @@ const ProductDetail = () => {
       <Navbar />
       <div className="badminton-racket-detail">
         <div className="container">
-          {/* Breadcrumb */}
-          <nav className="breadcrumb">
-            <span>Trang chủ</span> / <span>Sản phẩm</span> /{" "}
-            <span className="breadcrumb-current">{product.name}</span>
-          </nav>
+          <BreadCrumb customName={product.name} />
 
           {/* Product Main Section */}
           <div className="product-main">
