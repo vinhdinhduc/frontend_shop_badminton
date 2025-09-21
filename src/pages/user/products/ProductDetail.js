@@ -15,11 +15,14 @@ import Navbar from "../../../components/common/Navbar";
 import { fetchProductById } from "../../../redux/actions/productAction";
 import { useParams } from "react-router-dom";
 import BreadCrumb from "../../../components/ui/BreadCrumb";
+import AddToCartModal from "../cart/AddToCartModal";
 
 const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
+  const [isAddToCartOpen, setIsAddToCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const { id } = useParams();
   const { arrProductId } = useSelector((state) => state.productList);
@@ -198,7 +201,19 @@ const ProductDetail = () => {
       />
     ));
   };
+  const handleClickAddCart = (product) => {
+    setIsAddToCartOpen(true);
+    setSelectedProduct(product);
+  };
 
+  const handleCloseAddToCart = () => {
+    setIsAddToCartOpen(false);
+    setSelectedProduct(null);
+  };
+  const handleAddToCart = (cartItem) => {
+    console.log("Added to cart:", cartItem);
+    // Thêm logic xử lý ở đây
+  };
   // Show loading state if product data is not available
   if (!product || !product.id) {
     return (
@@ -303,7 +318,12 @@ const ProductDetail = () => {
                   </div>
 
                   <div className="action-buttons">
-                    <button className="add-to-cart-btn">
+                    <button
+                      className="add-to-cart-btn"
+                      onClick={() => {
+                        handleClickAddCart(product);
+                      }}
+                    >
                       <ShoppingCart size={20} />
                       Thêm vào giỏ
                     </button>
@@ -477,6 +497,12 @@ const ProductDetail = () => {
           )}
         </div>
       </div>
+      <AddToCartModal
+        isOpen={isAddToCartOpen}
+        product={selectedProduct}
+        onClose={handleCloseAddToCart}
+        onAddToCart={handleAddToCart}
+      />
     </>
   );
 };

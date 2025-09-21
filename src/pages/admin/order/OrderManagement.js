@@ -11,132 +11,82 @@ import {
   Download,
   MoreHorizontal,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllOrders } from "../../../redux/actions/orderAction";
+import { PaginationComponent } from "../../../components/ui/Pagination";
+import OrderDetailModal from "./OrderDetailModal";
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  const sampleOrders = [
-    {
-      id: "ORD-001",
-      customer: "Nguyễn Văn A",
-      phone: "0912345678",
-      email: "nguyenvana@email.com",
-      items: [
-        { name: "Vợt Yonex ArcSaber 11", price: 3500000, quantity: 1 },
-        { name: "Túi đựng vợt", price: 450000, quantity: 1 },
-      ],
-      total: 3950000,
-      status: "pending", // pending, confirmed, shipping, delivered, cancelled
-      paymentMethod: "cod",
-      paymentStatus: "pending", // pending, paid
-      createdAt: "2023-10-15T08:30:00",
-      shippingAddress: "123 Đường ABC, Quận 1, TP.HCM",
-    },
-    {
-      id: "ORD-002",
-      customer: "Trần Thị B",
-      phone: "0923456789",
-      email: "tranthib@email.com",
-      items: [{ name: "Vợt Victor Thruster F", price: 2800000, quantity: 2 }],
-      total: 5600000,
-      status: "confirmed",
-      paymentMethod: "banking",
-      paymentStatus: "paid",
-      createdAt: "2023-10-14T14:20:00",
-      shippingAddress: "456 Đường XYZ, Quận 3, TP.HCM",
-    },
-    {
-      id: "ORD-003",
-      customer: "Lê Văn C",
-      phone: "0934567890",
-      email: "levanc@email.com",
-      items: [
-        { name: "Vợt Lining Windstorm 72", price: 2200000, quantity: 1 },
-        { name: "Cầu lông Yonex AS-50", price: 650000, quantity: 3 },
-        { name: "Giày cầu lông", price: 1200000, quantity: 1 },
-      ],
-      total: 5550000,
-      status: "shipping",
-      paymentMethod: "cod",
-      paymentStatus: "pending",
-      createdAt: "2023-10-13T10:15:00",
-      shippingAddress: "789 Đường DEF, Quận Tân Bình, TP.HCM",
-    },
-    {
-      id: "ORD-004",
-      customer: "Phạm Thị D",
-      phone: "0945678901",
-      email: "phamthid@email.com",
-      items: [
-        { name: "Vợt Mizuno Fortius 10", price: 3100000, quantity: 1 },
-        { name: "Cầu lông Victor Champion", price: 520000, quantity: 2 },
-      ],
-      total: 4140000,
-      status: "delivered",
-      paymentMethod: "momo",
-      paymentStatus: "paid",
-      createdAt: "2023-10-12T16:45:00",
-      shippingAddress: "321 Đường GHI, Quận Bình Thạnh, TP.HCM",
-    },
-    {
-      id: "ORD-005",
-      customer: "Hoàng Văn E",
-      phone: "0956789012",
-      email: "hoangvane@email.com",
-      items: [{ name: "Vợt Kawasaki Pro 700", price: 1800000, quantity: 1 }],
-      total: 1800000,
-      status: "cancelled",
-      paymentMethod: "banking",
-      paymentStatus: "refunded",
-      createdAt: "2023-10-11T09:30:00",
-      shippingAddress: "654 Đường JKL, Quận 10, TP.HCM",
-    },
-  ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const dispatch = useDispatch();
+
+  const { arrOrders, loading, error } = useSelector((state) => state.orderList);
 
   useEffect(() => {
-    // Giả lập fetch API
-    setTimeout(() => {
-      setOrders(sampleOrders);
-      setFilteredOrders(sampleOrders);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    dispatch(
+      getAllOrders({
+        page: currentPage,
+        limit: itemsPerPage,
+        status: statusFilter !== "all" ? statusFilter : undefined,
+        search: searchTerm || undefined,
+      })
+    );
+  }, [dispatch]);
 
   useEffect(() => {
-    filterOrders();
-  }, [searchTerm, statusFilter, orders]);
-
-  const filterOrders = () => {
-    let result = orders;
-
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      result = result.filter(
-        (order) =>
-          order.id.toLowerCase().includes(term) ||
-          order.customer.toLowerCase().includes(term) ||
-          order.phone.includes(term) ||
-          order.email.toLowerCase().includes(term)
-      );
+    if (arrOrders && arrOrders.code === 0) {
+      setOrders(arrOrders.data.orders);
+      setTotalPages(arrOrders.data.pagination?.totalPages);
+      setTotalItems(arrOrders.data.pagination?.totalItems);
     }
-    if (statusFilter !== "all") {
-      result = result.filter((order) => order.status === statusFilter);
-    }
-    setFilteredOrders(result);
-  };
+  }, [arrOrders]);
+
+  console.log("Check orders", orders);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (currentPage === 1) {
+        dispatch(
+          getAllOrders({
+            page: 1,
+            limit: itemsPerPage,
+            status: statusFilter !== "all" ? statusFilter : undefined,
+            search: searchTerm || undefined,
+          })
+        );
+      } else {
+        setCurrentPage(1);
+      }
+    }, 500); // Debounce 500ms
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
-
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+  const handlePageSizeChange = (newPageSize) => {
+    setItemsPerPage(newPageSize);
+    setCurrentPage(1);
+  };
   const handleStatusFilter = (e) => {
     setStatusFilter(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleStatusChange = (orderId, newStatus) => {
@@ -157,9 +107,9 @@ const OrderManagement = () => {
       case "pending":
         return "status-badge--pending";
       case "confirmed":
-        return "status-badge--confirmed";
+        return "status-badge--processing";
       case "shipping":
-        return "status-badge--shipping";
+        return "status-badge--shipped";
       case "delivered":
         return "status-badge--delivered";
       case "cancelled":
@@ -172,9 +122,9 @@ const OrderManagement = () => {
     switch (status) {
       case "pending":
         return "Chờ xác nhận";
-      case "confirmed":
-        return "Đã xác nhận";
-      case "shipping":
+      case "processing":
+        return "Đang xử lý";
+      case "shipped":
         return "Đang giao";
       case "delivered":
         return "Đã giao";
@@ -191,7 +141,7 @@ const OrderManagement = () => {
         return "Chờ thanh toán";
       case "paid":
         return "Đã thanh toán";
-      case "refunded":
+      case "failed":
         return "Đã hoàn tiền";
       default:
         return status;
@@ -230,7 +180,6 @@ const OrderManagement = () => {
         <h1>Quản lý đơn hàng</h1>
         <p>Theo dõi và quản lý tất cả đơn hàng của cửa hàng</p>
       </div>
-
       <div className="order-tools">
         <div className="search-box">
           <Search size={20} />
@@ -247,8 +196,8 @@ const OrderManagement = () => {
           <select value={statusFilter} onChange={handleStatusFilter}>
             <option value="all">Tất cả trạng thái</option>
             <option value="pending">Chờ xác nhận</option>
-            <option value="confirmed">Đã xác nhận</option>
-            <option value="shipping">Đang giao</option>
+            <option value="processing">Đang xử lý</option>
+            <option value="shipped">Đang giao</option>
             <option value="delivered">Đã giao</option>
             <option value="cancelled">Đã hủy</option>
           </select>
@@ -275,21 +224,27 @@ const OrderManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.length > 0 ? (
-              filteredOrders.map((order) => (
+            {orders.length > 0 ? (
+              orders.map((order) => (
                 <tr key={order.id}>
-                  <td className="order-id">{order.id}</td>
+                  <td className="order-id">{order.order_code}</td>
                   <td>
                     <div className="customer-info">
-                      <div className="customer-name">{order.customer}</div>
-                      <div className="customer-contact">{order.phone}</div>
+                      <div className="customer-name">
+                        {order.user?.fullName}
+                      </div>
+                      <div className="customer-contact">
+                        {order.user?.phone_number}
+                      </div>
                     </div>
                   </td>
-                  <td>{formatDate(order.createdAt)}</td>
+                  <td>{formatDate(order.created_at)}</td>
                   <td>
-                    {order.items.reduce((sum, item) => sum + item.quantity, 0)}
+                    {order.items?.reduce((sum, item) => sum + item.quantity, 0)}
                   </td>
-                  <td className="order-total">{formatCurrency(order.total)}</td>
+                  <td className="order-total">
+                    {formatCurrency(order.order_total)}
+                  </td>
                   <td>
                     <span
                       className={`status-badge ${getStatusBadgeClass(
@@ -300,8 +255,8 @@ const OrderManagement = () => {
                     </span>
                   </td>
                   <td>
-                    <span className={`payment-status ${order.paymentStatus}`}>
-                      {getPaymentStatusText(order.paymentStatus)}
+                    <span className={`payment-status ${order.payment_status}`}>
+                      {getPaymentStatusText(order.payment_status)}
                     </span>
                   </td>
                   <td>
@@ -331,6 +286,20 @@ const OrderManagement = () => {
         </table>
       </div>
 
+      {totalPages >= 0 && (
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          pageSizeOptions={[10, 20, 50, 100]}
+          showPageInfo={true}
+          showPageSizeSelector={true}
+          maxVisiblePages={7}
+        />
+      )}
       {showDetailModal && selectedOrder && (
         <OrderDetailModal
           order={selectedOrder}
@@ -342,147 +311,6 @@ const OrderManagement = () => {
           getPaymentStatusText={getPaymentStatusText}
         />
       )}
-    </div>
-  );
-};
-
-// Modal chi tiết đơn hàng
-const OrderDetailModal = ({
-  order,
-  onClose,
-  onStatusChange,
-  formatCurrency,
-  formatDate,
-  getStatusText,
-  getPaymentStatusText,
-}) => {
-  const [currentStatus, setCurrentStatus] = useState(order.status);
-
-  const handleStatusUpdate = () => {
-    onStatusChange(order.id, currentStatus);
-    onClose();
-  };
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="order-detail-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>Chi tiết đơn hàng: {order.id}</h2>
-          <button className="close-btn" onClick={onClose}>
-            ×
-          </button>
-        </div>
-
-        <div className="modal-body">
-          <div className="order-section">
-            <h3>Thông tin đơn hàng</h3>
-            <div className="order-info-grid">
-              <div className="info-item">
-                <label>Ngày đặt:</label>
-                <span>{formatDate(order.createdAt)}</span>
-              </div>
-              <div className="info-item">
-                <label>Trạng thái:</label>
-                <select
-                  value={currentStatus}
-                  onChange={(e) => setCurrentStatus(e.target.value)}
-                >
-                  <option value="pending">Chờ xác nhận</option>
-                  <option value="confirmed">Đã xác nhận</option>
-                  <option value="shipping">Đang giao</option>
-                  <option value="delivered">Đã giao</option>
-                  <option value="cancelled">Đã hủy</option>
-                </select>
-              </div>
-              <div className="info-item">
-                <label>Phương thức thanh toán:</label>
-                <span>
-                  {order.paymentMethod === "cod"
-                    ? "Thanh toán khi nhận hàng"
-                    : order.paymentMethod === "banking"
-                    ? "Chuyển khoản"
-                    : order.paymentMethod === "momo"
-                    ? "Ví MoMo"
-                    : order.paymentMethod}
-                </span>
-              </div>
-              <div className="info-item">
-                <label>Tình trạng thanh toán:</label>
-                <span className={`payment-status ${order.paymentStatus}`}>
-                  {getPaymentStatusText(order.paymentStatus)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="order-section">
-            <h3>Thông tin khách hàng</h3>
-            <div className="customer-info-grid">
-              <div className="info-item">
-                <label>Họ tên:</label>
-                <span>{order.customer}</span>
-              </div>
-              <div className="info-item">
-                <label>Số điện thoại:</label>
-                <span>{order.phone}</span>
-              </div>
-              <div className="info-item">
-                <label>Email:</label>
-                <span>{order.email}</span>
-              </div>
-              <div className="info-item full-width">
-                <label>Địa chỉ giao hàng:</label>
-                <span>{order.shippingAddress}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="order-section">
-            <h3>Sản phẩm đã đặt</h3>
-            <div className="order-items">
-              <table className="items-table">
-                <thead>
-                  <tr>
-                    <th>Sản phẩm</th>
-                    <th>Đơn giá</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order.items.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.name}</td>
-                      <td>{formatCurrency(item.price)}</td>
-                      <td>{item.quantity}</td>
-                      <td>{formatCurrency(item.price * item.quantity)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colSpan="3" className="total-label">
-                      Tổng cộng:
-                    </td>
-                    <td className="total-amount">
-                      {formatCurrency(order.total)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div className="modal-footer">
-          <button className="btn-secondary" onClick={onClose}>
-            Đóng
-          </button>
-          <button className="btn-primary" onClick={handleStatusUpdate}>
-            Cập nhật trạng thái
-          </button>
-        </div>
-      </div>
     </div>
   );
 };

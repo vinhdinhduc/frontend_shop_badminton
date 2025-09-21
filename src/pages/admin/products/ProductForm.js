@@ -6,6 +6,8 @@ import {
 } from "../../../redux/actions/productAction";
 import { useDispatch } from "react-redux";
 
+import { PlusCircle, SquarePen } from "lucide-react";
+
 const ProductForm = ({
   initialData = null,
   isEdit = false,
@@ -15,8 +17,8 @@ const ProductForm = ({
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    brand: "Yonex",
-    category_id: 1,
+    brand: "",
+    category_id: "",
     price: "",
     discount_price: 0,
     variations: [],
@@ -25,14 +27,14 @@ const ProductForm = ({
     specifications: {
       weight: "",
       balance_point: "",
-      flexibility: "Medium",
+      flexibility: "",
       max_string_tension: "",
-      frame_material: "Carbon",
-      shaft_material: "Carbon",
+      frame_material: "",
+      shaft_material: "",
       string_pattern: "",
-      grip_size: "G4",
-      head_shape: "Isometric",
-      recommended_for: "All levels",
+      grip_size: "",
+      head_shape: "",
+      recommended_for: "",
       made_in: "",
     },
     stock: 0,
@@ -84,7 +86,6 @@ const ProductForm = ({
     { value: "All levels", label: "Mọi trình độ" },
   ];
 
-  // Initialize form data when editing
   useEffect(() => {
     if (isEdit && initialData) {
       const data = initialData;
@@ -179,48 +180,68 @@ const ProductForm = ({
   };
 
   const handleSpecificationChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      specifications: {
-        ...prev.specifications,
-        [field]: value,
-      },
-    }));
+    if (field === "weight") {
+      const uValue = convertWeightToU(value.replace(/[^\d.]/g, ""));
+
+      setFormData((prev) => {
+        const newSpecs = {
+          ...prev.specifications,
+          [field]: value,
+        };
+        let newVariations = [...prev.variations];
+
+        if (uValue) {
+          const existingIndex = newVariations.findIndex(
+            (v) => v.variation_value === uValue
+          );
+
+          if (existingIndex === -1) {
+            //Thêm kích thước mới nếu chưa có
+
+            newVariations.push({
+              variation_type: "Kích thước",
+              variation_value: uValue,
+              stock: 0,
+              price_adjustment: 0,
+              sku: `${slug}-${uValue}`.toUpperCase(),
+            });
+          }
+        }
+        return {
+          ...prev,
+          specifications: newSpecs,
+          variations: newVariations,
+        };
+      });
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        specifications: {
+          ...prev.specifications,
+          [field]: value,
+        },
+      }));
+    }
   };
 
   const handleSizeToggle = (size) => {
     setFormData((prev) => {
-      const existingVariationIndex = prev.variations.findIndex(
-        (v) => v.variation_value === size
-      );
-
-      let newVariations;
-      if (existingVariationIndex > -1) {
-        newVariations = prev.variations.filter(
-          (_, i) => i !== existingVariationIndex
-        );
-      } else {
-        newVariations = [
-          ...prev.variations,
-          {
-            variation_type: "Kích thước",
-            variation_value: size,
-            stock: 0,
-            price_adjustment: 0,
-            sku: `${slug}-${size}`.toUpperCase(),
-          },
-        ];
+      if (
+        prev.variations.length > 0 &&
+        prev.variations[0].variation_value === size
+      ) {
+        return prev;
       }
-
-      const totalStock = newVariations.reduce(
-        (sum, v) => sum + (v.stock || 0),
-        0
-      );
-
+      const newVariation = {
+        variation_type: "Kích thước",
+        variation_value: size,
+        stock: prev.stock || 0,
+        price_adjustment: 0,
+        sku: `${slug}-${size}`.toUpperCase(),
+      };
       return {
         ...prev,
-        variations: newVariations,
-        stock: totalStock,
+        variations: [newVariation],
       };
     });
   };
@@ -304,7 +325,15 @@ const ProductForm = ({
       });
     }
   };
-
+  const convertWeightToU = (weight) => {
+    const newWeight = parseFloat(weight);
+    if (isNaN(newWeight)) return null;
+    if (newWeight >= 90 && newWeight <= 94) return "2U";
+    if (newWeight >= 85 && newWeight <= 89) return "3U";
+    if (newWeight >= 80 && newWeight <= 84) return "4U";
+    if (newWeight >= 75 && newWeight <= 79) return "5U";
+    return null;
+  };
   const removeImage = (index) => {
     const imageToRemove = previewImages[index];
 
@@ -528,7 +557,7 @@ const ProductForm = ({
                 required
               />
               <div className="char-count">
-                {formData.description.length}/500 ký tự
+                {formData.description.length}/10000 ký tự
               </div>
             </div>
           </div>
@@ -635,6 +664,18 @@ const ProductForm = ({
                   handleSpecificationChange("weight", e.target.value)
                 }
               />
+
+              <div className="input-hint">
+                Nhập trọng lượng (ví dụ: 88g) - Hệ thống sẽ tự động chọn kích
+                thước U tương ứng
+              </div>
+              {formData.specifications.weight && (
+                <div className="u-preview">
+                  Kích thước tự động:{" "}
+                  {convertWeightToU(formData.specifications.weight) ||
+                    "Không xác định"}
+                </div>
+              )}
             </div>
 
             <div className="form-group">
@@ -807,22 +848,23 @@ const ProductForm = ({
                 Kích thước sản phẩm <span className="required">*</span>
               </label>
               <div className="size-selection">
-                {availableSizes.map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    className={`size-btn ${
-                      formData.variations.some(
-                        (v) => v.variation_value === size
-                      )
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() => handleSizeToggle(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
+                {availableSizes.map((size) => {
+                  const isSelected =
+                    formData.variations.length > 0 &&
+                    formData.variations[0].variation_value === size;
+
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      className={`size-btn ${isSelected ? "selected" : ""}`}
+                      onClick={() => handleSizeToggle(size)}
+                    >
+                      {size}
+                      {isSelected && " (Tự động)"}
+                    </button>
+                  );
+                })}
               </div>
 
               {formData.variations.length > 0 && (
@@ -837,25 +879,23 @@ const ProductForm = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {formData.variations.map((variation, index) => (
-                        <tr key={index}>
-                          <td>{variation.variation_value}</td>
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-                              value={variation.stock}
-                              onChange={(e) =>
-                                handleVariationStockChange(
-                                  variation.variation_value,
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </td>
-                          <td>{variation.sku}</td>
-                        </tr>
-                      ))}
+                      <tr>
+                        <td>{formData.variations[0].variation_value}</td>
+                        <td>
+                          <input
+                            type="number"
+                            min="0"
+                            value={formData.variations[0].stock}
+                            onChange={(e) =>
+                              handleVariationStockChange(
+                                formData.variations[0].variation_value,
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td>{formData.variations[0].sku}</td>
+                      </tr>
                     </tbody>
                   </table>
                   <div className="total-stock">
@@ -940,7 +980,9 @@ const ProductForm = ({
             Hủy bỏ
           </button>
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            <span className="btn-icon">✓</span>
+            <span className="btn-icon">
+              {isEdit ? <SquarePen /> : <PlusCircle />}
+            </span>
             {loading
               ? "Đang xử lý..."
               : isEdit

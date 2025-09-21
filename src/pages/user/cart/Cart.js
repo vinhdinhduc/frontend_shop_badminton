@@ -1,45 +1,171 @@
-import React, { useState } from "react";
-import { ShoppingCart, X, Plus, Minus, Tag } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import {
+  ShoppingCart,
+  X,
+  Plus,
+  Minus,
+  Tag,
+  Loader2,
+  ArrowRight,
+  AlertCircle,
+  Trash2,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "./Cart.scss";
 import Navbar from "../../../components/common/Navbar";
 import Footer from "../../../components/common/Footer";
+import {
+  clearCartAction,
+  getCartAction,
+  removeFromCartAction,
+  updateCartItemAction,
+} from "../../../redux/actions/cartAction";
+import CartItem from "./CartItem";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Vợt Cầu Lông Yonex Astrox 99 Play 2025 | Tấn Công...",
-      price: 1639000,
-      quantity: 1,
-      image: "/api/placeholder/80/80",
-    },
-  ]);
-
+  const [cartItems, setCartItems] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
-  const updateQuantity = (id, newQuantity) => {
+  const {
+    items,
+    totalItems,
+    totalAmount,
+    loading,
+    loadingItems,
+    coupon,
+    discountAmount,
+    shippingFee,
+    couponLoading,
+    couponError,
+  } = useSelector((state) => state.cartList);
+  useEffect(() => {
+    dispatch(getCartAction());
+  }, []);
+
+  useEffect(() => {
+    setCartItems(items);
+  }, [items]);
+
+  const updateQuantity = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
+    try {
+      await dispatch(updateCartItemAction(itemId, newQuantity));
+    } catch (error) {
+      console.log("error update", error);
+    }
   };
 
-  const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+  const removeItem = async (itemId) => {
+    try {
+      await dispatch(removeFromCartAction(itemId));
+    } catch (error) {
+      console.log("error remove cart", error);
+    }
+  };
+
+  const handleClearCart = async () => {
+    await dispatch(clearCartAction());
+    setShowClearConfirm(false);
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!promoCode.trim()) return;
+
+    // await dispatch(applyCoupon(promoCode.trim()));
+    setPromoCode("");
+  };
+
+  const handleRemoveCoupon = () => {
+    // dispatch(removeCoupon());
+  };
+
+  const handleCheckout = () => {
+    if (cartItems.length === 0) return;
+    navigate("/checkout");
+  };
+
+  const handleContinueShopping = () => {
+    navigate("/products");
+  };
+
+  const getProductImage = (product) => {
+    if (product?.images) {
+      let images = product.images;
+
+      try {
+        if (typeof images === "string") {
+          images = JSON.parse(images);
+        }
+      } catch (e) {
+        console.error("Lỗi parse images:", e);
+        return "../../../assets/images/no-image.jfif";
+      }
+
+      if (Array.isArray(images) && images.length > 0) {
+        // Trường hợp mảng object có url
+        const firstImage = images[0];
+        const imageURL = firstImage?.url || firstImage;
+
+        if (imageURL) {
+          return imageURL.startsWith("http")
+            ? imageURL
+            : `http://localhost:8080${imageURL}`;
+        }
+      }
+    }
+    return "../../../assets/images/no-image.jfif";
   };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + "đ";
   };
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+  const subtotal = items.reduce(
+    (sum, item) => sum + (item.unit_price || item.price) * item.quantity,
     0
   );
-  const shipping = 0; // Free shipping
-  const total = subtotal + shipping;
+
+  const total = subtotal - discountAmount + shippingFee;
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="shopping-cart">
+          <div className="cart-loading">
+            <Loader2 className="animate-spin" size={40} />
+            <p>Đang tải giỏ hàng...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+  if (cartItems.length === 0) {
+    return (
+      <>
+        <Navbar />
+        <div className="shopping-cart">
+          <div className="cart-empty">
+            <ShoppingCart size={80} className="empty-icon" />
+            <h3>Giỏ hàng của bạn đang trống</h3>
+            <p>Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
+            <button
+              onClick={handleContinueShopping}
+              className="continue-shopping-btn"
+            >
+              Tiếp tục mua sắm
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -75,51 +201,45 @@ const Cart = () => {
           <div className="cart-main">
             <div className="cart-title">
               <h2>
-                Giỏ hàng <span className="item-count">1</span>
+                Giỏ hàng <span className="item-count">{itemCount}</span>
               </h2>
+              {cartItems.length > 0 && (
+                <button
+                  onClick={() => setShowClearConfirm(true)}
+                  className="clear-cart-btn"
+                  title="Xóa toàn bộ giỏ hàng"
+                >
+                  <Trash2 size={16} />
+                  Xóa tất cả
+                </button>
+              )}
             </div>
 
             <div className="cart-items">
-              {cartItems.map((item) => (
-                <div key={item.id} className="cart-item">
-                  <div className="item-image">
-                    <img src={item.image} alt={item.name} />
-                  </div>
-                  <div className="item-details">
-                    <h3 className="item-name">{item.name}</h3>
-                    <div className="item-controls">
-                      <div className="quantity-controls">
-                        <button
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
-                          }
-                          className="quantity-btn"
-                        >
-                          <Minus size={16} />
-                        </button>
-                        <span className="quantity">{item.quantity}</span>
-                        <button
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
-                          }
-                          className="quantity-btn"
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
-                      <div className="item-price">
-                        {formatPrice(item.price)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {cartItems.map((item) => {
+                const isLoading = !!loadingItems[item.id];
+
+                return (
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    isLoading={isLoading}
+                    onUpdateQuantity={updateQuantity}
+                    onRemove={removeItem}
+                    formatPrice={formatPrice}
+                  />
+                );
+              })}
             </div>
 
-            <button className="update-cart-btn">
-              <ShoppingCart size={16} />
-              Cập nhật giỏ hàng
-            </button>
+            <div className="cart-actions">
+              <button
+                onClick={handleContinueShopping}
+                className="continue-shopping-btn"
+              >
+                Tiếp tục mua sắm
+              </button>
+            </div>
           </div>
 
           <div className="cart-summary">
@@ -127,17 +247,43 @@ const Cart = () => {
               <h3>Tóm tắt đơn hàng</h3>
 
               <div className="summary-row">
-                <span>Thành tiền</span>
+                <span>Thành tiền ({itemCount} sản phẩm)</span>
                 <span className="price">{formatPrice(subtotal)}</span>
               </div>
 
+              {discountAmount > 0 && (
+                <div className="summary-row discount-row">
+                  <span>
+                    Giảm giá
+                    {coupon && (
+                      <span className="coupon-code">({coupon.code})</span>
+                    )}
+                  </span>
+                  <span className="discount-price">
+                    -{formatPrice(discountAmount)}
+                    <button
+                      onClick={handleRemoveCoupon}
+                      className="remove-coupon-btn"
+                      title="Bỏ mã giảm giá"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                </div>
+              )}
+
               <div className="summary-row">
                 <span>Vận chuyển</span>
-                <span className="shipping-note">
-                  Liên hệ phí vận chuyển sau
-                </span>
+                {shippingFee > 0 ? (
+                  <span className="price">{formatPrice(shippingFee)}</span>
+                ) : (
+                  <span className="shipping-note">
+                    Liên hệ phí vận chuyển sau
+                  </span>
+                )}
               </div>
 
+              {/* Coupon section */}
               <div className="promo-section">
                 <div className="promo-input">
                   <input
@@ -145,20 +291,79 @@ const Cart = () => {
                     placeholder="Mã giảm giá"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
+                    disabled={couponLoading}
+                    onKeyPress={(e) => e.key === "Enter" && handleApplyCoupon()}
                   />
-                  <button className="promo-btn">Sử dụng</button>
+                  <button
+                    className="promo-btn"
+                    onClick={handleApplyCoupon}
+                    disabled={!promoCode.trim() || couponLoading}
+                  >
+                    {couponLoading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      "Sử dụng"
+                    )}
+                  </button>
                 </div>
+                {couponError && (
+                  <div className="error-message">
+                    <AlertCircle size={14} />
+                    {couponError}
+                  </div>
+                )}
               </div>
 
               <div className="summary-total">
                 <div className="total-row">
-                  <span>Tổng cống</span>
+                  <span>Tổng cộng</span>
                   <span className="total-price">{formatPrice(total)}</span>
                 </div>
               </div>
+
+              <button
+                className="checkout-btn"
+                onClick={handleCheckout}
+                disabled={cartItems.length === 0}
+              >
+                Tiến hành thanh toán
+                <ArrowRight size={18} />
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Clear cart confirmation modal */}
+        {showClearConfirm && (
+          <div
+            className="modal-overlay"
+            onClick={() => setShowClearConfirm(false)}
+          >
+            <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+              <h3>Xác nhận xóa giỏ hàng</h3>
+              <p>Bạn có chắc chắn muốn xóa toàn bộ sản phẩm trong giỏ hàng?</p>
+              <div className="modal-actions">
+                <button
+                  onClick={() => setShowClearConfirm(false)}
+                  className="btn-cancel"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleClearCart}
+                  className="btn-confirm"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    "Xác nhận"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <Footer />
     </>

@@ -16,17 +16,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions/userAction";
 
 import { NavLink, useNavigate } from "react-router-dom";
+import { getCartCountAction } from "../../redux/actions/cartAction";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [cartItems, setCartItems] = useState(99);
+
   const [showDropdown, setShowDropdown] = useState(false);
   const dropDownRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.userLogin);
+  const { cartCount } = useSelector((state) => state.cartList);
 
+  useEffect(() => {
+    dispatch(getCartCountAction());
+  }, []);
   const handleLogout = () => {
     dispatch(logout());
     navigate("/auth");
@@ -151,13 +156,13 @@ const Navbar = () => {
                 title="Giỏ hàng"
               >
                 <FontAwesomeIcon icon={faShoppingCart} />
-                {cartItems > 0 && (
+                {cartCount > 0 && (
                   <span
                     className={`nav-cart-count ${
-                      isLargeCart(cartItems) ? "large" : ""
+                      isLargeCart(cartCount) ? "large" : ""
                     }`}
                   >
-                    {formatCartCount(cartItems)}
+                    {formatCartCount(cartCount)}
                   </span>
                 )}
               </NavLink>
