@@ -1,6 +1,6 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { PaginationComponent } from "../../../components/ui/Pagination";
 import { Search, Trash2, Edit, Plus, Archive } from "lucide-react";
@@ -27,6 +27,10 @@ const AdminProductList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  const [imageLoaded, setImageLoaded] = useState({});
+  const [imageError, setImageError] = useState({});
+  const [currentImageUrl, setCurrentImageUrl] = useState(null);
+
   useEffect(() => {
     dispatch(fetchProduct());
   }, []);
@@ -36,6 +40,13 @@ const AdminProductList = () => {
       setProducts(arrProduct.data);
     }
   }, [arrProduct]);
+
+  const handleLoadImgae = (productId) => {
+    setImageLoaded((prev) => ({
+      ...prev,
+      [productId]: true,
+    }));
+  };
 
   const getImages = (product) => {
     if (!product.images) return [];
@@ -75,6 +86,15 @@ const AdminProductList = () => {
   const handleEdit = (id) => {
     navigate(`/admin/edit-product/${id}`);
   };
+
+  const handleError = (productId) => {
+    setImageError((prev) => ({ ...prev, [productId]: true }));
+    setImageLoaded((prev) => ({ ...prev, [productId]: true }));
+  };
+  useEffect(() => {
+    setImageLoaded({});
+    setImageError({});
+  }, [products]);
 
   const handleDelete = (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
@@ -192,11 +212,8 @@ const AdminProductList = () => {
                               <img
                                 src={`http://localhost:8080${productImages[0].url}`}
                                 alt={product.name}
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src =
-                                    "../../../assets/images/no-image.jfif";
-                                }}
+                                onError={() => handleError(product.id)}
+                                onLoad={() => handleLoadImgae(product.id)}
                               />
                             ) : (
                               <div className="no-image">No Image</div>
@@ -331,11 +348,8 @@ const AdminProductList = () => {
                         <img
                           src={`http://localhost:8080${productImages[0].url}`}
                           alt={product.name}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src =
-                              "../../../assets/images/no-image.jfif";
-                          }}
+                          onError={() => handleError(product.id)}
+                          onLoad={() => handleLoadImgae(product.id)}
                         />
                       ) : (
                         <div className="no-image">No Image</div>

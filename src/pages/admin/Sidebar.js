@@ -37,6 +37,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { arrProduct } = useSelector((state) => state.productList);
   const { arrUsers } = useSelector((state) => state.customerList);
   const { userInfo } = useSelector((state) => state.userLogin);
+  const { arrOrders } = useSelector((state) => state.orderList);
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
@@ -78,11 +79,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     return arrUsers ? arrUsers.data?.users?.length : 0;
   };
   const getTotalProducts = () => {
-    console.log("arrProduct:", arrProduct);
-
     return arrProduct ? arrProduct.data?.length : 0;
   };
-  console.log("Check user", userInfo);
+  const getTotalOrder = () => {
+    return arrOrders?.data?.orders?.length;
+  };
 
   const getTextRole =
     userInfo?.data?.user?.role === "admin" ? "Quản trị viên" : "Khách hàng";
@@ -120,7 +121,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       title: "Danh sách đơn hàng",
       icon: <Package size={30} />,
       path: "/admin/orders",
-      badge: "15",
+      badge: getTotalOrder(),
     },
     {
       id: "customer",

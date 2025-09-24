@@ -1,107 +1,227 @@
-import React, { useState, useEffect } from "react";
-import "./ProductList.scss";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { ShoppingCart, Eye, ShoppingBasket } from "lucide-react";
+import "./ProductCard.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import AddToCartModal from "../cart/AddToCartModal";
 
-const ProductCard = ({ product }) => {
+const ProductCard = React.memo(({ product }) => {
   const navigate = useNavigate();
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-  const getSpecifications = () => {
+
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [currentImageUrl, setCurrentImageUrl] = useState(null);
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const formatPrice = useCallback((price) => {
+    return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+  }, []);
+
+  const tensionSpec = useMemo(() => {
     try {
-      if (!product.specifications) return {};
-      return typeof product.specifications === "string"
-        ? JSON.parse(product.specifications)
-        : product.specifications;
+      if (!product.specifications) return null;
+      const specs =
+        typeof product.specifications === "string"
+          ? JSON.parse(product.specifications)
+          : product.specifications;
+
+      return specs?.tension || specs?.string_tension || specs?.u || null;
     } catch (error) {
       console.error("Error parsing specifications:", error);
-      return {};
+      return null;
     }
-  };
+  }, [product.specifications]);
 
-  const specifications = getSpecifications();
-  const getImages = () => {
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+  };
+  const primaryImage = useMemo(() => {
     try {
-      if (!product.images) return [];
-      return typeof product.images === "string"
-        ? JSON.parse(product.images)
-        : product.images;
+      if (!product.images) return null;
+      const images =
+        typeof product.images === "string"
+          ? JSON.parse(product.images)
+          : product.images;
+
+      if (Array.isArray(images) && images.length > 0) {
+        const firstImage = images[0];
+        const imageUrl = firstImage?.url;
+        if (imageUrl) {
+          return imageUrl.startsWith("http")
+            ? imageUrl
+            : `http://localhost:8080${imageUrl}`;
+        }
+      }
+      return null;
     } catch (error) {
       console.error("Error parsing images:", error);
-      return [];
+      return null;
     }
-  };
-  const images = getImages();
-  const handleViewDetail = (productId) => {
-    navigate(`/products/${productId}`);
-  };
+  }, [product.images]);
+
+  useEffect(() => {
+    if (primaryImage !== currentImageUrl) {
+      setCurrentImageUrl(primaryImage);
+      setImageLoaded(false);
+      setImageError(false);
+    }
+  }, [primaryImage, currentImageUrl]);
+
+  const handleImageError = useCallback(
+    (e) => {
+      if (!imageError) {
+        setImageError(true);
+        setImageLoaded(true);
+        e.target.style.display = "none";
+      }
+    },
+    [imageError]
+  );
+
+  const handleImageLoad = useCallback(() => {
+    setImageLoaded(true);
+    setImageError(false);
+  }, []);
+
+  const discountPercentage = useMemo(() => {
+    if (product.discount_price && product.price > product.discount_price) {
+      return Math.round((1 - product.discount_price / product.price) * 100);
+    }
+    return 0;
+  }, [product.discount_price, product.price]);
+
+  // Navigation handlers
+  const handleViewDetail = useCallback(
+    (e) => {
+      e.stopPropagation();
+      navigate(`/products/${product.id}`);
+    },
+    [navigate, product.id]
+  );
+
+  const handleAddToCart = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setIsOpenModal(true);
+    },
+    [product.id]
+  );
+
+  const priceDisplay = useMemo(() => {
+    if (product.discount_price && product.discount_price < product.price) {
+      return (
+        <div className="price-container">
+          <span className="discount-price">
+            {formatPrice(product.discount_price)}
+          </span>
+          <span className="original-price">{formatPrice(product.price)}</span>
+        </div>
+      );
+    }
+    return (
+      <div className="price-container">
+        <span className="current-price">{formatPrice(product.price)}</span>
+      </div>
+    );
+  }, [product.discount_price, product.price, formatPrice]);
 
   return (
-    <div className="product-card" onClick={() => handleViewDetail(product.id)}>
-      <div className="product-image-container">
-        {images.length > 0 ? (
-          <img
-            src={`http://localhost:8080${images[0].url}`}
-            alt={product.name}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "../../../assets/images/no-image.jfif";
-            }}
-          />
-        ) : (
-          <div className="no-image">No Image</div>
-        )}
-        {product.discount_price && (
-          <div className="discount-badge">
-            -{Math.round((1 - product.discount_price / product.price) * 100)}%
-          </div>
-        )}
-        {product.is_featured && <div className="featured-badge">Nổi bật</div>}
-      </div>
-      <div className="product-info">
-        <div className="product-brand">{product.brand}</div>
-        <h3 className="product-name">{product.name}</h3>
-        <div className="product-price">
-          {product.discount_price ? (
-            <>
-              <span className="discount-price">
-                {formatPrice(product.discount_price)}
-              </span>
-              <span className="original-price">
-                {formatPrice(product.price)}
-              </span>
-            </>
+    <>
+      <div className="product-card-simplified">
+        {/* Image Container */}
+        <div className="product-image-container">
+          {currentImageUrl ? (
+            <div className="image-wrapper">
+              <img
+                src={currentImageUrl}
+                alt={product.name}
+                loading="lazy"
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                style={{
+                  display: imageError ? "none" : "block",
+                  opacity: imageLoaded && !imageError ? 1 : 0.7,
+                }}
+              />
+              {(imageError || !imageLoaded) && (
+                <div className="image-placeholder">
+                  {imageError ? (
+                    <div className="no-image">
+                      <span>Không có ảnh</span>
+                    </div>
+                  ) : (
+                    <div className="image-loading">
+                      <div className="loading-spinner"></div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           ) : (
-            <span className="current-price">{formatPrice(product.price)}</span>
-          )}
-        </div>
-        <div className="product-specs">
-          {specifications?.weight && (
-            <div className="spec-item">
-              <span className="spec-label">Trọng lượng:</span>
-              <span className="spec-value">{specifications.weight}g</span>
+            <div className="no-image">
+              <span>Không có ảnh</span>
             </div>
           )}
-          {product.specifications?.balance_point && (
-            <div className="spec-item">
-              <span className="spec-label">Điểm cân bằng:</span>
-              <span className="spec-value">
-                {specifications.balance_point}mm
-              </span>
+
+          {/* Badges */}
+          {discountPercentage > 0 && (
+            <div className="discount-badge">-{discountPercentage}%</div>
+          )}
+          {product.is_featured && <div className="featured-badge">Nổi bật</div>}
+        </div>
+
+        {/* Product Info */}
+        <div className="product-info-simplified">
+          {/* Brand */}
+          <div className="product-brand">{product.brand}</div>
+
+          {/* Product Name */}
+          <h3 className="product-name">{product.name}</h3>
+
+          {/* Price */}
+          {priceDisplay}
+
+          {/* Tension Specification */}
+          {tensionSpec && (
+            <div className="tension-spec">
+              <span className="spec-label">Độ căng:</span>
+              <span className="spec-value">{tensionSpec}U</span>
             </div>
           )}
-        </div>
-        <div className="product-actions">
-          <button className="add-to-cart-btn">Thêm vào giỏ</button>
-          <button className="wishlist-btn">
-            <i className="far fa-heart"></i>
-          </button>
+
+          {/* Action Buttons */}
+          <div className="product-actions-simplified">
+            <button
+              className="view-detail-btn"
+              onClick={handleViewDetail}
+              title="Xem chi tiết sản phẩm"
+            >
+              <Eye size={16} />
+              <span>Xem chi tiết</span>
+            </button>
+
+            <button
+              className="add-to-cart-btn-icon"
+              onClick={handleAddToCart}
+              title="Thêm vào giỏ hàng"
+            >
+              <FontAwesomeIcon icon={faCartPlus} />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      <AddToCartModal
+        isOpen={isOpenModal}
+        product={product}
+        onClose={handleCloseModal}
+      />{" "}
+    </>
   );
-};
+});
+
+// Display name for debugging
+ProductCard.displayName = "ProductCard";
+
 export default ProductCard;

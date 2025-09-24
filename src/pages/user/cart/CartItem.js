@@ -24,7 +24,6 @@ import {
 
 const CartItem = React.memo(
   ({ item, isLoading, onUpdateQuantity, onRemove, formatPrice }) => {
-    // 2. Memoize việc xử lý ảnh để tránh parse lại mỗi render
     const productImage = useMemo(() => {
       if (!item?.product?.images) {
         return "../../../assets/images/no-image.jfif";
@@ -53,7 +52,7 @@ const CartItem = React.memo(
       }
 
       return "../../../assets/images/no-image.jfif";
-    }, [item?.product?.images]); // Chỉ re-calculate khi images thay đổi
+    }, [item?.product?.images]);
 
     // 3. State để track ảnh đã load thành công
     const [imageLoaded, setImageLoaded] = useState(false);

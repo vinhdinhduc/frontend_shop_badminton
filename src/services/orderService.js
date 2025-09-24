@@ -12,4 +12,26 @@ const getOrderByUserId = (userId) => {
   return axios.get(`/order/get-order-by-user/${userId}`);
 };
 
-export { getAllOrder, getOrderById, getOrderByUserId };
+const getProvince = () => {
+  return axios.get("https://provinces.open-api.vn/api/p/");
+};
+const getDistricts = (selectedProvince) => {
+  return axios.get(
+    `https://provinces.open-api.vn/api/p/${selectedProvince}?depth=2`
+  );
+};
+
+const getWards = (selectedDistrict) => {
+  return axios.get(
+    `https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`
+  );
+};
+
+export {
+  getAllOrder,
+  getOrderById,
+  getOrderByUserId,
+  getProvince,
+  getDistricts,
+  getWards,
+};

@@ -60,8 +60,6 @@ export const fetchProduct = () => async (dispatch) => {
     const res = await getAllProduct();
 
     if (res && res.code === 0) {
-      console.log("res-product", res);
-
       dispatch({
         type: PRODUCT_FETCH_SUCCESS,
         payload: {

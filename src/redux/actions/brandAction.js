@@ -28,6 +28,7 @@ export const getBrandsAction =
       dispatch({ type: GET_BRANDS_START });
 
       const response = await getAllBrands(params);
+      console.log("Check brand", response);
 
       dispatch({
         type: GET_BRANDS_SUCCESS,

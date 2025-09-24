@@ -17,8 +17,8 @@ const ProductForm = ({
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    brand: "",
-    category_id: "",
+    brand: "Yonex",
+    category_id: 1,
     price: "",
     discount_price: 0,
     variations: [],
@@ -196,8 +196,6 @@ const ProductForm = ({
           );
 
           if (existingIndex === -1) {
-            //Thêm kích thước mới nếu chưa có
-
             newVariations.push({
               variation_type: "Kích thước",
               variation_value: uValue,
@@ -254,7 +252,6 @@ const ProductForm = ({
           : v
       );
 
-      // Calculate total stock
       const totalStock = newVariations.reduce(
         (sum, v) => sum + (v.stock || 0),
         0
@@ -339,12 +336,10 @@ const ProductForm = ({
 
     setPreviewImages((prev) => prev.filter((_, i) => i !== index));
 
-    // Only remove from formData.images if it's a new image (not existing)
     if (!imageToRemove.isExisting) {
       setFormData((prev) => ({
         ...prev,
         images: prev.images.filter((_, i) => {
-          // Find the corresponding index in images array
           const newImageIndex = prev.images.findIndex(
             (img) =>
               img.name === imageToRemove.name &&

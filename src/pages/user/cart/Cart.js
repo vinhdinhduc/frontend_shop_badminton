@@ -92,33 +92,35 @@ const Cart = () => {
     navigate("/products");
   };
 
-  const getProductImage = (product) => {
-    if (product?.images) {
-      let images = product.images;
-
-      try {
-        if (typeof images === "string") {
-          images = JSON.parse(images);
+  const checkoutData = {
+    items: cartItems.map((item) => ({
+      id: item.id,
+      product_id: item.product_id,
+      product_name: item.product_name,
+      quantity: item.quantity,
+      unit_price: item.unit_price,
+      total_price: item.total_price,
+      variation_info: item.variation_info,
+      image: item.product?.images
+        ? typeof item.product.images === "string"
+          ? JSON.parse(item.product.images)[0]?.url
+          : item.product.images[0]?.url
+        : null,
+    })),
+    pricing: {
+      discount_amount: discountAmount,
+      shipping_fee: shippingFee,
+    },
+    coupon: coupon
+      ? {
+          code: coupon.code,
+          discount_amount: discountAmount,
         }
-      } catch (e) {
-        console.error("Lỗi parse images:", e);
-        return "../../../assets/images/no-image.jfif";
-      }
-
-      if (Array.isArray(images) && images.length > 0) {
-        // Trường hợp mảng object có url
-        const firstImage = images[0];
-        const imageURL = firstImage?.url || firstImage;
-
-        if (imageURL) {
-          return imageURL.startsWith("http")
-            ? imageURL
-            : `http://localhost:8080${imageURL}`;
-        }
-      }
-    }
-    return "../../../assets/images/no-image.jfif";
+      : null,
   };
+
+  // Lưu vào sessionStorage
+  sessionStorage.setItem("checkout_data", JSON.stringify(checkoutData));
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + "đ";

@@ -8,6 +8,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProduct } from "../../../redux/actions/productAction";
 import { CirclesWithBar } from "react-loader-spinner";
+import { getBrandsAction } from "../../../redux/actions/brandAction";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -24,6 +25,7 @@ const ProductList = () => {
   const { arrProduct, loading, error } = useSelector(
     (state) => state.productList
   );
+  const { brands } = useSelector((state) => state.brandList);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,6 +36,7 @@ const ProductList = () => {
 
   useEffect(() => {
     dispatch(fetchProduct());
+    dispatch(getBrandsAction({ page: 1, limit: 10 }));
   }, []);
 
   useEffect(() => {
@@ -41,7 +44,7 @@ const ProductList = () => {
       setAllProducts(arrProduct.data);
     }
   }, [arrProduct]);
-  console.log("Check data all", allProducts);
+  console.log("Check brand", brands);
 
   // Filter and sort products
   const filteredAndSortedProducts = useMemo(() => {
