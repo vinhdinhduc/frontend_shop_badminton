@@ -1,9 +1,7 @@
 import axios from "../setup/axios";
 
-const getAllBrands = (query) => {
-  console.log("query send", query);
-
-  return axios.get("/brand/get-all", { query });
+const getAllBrands = (params) => {
+  return axios.get("/brand/get-all", { params });
 };
 
 const getBrandById = (id) => {

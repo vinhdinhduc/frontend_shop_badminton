@@ -12,7 +12,7 @@ import { getBrandsAction } from "../../../redux/actions/brandAction";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-
+  const [arrBrands, setArrBrands] = useState([]);
   const [filters, setFilters] = useState({
     category_id: "",
     brand: "",
@@ -44,7 +44,11 @@ const ProductList = () => {
       setAllProducts(arrProduct.data);
     }
   }, [arrProduct]);
-  console.log("Check brand", brands);
+  useEffect(() => {
+    if (brands) {
+      setArrBrands(brands);
+    }
+  }, [brands]);
 
   // Filter and sort products
   const filteredAndSortedProducts = useMemo(() => {
@@ -188,45 +192,26 @@ const ProductList = () => {
               <div className="filter-group">
                 <h4>THƯƠNG HIỆU</h4>
                 <div className="filter-options">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.brand === "Yerak"}
-                      onChange={() =>
-                        handleFilterChange(
-                          "brand",
-                          filters.brand === "Yerak" ? "" : "Yerak"
-                        )
-                      }
-                    />
-                    Yerak
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.brand === "Valeer"}
-                      onChange={() =>
-                        handleFilterChange(
-                          "brand",
-                          filters.brand === "Valeer" ? "" : "Valeer"
-                        )
-                      }
-                    />
-                    Valeer
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={filters.brand === "Living"}
-                      onChange={() =>
-                        handleFilterChange(
-                          "brand",
-                          filters.brand === "Living" ? "" : "Living"
-                        )
-                      }
-                    />
-                    Living
-                  </label>
+                  {arrBrands &&
+                    arrBrands.length > 0 &&
+                    arrBrands?.map((brand) => (
+                      <div key={brand.id}>
+                        <label htmlFor="">
+                          <input
+                            type="checkbox"
+                            value={brand.name}
+                            checked={filters.brand === brand.name}
+                            onChange={() =>
+                              handleFilterChange(
+                                "brand",
+                                filters.brand === brand.name ? "" : brand.name
+                              )
+                            }
+                          />
+                          {brand.name}
+                        </label>
+                      </div>
+                    ))}
                 </div>
               </div>
 

@@ -21,8 +21,6 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
   });
   const [quantity, setQuantity] = useState(1);
 
-  console.log("Product in Modal:", product);
-
   useEffect(() => {
     if (isOpen && product) {
       setQuantity(1);

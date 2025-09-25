@@ -38,11 +38,13 @@ export const brandReducer = (state = initialState, action) => {
       };
 
     case GET_BRANDS_SUCCESS:
+      console.log("action payload", action.payload.brands);
+
       return {
         ...state,
         loading: false,
-        brands: action.payload.data?.brands || [],
-        pagination: action.payload.data?.pagination || null,
+        brands: action.payload.brands,
+        pagination: action.payload.pagination || null,
         error: null,
       };
 

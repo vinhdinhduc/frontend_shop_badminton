@@ -28,12 +28,13 @@ export const getBrandsAction =
       dispatch({ type: GET_BRANDS_START });
 
       const response = await getAllBrands(params);
-      console.log("Check brand", response);
-
-      dispatch({
-        type: GET_BRANDS_SUCCESS,
-        payload: response.data,
-      });
+      console.log("Check action", response.data);
+      if (response && response.code === 0) {
+        dispatch({
+          type: GET_BRANDS_SUCCESS,
+          payload: response.data,
+        });
+      }
     } catch (error) {
       dispatch({
         type: GET_BRANDS_FAILURE,
