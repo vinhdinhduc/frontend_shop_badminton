@@ -7,4 +7,15 @@ const getAllBrands = (params) => {
 const getBrandById = (id) => {
   return axios.post("/brand/get-all", id);
 };
-export { getAllBrands, getBrandById };
+
+const createBrand = (dataBrand) => {
+  return axios.post("/brand/create", dataBrand);
+};
+const updateBrand = (id, dataUpdate) => {
+  return axios.put(`/brand/update-brand/${id}`, dataUpdate);
+};
+
+const deleteBrand = (id) => {
+  return axios.put(`/brand/delete-brand/${id}`);
+};
+export { getAllBrands, getBrandById, createBrand, updateBrand, deleteBrand };

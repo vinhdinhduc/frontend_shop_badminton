@@ -19,7 +19,14 @@ import {
   DELETE_BRAND_FAILURE,
 } from "../constants/brandConstant";
 
-import { getAllBrands, getBrandById } from "../../services/brandService";
+import {
+  createBrand,
+  deleteBrand,
+  getAllBrands,
+  getBrandById,
+  updateBrand,
+} from "../../services/brandService";
+import { toast } from "react-toastify";
 
 export const getBrandsAction =
   (params = {}) =>
@@ -59,6 +66,66 @@ export const getBrandByIdAction = (brandId) => async (dispatch) => {
       type: GET_BRAND_BY_ID_FAILURE,
       payload:
         error.response?.data?.message || "Lỗi khi tải thông tin thương hiệu",
+    });
+  }
+};
+export const createBrandAction = (dataBrand) => async (dispatch) => {
+  try {
+    dispatch({ type: CREATE_BRAND_START });
+
+    const response = await createBrand(dataBrand);
+    if (response && response.code === 0) {
+      dispatch({
+        type: CREATE_BRAND_SUCCESS,
+        payload: response.data,
+      });
+      toast.success("Thêm thương hiệu thành công!");
+      dispatch(getAllBrands());
+    }
+  } catch (error) {
+    dispatch({
+      type: CREATE_BRAND_FAILURE,
+      payload: error.response?.data?.message || "Lỗi khi thêm thương hiệu",
+    });
+  }
+};
+export const updateBrandAction = (id, dataUpdate) => async (dispatch) => {
+  try {
+    dispatch({ type: UPDATE_BRAND_START });
+
+    const response = await updateBrand(id, dataUpdate);
+    if (response && response.code === 0) {
+      dispatch({
+        type: UPDATE_BRAND_SUCCESS,
+        payload: response.data,
+      });
+      toast.success("Cập nhật thương hiệu thành công!");
+      dispatch(getAllBrands());
+    }
+  } catch (error) {
+    dispatch({
+      type: UPDATE_BRAND_FAILURE,
+      payload: error.response?.data?.message || "Lỗi khi cập nhật thương hiệu",
+    });
+  }
+};
+export const deleteBrandAction = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: DELETE_BRAND_START });
+
+    const response = await deleteBrand(id);
+    if (response && response.code === 0) {
+      dispatch({
+        type: DELETE_BRAND_SUCCESS,
+        payload: response.data,
+      });
+      toast.success("Xoá thương hiệu thành công!");
+      dispatch(getAllBrands());
+    }
+  } catch (error) {
+    dispatch({
+      type: DELETE_BRAND_FAILURE,
+      payload: error.response?.data?.message || "Lỗi khi xoá thương hiệu",
     });
   }
 };

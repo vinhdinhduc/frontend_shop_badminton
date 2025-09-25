@@ -24,16 +24,18 @@ import Navbar from "../../../components/common/Navbar";
 import Footer from "../../../components/common/Footer";
 import { toast } from "react-toastify";
 import "./CheckOut.scss";
-import { getProvince } from "../../../services/orderService";
+import { createOrder, getProvince } from "../../../services/orderService";
+import { createPaymentUrl } from "../../../services/paymentService";
 
 const CheckOut = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { userInfo } = useSelector((state) => state.userLogin);
-  console.log("Check user info", userInfo);
 
-  const [checkoutData, setCheckoutData] = useState(null);
+  const [checkoutData, setCheckoutData] = useState([]);
+  console.log("Check out data", checkoutData);
+
   const [currentStep, setCurrentStep] = useState(2);
   //address
   const [provinces, setProvinces] = useState([]);
@@ -42,6 +44,7 @@ const CheckOut = () => {
 
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+
   const [selectedWard, setSelectedWard] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -66,9 +69,10 @@ const CheckOut = () => {
       try {
         const res = await axios.get("https://provinces.open-api.vn/api/p/");
 
-        setProvinces(res.data);
+        setProvinces([{ code: "", name: "Chọn tỉnh/thành phố" }, ...res.data]);
       } catch (error) {
         console.error("Error fetching provinces:", error);
+        toast.error("Lỗi khi tải danh sách tỉnh/thành phố");
       }
     };
 
@@ -76,26 +80,77 @@ const CheckOut = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedProvince) {
-      axios
-        .get(`https://provinces.open-api.vn/api/p/${selectedProvince}?depth=2`)
-        .then((res) => setDistricts(res.data.districts));
-    }
-  }, [selectedProvince]);
+    try {
+      if (selectedProvince) {
+        setSelectedDistrict("");
+        setSelectedWard("");
+        setDistricts([]);
+        setWards([]);
+        axios
+          .get(
+            `https://provinces.open-api.vn/api/p/${selectedProvince}?depth=2`
+          )
+          .then((res) =>
+            setDistricts([
+              { code: "", name: "Chọn quận/huyện" },
+              ...res.data.districts,
+            ])
+          );
 
-  // Khi chọn huyện -> load xã
+        const provinceName = provinces?.find(
+          (p) => p.code === selectedProvince
+        )?.name;
+
+        if (provinceName && provinceName !== "Chọn tỉnh/thành phố") {
+          handleInputChange("province", provinceName);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching districts:", error);
+      toast.error("Lỗi khi tải danh sách quận/huyện");
+    }
+  }, [selectedProvince, provinces]);
+
   useEffect(() => {
-    if (selectedDistrict) {
-      axios
-        .get(`https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`)
-        .then((res) => setWards(res.data.wards));
+    try {
+      if (selectedDistrict) {
+        setSelectedWard("");
+        setWards([]);
+        axios
+          .get(
+            `https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`
+          )
+          .then((res) =>
+            setWards([{ code: "", name: "Chọn xã/phường" }, ...res.data.wards])
+          );
+
+        const districtName = districts.find(
+          (d) => d.code === selectedDistrict
+        )?.name;
+        if (districtName && districtName !== "Chọn quận/huyện") {
+          handleInputChange("district", districtName);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching wards:", error);
+      toast.error("Lỗi khi tải danh sách phường/xã");
     }
   }, [selectedDistrict]);
+
+  useEffect(() => {
+    if (selectedWard) {
+      const wardName = wards.find((w) => w.code === selectedWard)?.name;
+      if (wardName && wardName !== "Chọn xã/phường") {
+        handleInputChange("ward", wardName);
+      }
+    }
+  }, [selectedWard, wards]);
   useEffect(() => {
     const loadCheckoutData = () => {
       try {
-        // First try to get from sessionStorage (proper way)
         const sessionData = sessionStorage.getItem("checkout_data");
+        console.log("Check sestin", sessionData);
+
         if (sessionData) {
           const parsedData = JSON.parse(sessionData);
           console.log("Loaded checkout data from session:", parsedData);
@@ -104,11 +159,8 @@ const CheckOut = () => {
           return;
         }
 
-        // Fallback: try to get cart items from localStorage/API
-        // This is a fallback when user navigates directly to checkout
         const savedUserInfo = localStorage.getItem("userInfo");
         if (savedUserInfo) {
-          // If no checkout data but user is logged in, redirect to cart
           toast.warning(
             "Không tìm thấy dữ liệu giỏ hàng. Vui lòng thêm sản phẩm vào giỏ hàng trước."
           );
@@ -116,7 +168,6 @@ const CheckOut = () => {
           return;
         }
 
-        // If no data at all, redirect to cart
         navigate("/cart");
       } catch (error) {
         console.error("Error loading checkout data:", error);
@@ -158,15 +209,15 @@ const CheckOut = () => {
       newErrors.address = "Vui lòng nhập địa chỉ";
     }
 
-    if (!shippingInfo.province.trim()) {
+    if (!selectedProvince) {
       newErrors.province = "Vui lòng chọn tỉnh/thành phố";
     }
 
-    if (!shippingInfo.district.trim()) {
+    if (!selectedDistrict) {
       newErrors.district = "Vui lòng chọn quận/huyện";
     }
 
-    if (!shippingInfo.ward.trim()) {
+    if (!selectedWard) {
       newErrors.ward = "Vui lòng chọn phường/xã";
     }
     setErrors(newErrors);
@@ -208,35 +259,85 @@ const CheckOut = () => {
     setLoading(true);
 
     try {
-      // Prepare order data
+      const fullShippingAddress = `${shippingInfo.address}, ${shippingInfo.ward}, ${shippingInfo.district}, ${shippingInfo.province}`;
       const orderData = {
-        items: checkoutData.items,
-        shipping_info: shippingInfo,
-        payment_method: paymentMethod,
-        pricing: checkoutData.pricing,
-        coupon: checkoutData.coupon,
         user_id: userInfo.data.user.id,
-        order_date: new Date().toISOString(),
+        cart_items: checkoutData?.items.map((item) => ({
+          product_id: item.product_id,
+          variation_id: item.variation_id,
+          quantity: item.quantity,
+          variation_info: item.variation_info,
+        })),
+        payment_method: paymentMethod,
+        shipping_address: fullShippingAddress,
+        customer_note: shippingInfo.note,
       };
+      const orderResponse = await createOrder(orderData);
+      if (orderResponse && orderResponse.code === 0) {
+        const newOrder = orderResponse.data.data.order;
+        const dataPayment = {
+          order_id: newOrder.id,
+          amount: newOrder.order_total,
+          order_info: `Thanh toán đơn hàng ${newOrder.order_code}`,
+          locale: "vn",
+          client_ip: "127.0.0.1",
+        };
+        if (paymentMethod === "vnpay") {
+          //Tạo url thanh toán
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+          try {
+            const paymentResponse = await createPaymentUrl(dataPayment);
 
-      // Clear checkout data
-      sessionStorage.removeItem("checkout_data");
+            if (paymentResponse && paymentResponse.code === 0) {
+              sessionStorage.removeItem("checkout_data");
 
-      // Navigate to success page with order data
-      navigate("/order-success", {
-        state: {
-          orderData,
-          orderId: `ORD${Date.now()}`,
-        },
-      });
+              //Redirect đến VNPay
 
-      setCurrentStep(4);
+              window.location.href = paymentResponse.data.data.paymentUrl;
+              return;
+            } else {
+              throw new Error(
+                paymentResponse.data.message ||
+                  "Lỗi khi tạo URL thanh toán VNPay"
+              );
+            }
+          } catch (error) {
+            console.error("VNPay payment error:", error);
+            toast.error("Có lỗi khi tạo thanh toán VNPay. Vui lòng thử lại.");
+            return;
+          }
+        } else {
+          sessionStorage.removeItem("checkout_data");
+
+          navigate("/order/success", {
+            state: {
+              orderData: newOrder,
+              orderId: newOrder.id,
+              paymentMethod: paymentMethod,
+            },
+          });
+
+          toast.success("Đặt hàng thành công!");
+        }
+      } else {
+        throw new Error(orderResponse.data.message || "Lỗi khi tạo đơn hàng");
+      }
     } catch (error) {
       console.error("Order placement error:", error);
-      alert("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.");
+
+      let errorMessage = "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.";
+
+      if (error.response) {
+        errorMessage = error.response.data.message || errorMessage;
+        if (error.response.status === 401) {
+          errorMessage = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại";
+          navigate("/auth");
+        }
+      } else if (error.request) {
+        errorMessage =
+          "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.";
+      }
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
       setLoading(false);
@@ -413,16 +514,17 @@ const CheckOut = () => {
                       <select
                         value={selectedProvince}
                         onChange={(e) => setSelectedProvince(e.target.value)}
-                        className={errors.province ? "error" : ""}
+                        className={errors.provinces ? "error" : ""}
                       >
-                        {provinces.map((p) => (
-                          <option key={p.code} value={p.code}>
-                            {p.name}
-                          </option>
-                        ))}
+                        {provinces &&
+                          provinces?.map((p) => (
+                            <option key={p.code} value={p.code}>
+                              {p.name}
+                            </option>
+                          ))}
                       </select>
-                      {errors.province && (
-                        <span className="error-text">{errors.province}</span>
+                      {errors.provinces && (
+                        <span className="error-text">{errors.provinces}</span>
                       )}
                     </div>
 
@@ -433,7 +535,7 @@ const CheckOut = () => {
                         onChange={(e) => setSelectedDistrict(e.target.value)}
                         className={errors.district ? "error" : ""}
                       >
-                        {districts.map((d) => (
+                        {districts?.map((d) => (
                           <option key={d.code} value={d.code}>
                             {d.name}
                           </option>
@@ -451,7 +553,7 @@ const CheckOut = () => {
                         onChange={(e) => setSelectedWard(e.target.value)}
                         className={errors.ward ? "error" : ""}
                       >
-                        {wards.map((w) => (
+                        {wards?.map((w) => (
                           <option key={w.code} value={w.code}>
                             {w.name}
                           </option>
@@ -498,7 +600,7 @@ const CheckOut = () => {
                   <h3>Đơn hàng của bạn</h3>
 
                   <div className="order-items">
-                    {checkoutData.items.map((item, index) => (
+                    {checkoutData?.items?.map((item, index) => (
                       <div key={index} className="order-item">
                         <div className="item-image">
                           <img
@@ -531,28 +633,30 @@ const CheckOut = () => {
                   <div className="order-totals">
                     <div className="total-row">
                       <span>Tạm tính:</span>
-                      <span>{formatPrice(checkoutData.pricing.subtotal)}</span>
+                      <span>
+                        {formatPrice(checkoutData?.pricing?.subtotal)}
+                      </span>
                     </div>
-                    {checkoutData.pricing.discount_amount > 0 && (
+                    {checkoutData?.pricing?.discount_amount > 0 && (
                       <div className="total-row discount">
                         <span>Giảm giá:</span>
                         <span>
-                          -{formatPrice(checkoutData.pricing.discount_amount)}
+                          -{formatPrice(checkoutData?.pricing?.discount_amount)}
                         </span>
                       </div>
                     )}
                     <div className="total-row">
                       <span>Phí vận chuyển:</span>
                       <span>
-                        {checkoutData.pricing.shipping_fee > 0
-                          ? formatPrice(checkoutData.pricing.shipping_fee)
+                        {checkoutData?.pricing?.shipping_fee > 0
+                          ? formatPrice(checkoutData?.pricing?.shipping_fee)
                           : "Liên hệ"}
                       </span>
                     </div>
                     <div className="total-row total">
                       <span>Tổng cộng:</span>
                       <span className="total-price">
-                        {formatPrice(checkoutData.pricing.total)}
+                        {formatPrice(checkoutData?.pricing?.total)}
                       </span>
                     </div>
                   </div>
@@ -651,7 +755,7 @@ const CheckOut = () => {
                   <h3>Xác nhận đơn hàng</h3>
 
                   <div className="order-items">
-                    {checkoutData.items.map((item, index) => (
+                    {checkoutData?.items?.map((item, index) => (
                       <div key={index} className="order-item">
                         <div className="item-image">
                           <img
@@ -684,28 +788,30 @@ const CheckOut = () => {
                   <div className="order-totals">
                     <div className="total-row">
                       <span>Tạm tính:</span>
-                      <span>{formatPrice(checkoutData.pricing.subtotal)}</span>
+                      <span>
+                        {formatPrice(checkoutData?.pricing?.subtotal)}
+                      </span>
                     </div>
-                    {checkoutData.pricing.discount_amount > 0 && (
+                    {checkoutData?.pricing?.discount_amount > 0 && (
                       <div className="total-row discount">
                         <span>Giảm giá:</span>
                         <span>
-                          -{formatPrice(checkoutData.pricing.discount_amount)}
+                          -{formatPrice(checkoutData?.pricing?.discount_amount)}
                         </span>
                       </div>
                     )}
                     <div className="total-row">
                       <span>Phí vận chuyển:</span>
                       <span>
-                        {checkoutData.pricing.shipping_fee > 0
-                          ? formatPrice(checkoutData.pricing.shipping_fee)
+                        {checkoutData?.pricing?.shipping_fee > 0
+                          ? formatPrice(checkoutData?.pricing?.shipping_fee)
                           : "Liên hệ"}
                       </span>
                     </div>
                     <div className="total-row total">
                       <span>Tổng cộng:</span>
                       <span className="total-price">
-                        {formatPrice(checkoutData.pricing.total)}
+                        {formatPrice(checkoutData?.pricing?.total)}
                       </span>
                     </div>
                   </div>

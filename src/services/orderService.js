@@ -12,6 +12,10 @@ const getOrderByUserId = (userId) => {
   return axios.get(`/order/get-order-by-user/${userId}`);
 };
 
+const createOrder = (dataOrder) => {
+  return axios.post("/order/create", dataOrder);
+};
+
 const getProvince = () => {
   return axios.get("https://provinces.open-api.vn/api/p/");
 };
@@ -34,4 +38,5 @@ export {
   getProvince,
   getDistricts,
   getWards,
+  createOrder,
 };

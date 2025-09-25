@@ -38,8 +38,6 @@ export const brandReducer = (state = initialState, action) => {
       };
 
     case GET_BRANDS_SUCCESS:
-      console.log("action payload", action.payload.brands);
-
       return {
         ...state,
         loading: false,
@@ -97,6 +95,66 @@ export const brandReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         currentBrand: null,
+        error: action.payload,
+      };
+    case CREATE_BRAND_START:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case CREATE_BRAND_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case CREATE_BRAND_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case UPDATE_BRAND_START:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case UPDATE_BRAND_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case UPDATE_BRAND_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case DELETE_BRAND_START:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case DELETE_BRAND_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+
+    case DELETE_BRAND_FAILURE:
+      return {
+        ...state,
+        loading: false,
         error: action.payload,
       };
 
