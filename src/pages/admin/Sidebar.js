@@ -27,6 +27,7 @@ import {
   LayoutDashboard,
   Cog,
   CircleQuestionMark,
+  Flame,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
@@ -38,6 +39,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { arrUsers } = useSelector((state) => state.customerList);
   const { userInfo } = useSelector((state) => state.userLogin);
   const { arrOrders } = useSelector((state) => state.orderList);
+  const { brands } = useSelector((state) => state.brandList);
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
@@ -84,6 +86,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const getTotalOrder = () => {
     return arrOrders?.data?.orders?.length;
   };
+  const getTotalBrands = () => {
+    return brands?.length;
+  };
 
   const getTextRole =
     userInfo?.data?.user?.role === "admin" ? "Quản trị viên" : "Khách hàng";
@@ -97,7 +102,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const menuItems = [
     {
       id: "dashboard",
-      title: "Dashboard",
+      title: "Bảng điều khiển",
       icon: <LayoutDashboard />,
       path: "/admin/dashboard",
       badge: null,
@@ -129,6 +134,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: <Users size={30} />,
       path: "/admin/customers",
       badge: getTotalUsers(),
+    },
+    {
+      id: "brand",
+      title: "Quản lý thương hiệu",
+      icon: <Flame size={30} />,
+      path: "/admin/brands",
+      badge: getTotalBrands(),
     },
     {
       id: "reports",
@@ -270,7 +282,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
           <div className="user-info">
             <div className="avatar">
-              <span>👤</span>
+              {userInfo?.data?.user?.avatar ? (
+                <img
+                  src={`http://localhost:8080${userInfo.data.user.avatar}`}
+                  alt={userInfo.data.user.fullName}
+                />
+              ) : (
+                <span>👤</span>
+              )}
             </div>
             {!isCollapsed && (
               <div className="user-details">

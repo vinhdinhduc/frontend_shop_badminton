@@ -1,6 +1,8 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import "./OrderManagement.scss";
+import { updateOrderStatus } from "../../../services/orderService";
+import { toast } from "react-toastify";
 const OrderDetailModal = ({
   order,
   onClose,
@@ -11,14 +13,31 @@ const OrderDetailModal = ({
   getPaymentStatusText,
 }) => {
   const [currentStatus, setCurrentStatus] = useState(order.status);
+  console.log(currentStatus);
 
-  const handleStatusUpdate = () => {
-    onStatusChange(order.id, currentStatus);
-    onClose();
+  const handleStatusUpdate = async () => {
+    if (currentStatus === order.status) {
+      onClose();
+      return;
+    }
+    const loadingToast = toast.loading("Đang cập nhật trạng thái...");
+
+    let res = await updateOrderStatus(order.id, currentStatus);
+
+    if (res && res.code === 0) {
+      onStatusChange(order.id, currentStatus);
+      onClose();
+      toast.dismiss(loadingToast);
+      toast.success("Cập nhật trạng thái đơn hàng thành công!");
+    } else {
+      toast.dismiss(loadingToast);
+
+      toast.error(`Cập nhật trạng thái thất bại ${res.message}`);
+    }
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="order-modal-overlay" onClick={onClose}>
       <div className="order-detail-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Chi tiết đơn hàng: #{order.order_code}</h2>

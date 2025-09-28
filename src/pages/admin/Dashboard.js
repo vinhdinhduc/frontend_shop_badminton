@@ -21,6 +21,8 @@ import {
   User,
   Package2,
 } from "lucide-react";
+import { getAllOrders } from "../../redux/actions/orderAction";
+import { getBrandsAction } from "../../redux/actions/brandAction";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,7 +39,6 @@ const Dashboard = () => {
   } = useSelector((state) => state.productList);
   const totalRevenue = 51880000;
   const totalOrders = arrUsers?.data?.length || 0;
-  console.log("chẹck arrUser", arrUsers);
 
   const totalCustomers =
     arrUsers?.data?.users.filter((user) => user.role !== "admin")?.length || 0;
@@ -82,6 +83,8 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(getAllUser({ page: 1, limit: 100, search: "", role: "" }));
     dispatch(fetchProduct());
+    dispatch(getAllOrders({ page: 1, limit: 50 }));
+    dispatch(getBrandsAction());
   }, [dispatch]);
 
   const formatCurrency = (amount) => {

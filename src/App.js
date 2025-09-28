@@ -20,6 +20,8 @@ import ProductDetail from "./pages/user/products/ProductDetail";
 import OrderManagement from "./pages/admin/order/OrderManagement";
 import Cart from "./pages/user/cart/Cart";
 import CheckOut from "./pages/user/checkout/CheckOut";
+import BrandManagement from "./pages/admin/brand/BrandManagement";
+import OrderTracking from "./pages/user/order_user/OrderTracking";
 
 function App() {
   return (
@@ -32,6 +34,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/view-order" element={<OrderTracking />} />
           <Route path="/intro" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 
@@ -50,6 +53,7 @@ function App() {
             <Route path="list-products" element={<AdminProductList />} />
             <Route path="orders" element={<OrderManagement />} />
             <Route path="customers" element={<ManageCustomer />} />
+            <Route path="brands" element={<BrandManagement />} />
             <Route
               path="trash-products"
               element={<AdminDeletedProductList />}

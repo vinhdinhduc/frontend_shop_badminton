@@ -11,6 +11,9 @@ const getOrderById = (id) => {
 const getOrderByUserId = (userId) => {
   return axios.get(`/order/get-order-by-user/${userId}`);
 };
+const updateOrderStatus = (orderId, newStatus) => {
+  return axios.patch(`/order/${orderId}/status`, { newStatus });
+};
 
 const createOrder = (dataOrder) => {
   return axios.post("/order/create", dataOrder);
@@ -39,4 +42,5 @@ export {
   getDistricts,
   getWards,
   createOrder,
+  updateOrderStatus,
 };

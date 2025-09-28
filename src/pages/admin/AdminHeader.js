@@ -9,16 +9,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions/userAction";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import BreadCrumb from "../../components/ui/BreadCrumb";
 const AdminHeader = ({ sidebarOpen, setSidebarOpen }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const { userInfo } = useSelector((state) => state.userLogin);
+
   const [loginTime, setLoginTime] = useState(() => {
     const saved = localStorage.getItem("loginTime");
     return saved ? new Date(saved) : new Date();
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -48,6 +51,35 @@ const AdminHeader = ({ sidebarOpen, setSidebarOpen }) => {
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  const getPageTitle = () => {
+    const pathnames = location.pathname.split("/").filter(Boolean);
+
+    const routeToTitleMap = {
+      dashboard: "Bảng điều khiển",
+      "add-product": "Thêm sản phẩm",
+      "list-products": "Danh sách sản phẩm",
+      orders: "Quản lý đơn hàng",
+      customers: "Quản lý khách hàng",
+      brands: "Quản lý thương hiệu",
+      reports: "Thống kê & Báo cáo",
+      settings: "Cài đặt",
+      help: "Trợ giúp",
+    };
+    //Get route cuối cùng
+    const currentRoute = pathnames[pathnames.length - 1];
+
+    return routeToTitleMap[currentRoute];
+  };
+  const getCustomName = () => {
+    const pathnames = location.pathname.split("/").filter(Boolean);
+    const lastSegment = pathnames[pathnames.length - 1];
+
+    if (/^\d+$/.test(lastSegment)) {
+      return null;
+    }
+
+    return null;
+  };
   const getGreeting = () => {
     const hour = currentTime.getHours();
     if (hour < 12) return "Chào buổi sáng";
@@ -69,12 +101,7 @@ const AdminHeader = ({ sidebarOpen, setSidebarOpen }) => {
         </button>
 
         <div className="page-info">
-          <h1 className="page-title">Dashboard</h1>
-          <div className="breadcrumb">
-            <span>Trang chủ</span>
-            <span className="separator">›</span>
-            <span className="current">Dashboard</span>
-          </div>
+          <h1 className="page-title">{getPageTitle()}</h1>
         </div>
       </div>
 
@@ -122,7 +149,14 @@ const AdminHeader = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="user-section">
           <div className="user-profile">
             <div className="avatar">
-              <span>👤</span>
+              {userInfo?.data?.user?.avatar ? (
+                <img
+                  src={`http://localhost:8080${userInfo.data.user.avatar}`}
+                  alt={userInfo.data.user.fullName}
+                />
+              ) : (
+                <span>👤</span>
+              )}
             </div>
             <div className="user-info">
               <div className="greeting">{getGreeting()}</div>

@@ -11,6 +11,7 @@ import {
   faChevronUp,
   faAddressCard,
   faRightFromBracket,
+  faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions/userAction";
@@ -31,7 +32,7 @@ const Navbar = () => {
 
   useEffect(() => {
     dispatch(getCartCountAction());
-  }, []);
+  }, [dispatch]);
   const handleLogout = () => {
     dispatch(logout());
     navigate("/auth");
@@ -190,6 +191,10 @@ const Navbar = () => {
                           className="icon"
                         />{" "}
                         Hồ sơ
+                      </NavLink>
+                      <NavLink to="/view-order" className="dropdown-item">
+                        <FontAwesomeIcon icon={faListCheck} className="icon" />{" "}
+                        Đơn hàng của bạn
                       </NavLink>
                       <button onClick={handleLogout} className="dropdown-item">
                         <FontAwesomeIcon

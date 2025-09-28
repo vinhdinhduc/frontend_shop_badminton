@@ -1,3 +1,4 @@
+// AdminHeader.scss - Phần cập nhật cho breadcrumb và title
 $header-bg: #ffffff;
 $header-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 $primary-color: #2c3e50;
@@ -19,13 +20,13 @@ $success-color: #28a745;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 3rem 2rem;
+    padding: 0 2rem; // Giảm padding từ 3rem về 0 để căn chỉnh chiều cao
 
     z-index: 1000;
     transition: left 0.3s ease;
     border-bottom: 1px solid $border-color;
 
-    // Header Left Section
+    // Header Left Section - CẬP NHẬT PHẦN NÀY
     .header-left {
         display: flex;
         align-items: center;
@@ -82,35 +83,76 @@ $success-color: #28a745;
         }
 
         .page-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-height: 50px;
+            justify-content: center;
+
             .page-title {
                 font-size: 1.5rem;
-                font-weight: 600;
-                color: $text-color;
-                margin: 0 0 0.25rem 0;
+                font-weight: 700;
+                color: $primary-color;
+                margin: 0;
                 line-height: 1.2;
+                letter-spacing: -0.02em;
+
+                // Hiệu ứng gradient cho title
+                background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
 
+            // Style cho BreadCrumb component
             .breadcrumb {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                color: $text-light;
-                font-size: 0.875rem;
+                width: auto;
+                padding: 0;
+                background: transparent;
+                border-radius: 0;
+                margin: 0;
 
-                .separator {
-                    color: $border-color;
-                    font-weight: bold;
-                }
+                .breadcrumb-list {
+                    margin: 0;
+                    padding: 0;
 
-                .current {
-                    color: $secondary-color;
-                    font-weight: 500;
+                    .breadcrumb-item {
+                        font-size: 0.875rem;
+
+                        .breadcrumb-link {
+                            color: $text-light;
+                            font-weight: 500;
+                            transition: all 0.2s ease;
+
+                            &:hover {
+                                color: $secondary-color;
+                                text-decoration: none;
+                                transform: translateY(-1px);
+                            }
+                        }
+
+                        .breadcrumb-current {
+                            color: $primary-color;
+                            font-weight: 600;
+                        }
+
+                        .breadcrumb-separator {
+                            margin: 0 8px;
+                            color: $border-color;
+
+                            &::before {
+                                content: "›";
+                                font-size: 0.875rem;
+                                font-weight: 600;
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
-    // Header Center Section
+    // Header Center Section - GIỮ NGUYÊN
     .header-center {
         flex: 1;
         max-width: 400px;
@@ -163,7 +205,7 @@ $success-color: #28a745;
         }
     }
 
-    // Header Right Section
+    // Header Right Section - GIỮ NGUYÊN
     .header-right {
         display: flex;
         align-items: center;
@@ -279,14 +321,19 @@ $success-color: #28a745;
                 .avatar {
                     width: 40px;
                     height: 40px;
-                    background: linear-gradient(135deg, $secondary-color, lighten($secondary-color, 10%));
                     border-radius: 50%;
+                    overflow: hidden;
+                    border: 2px solid #eee;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 1.125rem;
-                    color: white;
-                    box-shadow: 0 2px 8px rgba($secondary-color, 0.3);
+                    background: #f3f3f3;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
                 }
 
                 .user-info {
@@ -302,7 +349,6 @@ $success-color: #28a745;
                     }
 
                     .user-details {
-                        // display: flex;
                         gap: 0.125rem;
 
                         .username {
@@ -310,13 +356,6 @@ $success-color: #28a745;
                             color: $text-color;
                             font-size: 0.875rem;
                         }
-
-                        // .role {
-                        //     font-size: 0.75rem;
-                        //     color: $text-light;
-                        //     margin-left: 5px;
-                        //     font-weight: 500;
-                        // }
                     }
                 }
             }
@@ -373,9 +412,17 @@ $success-color: #28a745;
     }
 }
 
-// Responsive Styles
+// Responsive Styles - CẬP NHẬT CHO PHẦN TITLE VÀ BREADCRUMB
 @media (max-width: 1200px) {
     .admin-header {
+        .header-left {
+            .page-info {
+                .page-title {
+                    font-size: 1.3rem;
+                }
+            }
+        }
+
         .header-center {
             max-width: 300px;
             margin: 0 1rem;
@@ -393,7 +440,23 @@ $success-color: #28a745;
 
 @media (max-width: 1024px) {
     .admin-header {
-        left: 70px; // Collapsed sidebar width
+        left: 70px;
+
+        .header-left {
+            .page-info {
+                .page-title {
+                    font-size: 1.25rem;
+                }
+
+                .breadcrumb {
+                    .breadcrumb-list {
+                        .breadcrumb-item {
+                            font-size: 0.8rem;
+                        }
+                    }
+                }
+            }
+        }
 
         .header-center {
             max-width: 250px;
@@ -415,14 +478,23 @@ $success-color: #28a745;
     .admin-header {
         left: 0;
         padding: 0 1rem;
+        height: 60px;
 
         .header-left {
             .menu-toggle {
                 display: flex;
             }
 
-            .page-info .breadcrumb {
-                display: none;
+            .page-info {
+                min-height: 40px;
+
+                .page-title {
+                    font-size: 1.1rem;
+                }
+
+                .breadcrumb {
+                    display: none;
+                }
             }
         }
 
@@ -476,7 +548,7 @@ $success-color: #28a745;
             gap: 1rem;
 
             .page-info .page-title {
-                font-size: 1.25rem;
+                font-size: 1rem;
             }
         }
 

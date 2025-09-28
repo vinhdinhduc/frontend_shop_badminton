@@ -18,11 +18,15 @@ const BreadCrumb = ({ customName }) => {
     dashboard: "Bảng điều khiển",
     users: "Người dùng",
     settings: "Cài đặt",
+    "add-product": "Thêm sản phẩm",
+    "list-products": "Danh sách sản phẩm",
+    customers: "Khách hàng",
+    reports: "Báo cáo",
+    help: "Trợ giúp",
   };
 
   const generateBreadcrumbs = () => {
     const pathnames = location.pathname.split("/").filter(Boolean);
-    console.log("pathnames", pathnames);
 
     const breadCrumb = [{ label: "Trang chủ", path: "/" }];
 
@@ -30,7 +34,6 @@ const BreadCrumb = ({ customName }) => {
 
     pathnames.forEach((pathname, index) => {
       currentPath += `/${pathname}`;
-      //Check xem có phải là ID hay k
 
       const isNumberId = /^\d+$/.test(pathname);
 

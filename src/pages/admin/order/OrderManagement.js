@@ -15,6 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllOrders } from "../../../redux/actions/orderAction";
 import { PaginationComponent } from "../../../components/ui/Pagination";
 import OrderDetailModal from "./OrderDetailModal";
+import { updateOrderStatus } from "../../../services/orderService";
+import { toast } from "react-toastify";
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -43,7 +45,7 @@ const OrderManagement = () => {
         search: searchTerm || undefined,
       })
     );
-  }, [dispatch]);
+  }, [dispatch, currentPage, itemsPerPage, statusFilter]);
 
   useEffect(() => {
     if (arrOrders && arrOrders.code === 0) {
@@ -52,8 +54,6 @@ const OrderManagement = () => {
       setTotalItems(arrOrders.data.pagination?.totalItems);
     }
   }, [arrOrders]);
-
-  console.log("Check orders", orders);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -69,10 +69,10 @@ const OrderManagement = () => {
       } else {
         setCurrentPage(1);
       }
-    }, 500); // Debounce 500ms
+    }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+  }, [searchTerm, statusFilter, itemsPerPage, dispatch]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -89,7 +89,7 @@ const OrderManagement = () => {
     setCurrentPage(1);
   };
 
-  const handleStatusChange = (orderId, newStatus) => {
+  const handleStatusChange = async (orderId, newStatus) => {
     setOrders(
       orders.map((order) =>
         order.id === orderId ? { ...order, status: newStatus } : order
@@ -106,9 +106,9 @@ const OrderManagement = () => {
     switch (status) {
       case "pending":
         return "status-badge--pending";
-      case "confirmed":
+      case "processing":
         return "status-badge--processing";
-      case "shipping":
+      case "shipped":
         return "status-badge--shipped";
       case "delivered":
         return "status-badge--delivered";

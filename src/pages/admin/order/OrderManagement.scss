@@ -145,12 +145,12 @@ $text-muted: #94a3b8;
                 color: $warning;
             }
 
-            &--confirmed {
+            &--processing {
                 background: rgba($primary, 0.1);
                 color: $primary;
             }
 
-            &--shipping {
+            &--shipped {
                 background: rgba($secondary, 0.1);
                 color: $secondary;
             }
@@ -236,7 +236,7 @@ $text-muted: #94a3b8;
 }
 
 // Modal styles
-.modal-overlay {
+.order-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
