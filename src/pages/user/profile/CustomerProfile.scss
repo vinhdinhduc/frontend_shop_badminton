@@ -1,0 +1,1079 @@
+// Variables
+$primary-color: #3b82f6;
+$secondary-color: #64748b;
+$success-color: #10b981;
+$warning-color: #f59e0b;
+$error-color: #ef4444;
+$info-color: #06b6d4;
+$background-color: #f8fafc;
+$card-bg: #ffffff;
+$text-primary: #1e293b;
+$text-secondary: #64748b;
+$border-color: #e2e8f0;
+$border-radius: 12px;
+$shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin button-base {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: $shadow;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    // Loading & No Data States
+    .loading-container {
+        @include flex-center;
+        flex-direction: column;
+        padding: 60px 20px;
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid $border-color;
+            border-top: 4px solid $primary-color;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: $text-secondary;
+            font-size: 16px;
+            margin: 0;
+        }
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: $text-secondary;
+
+        svg {
+            opacity: 0.5;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: $text-primary;
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            font-size: 14px;
+            margin: 0;
+        }
+    }
+
+    // Additional Button Styles
+    .btn-refresh {
+        @include button-base;
+        background-color: $secondary-color;
+        color: white;
+
+        &:hover {
+            background-color: #475569;
+        }
+    }
+}
+
+// Animations
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+// Additional Responsive Updates
+@media (max-width: 480px) {
+    .customer-profile {
+        .loading-container {
+            padding: 40px 20px;
+
+            .loading-spinner {
+                width: 32px;
+                height: 32px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+
+        .no-data {
+            padding: 40px 20px;
+
+            svg {
+                width: 40px;
+                height: 40px;
+            }
+
+            h3 {
+                font-size: 16px;
+            }
+
+            p {
+                font-size: 13px;
+            }
+        }
+    }
+}
+
+// Main Component
+.customer-profile {
+    min-height: 100vh;
+    background-color: $background-color;
+    padding: 20px;
+
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 24px;
+    }
+
+    // Sidebar
+    .profile-sidebar {
+        .user-info-card {
+            background-color: $card-bg;
+            border-radius: $border-radius;
+            padding: 24px;
+            box-shadow: $shadow;
+            margin-bottom: 20px;
+
+            .avatar-section {
+                text-align: center;
+
+                .avatar-container {
+                    position: relative;
+                    display: inline-block;
+                    margin-bottom: 16px;
+
+                    .avatar,
+                    .avatar-placeholder {
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 50%;
+                        border: 3px solid $border-color;
+                    }
+
+                    .avatar {
+                        object-fit: cover;
+                    }
+
+                    .avatar-placeholder {
+                        @include flex-center;
+                        background-color: $background-color;
+                        color: $text-secondary;
+                    }
+
+                    .avatar-edit-btn {
+                        position: absolute;
+                        bottom: 0;
+                        right: 0;
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50%;
+                        border: 2px solid white;
+                        background-color: $primary-color;
+                        color: white;
+                        @include flex-center;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+
+                        &:hover {
+                            background-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                    }
+                }
+
+                .user-details {
+                    h3 {
+                        font-size: 20px;
+                        font-weight: 600;
+                        color: $text-primary;
+                        margin: 0 0 4px 0;
+                    }
+
+                    p {
+                        font-size: 14px;
+                        color: $text-secondary;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+
+        .profile-nav {
+            background-color: $card-bg;
+            border-radius: $border-radius;
+            box-shadow: $shadow;
+            overflow: hidden;
+
+            .nav-item {
+                @include flex-between;
+                width: 100%;
+                padding: 16px 20px;
+                border: none;
+                background: none;
+                text-align: left;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border-bottom: 1px solid $border-color;
+                font-size: 14px;
+                color: $text-primary;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                &:hover {
+                    background-color: rgba(59, 130, 246, 0.05);
+                }
+
+                &.active {
+                    background-color: $primary-color;
+                    color: white;
+
+                    svg {
+                        color: white;
+                    }
+                }
+
+                svg {
+                    color: $text-secondary;
+                    margin-right: 12px;
+                }
+
+                span {
+                    flex: 1;
+                }
+            }
+        }
+    }
+
+    // Main Content
+    .profile-content {
+        background-color: $card-bg;
+        border-radius: $border-radius;
+        box-shadow: $shadow;
+        overflow: hidden;
+
+        .content-section {
+            padding: 24px;
+
+            .section-header {
+                @include flex-between;
+                margin-bottom: 24px;
+                padding-bottom: 16px;
+                border-bottom: 2px solid $border-color;
+
+                h2 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    color: $text-primary;
+                    margin: 0;
+                }
+
+                .btn-edit,
+                .btn-add {
+                    @include button-base;
+                    background-color: $primary-color;
+                    color: white;
+
+                    &:hover {
+                        background-color: #2563eb;
+                    }
+                }
+
+                .edit-actions {
+                    display: flex;
+                    gap: 8px;
+
+                    .btn-cancel {
+                        @include button-base;
+                        background-color: $text-secondary;
+                        color: white;
+
+                        &:hover {
+                            background-color: #475569;
+                        }
+                    }
+
+                    .btn-save {
+                        @include button-base;
+                        background-color: $success-color;
+                        color: white;
+
+                        &:hover {
+                            background-color: #059669;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Profile Form
+    .profile-form {
+        max-width: 600px;
+
+        .form-group {
+            margin-bottom: 20px;
+
+            label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                color: $text-primary;
+                margin-bottom: 8px;
+
+                svg {
+                    color: $primary-color;
+                }
+            }
+
+            input {
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid $border-color;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: all 0.2s ease;
+
+                &:focus {
+                    outline: none;
+                    border-color: $primary-color;
+                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+                }
+
+                &:disabled {
+                    background-color: $background-color;
+                    color: $text-secondary;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+
+    // Addresses
+    .addresses-list {
+        display: grid;
+        gap: 16px;
+
+        .address-card {
+            border: 1px solid $border-color;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s ease;
+
+            &:hover {
+                box-shadow: $shadow;
+                border-color: $primary-color;
+            }
+
+            .address-header {
+                @include flex-between;
+                margin-bottom: 12px;
+
+                .address-name {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+
+                    h4 {
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: $text-primary;
+                        margin: 0;
+                    }
+
+                    .default-badge {
+                        background-color: $success-color;
+                        color: white;
+                        padding: 2px 8px;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+                }
+
+                .address-actions {
+                    display: flex;
+                    gap: 8px;
+
+                    .btn-edit-address,
+                    .btn-delete-address {
+                        @include button-base;
+                        padding: 8px;
+                        border-radius: 6px;
+
+                        &.btn-edit-address {
+                            background-color: rgba(59, 130, 246, 0.1);
+                            color: $primary-color;
+
+                            &:hover {
+                                background-color: rgba(59, 130, 246, 0.2);
+                            }
+                        }
+
+                        &.btn-delete-address {
+                            background-color: rgba(239, 68, 68, 0.1);
+                            color: $error-color;
+
+                            &:hover {
+                                background-color: rgba(239, 68, 68, 0.2);
+                            }
+                        }
+                    }
+                }
+            }
+
+            .address-details {
+                margin-bottom: 16px;
+
+                p {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 8px;
+                    margin: 8px 0;
+                    font-size: 14px;
+                    color: $text-primary;
+
+                    svg {
+                        color: $text-secondary;
+                        margin-top: 2px;
+                        flex-shrink: 0;
+                    }
+                }
+            }
+
+            .address-footer {
+                .btn-set-default {
+                    @include button-base;
+                    background-color: transparent;
+                    color: $primary-color;
+                    border: 1px solid $primary-color;
+                    padding: 8px 16px;
+
+                    &:hover {
+                        background-color: $primary-color;
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+
+    // Modal
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        @include flex-center;
+        z-index: 1000;
+        padding: 20px;
+        backdrop-filter: blur(4px);
+    }
+
+    .address-modal {
+        background-color: white;
+        border-radius: $border-radius;
+        box-shadow: $shadow-lg;
+        width: 100%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .modal-header {
+            @include flex-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid $border-color;
+            background-color: $background-color;
+
+            h3 {
+                font-size: 20px;
+                font-weight: 600;
+                color: $text-primary;
+                margin: 0;
+            }
+
+            .close-btn {
+                @include button-base;
+                background-color: transparent;
+                color: $text-secondary;
+                padding: 8px;
+
+                &:hover {
+                    background-color: rgba(239, 68, 68, 0.1);
+                    color: $error-color;
+                }
+            }
+        }
+
+        .modal-body {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+
+                label {
+                    display: block;
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: $text-primary;
+                    margin-bottom: 6px;
+                }
+
+                input {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 1px solid $border-color;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    transition: all 0.2s ease;
+
+                    &:focus {
+                        outline: none;
+                        border-color: $primary-color;
+                        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+                    }
+                }
+            }
+
+            .checkbox-group {
+                .checkbox-label {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 14px;
+                    color: $text-primary;
+                    cursor: pointer;
+
+                    input[type="checkbox"] {
+                        width: 16px;
+                        height: 16px;
+                        accent-color: $primary-color;
+                    }
+                }
+            }
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid $border-color;
+            background-color: $background-color;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+
+            .btn-cancel {
+                @include button-base;
+                background-color: $text-secondary;
+                color: white;
+
+                &:hover {
+                    background-color: #475569;
+                }
+            }
+
+            .btn-save {
+                @include button-base;
+                background-color: $primary-color;
+                color: white;
+
+                &:hover {
+                    background-color: #2563eb;
+                }
+            }
+        }
+    }
+
+    // Orders
+    .orders-list {
+        display: grid;
+        gap: 16px;
+
+        .order-card {
+            border: 1px solid $border-color;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s ease;
+
+            &:hover {
+                box-shadow: $shadow;
+                border-color: $primary-color;
+            }
+
+            .order-header {
+                @include flex-between;
+                margin-bottom: 16px;
+
+                .order-info {
+                    h4 {
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: $text-primary;
+                        margin: 0 0 4px 0;
+                    }
+
+                    .order-date {
+                        font-size: 14px;
+                        color: $text-secondary;
+                    }
+                }
+
+                .order-status {
+                    padding: 6px 12px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 500;
+
+                    &.pending {
+                        background-color: rgba(245, 158, 11, 0.1);
+                        color: $warning-color;
+                    }
+
+                    &.processing {
+                        background-color: rgba(6, 182, 212, 0.1);
+                        color: $info-color;
+                    }
+
+                    &.shipped {
+                        background-color: rgba(59, 130, 246, 0.1);
+                        color: $primary-color;
+                    }
+
+                    &.delivered {
+                        background-color: rgba(16, 185, 129, 0.1);
+                        color: $success-color;
+                    }
+
+                    &.cancelled {
+                        background-color: rgba(239, 68, 68, 0.1);
+                        color: $error-color;
+                    }
+                }
+            }
+
+            .order-items {
+                margin-bottom: 16px;
+
+                .order-item {
+                    @include flex-between;
+                    padding: 8px 0;
+                    font-size: 14px;
+                    border-bottom: 1px solid $border-color;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    .item-name {
+                        flex: 1;
+                        color: $text-primary;
+                    }
+
+                    .item-quantity {
+                        color: $text-secondary;
+                        margin: 0 12px;
+                    }
+
+                    .item-price {
+                        font-weight: 500;
+                        color: $text-primary;
+                    }
+                }
+            }
+
+            .order-footer {
+                @include flex-between;
+                padding-top: 16px;
+                border-top: 1px solid $border-color;
+
+                .order-total {
+                    font-size: 16px;
+                    color: $text-primary;
+
+                    strong {
+                        color: $primary-color;
+                    }
+                }
+
+                .btn-view-order {
+                    @include button-base;
+                    background-color: $primary-color;
+                    color: white;
+
+                    &:hover {
+                        background-color: #2563eb;
+                    }
+                }
+            }
+        }
+    }
+
+    // Security
+    .security-options {
+        max-width: 600px;
+
+        .security-item {
+            @include flex-between;
+            padding: 20px;
+            border: 1px solid $border-color;
+            border-radius: 8px;
+            margin-bottom: 20px;
+
+            .security-info {
+                h4 {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: $text-primary;
+                    margin: 0 0 4px 0;
+                }
+
+                p {
+                    font-size: 14px;
+                    color: $text-secondary;
+                    margin: 0;
+                }
+            }
+
+            .btn-security {
+                @include button-base;
+                background-color: $primary-color;
+                color: white;
+
+                &:hover {
+                    background-color: #2563eb;
+                }
+            }
+        }
+
+        .password-form {
+            background-color: $background-color;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+
+            .form-group {
+                margin-bottom: 16px;
+
+                label {
+                    display: block;
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: $text-primary;
+                    margin-bottom: 6px;
+                }
+
+                .password-input {
+                    position: relative;
+
+                    input {
+                        width: 100%;
+                        padding: 10px 40px 10px 12px;
+                        border: 1px solid $border-color;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        transition: all 0.2s ease;
+
+                        &:focus {
+                            outline: none;
+                            border-color: $primary-color;
+                            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+                        }
+                    }
+
+                    .password-toggle {
+                        position: absolute;
+                        right: 12px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        background: none;
+                        border: none;
+                        color: $text-secondary;
+                        cursor: pointer;
+                        padding: 4px;
+                        border-radius: 4px;
+
+                        &:hover {
+                            background-color: rgba(0, 0, 0, 0.05);
+                        }
+                    }
+                }
+            }
+
+            .password-actions {
+                display: flex;
+                gap: 12px;
+                justify-content: flex-end;
+                margin-top: 20px;
+
+                .btn-cancel {
+                    @include button-base;
+                    background-color: $text-secondary;
+                    color: white;
+
+                    &:hover {
+                        background-color: #475569;
+                    }
+                }
+
+                .btn-change-password {
+                    @include button-base;
+                    background-color: $success-color;
+                    color: white;
+
+                    &:hover {
+                        background-color: #059669;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+    .customer-profile {
+        padding: 16px;
+
+        .profile-container {
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .customer-profile {
+        padding: 12px;
+
+        .profile-container {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .profile-sidebar {
+            order: 2;
+
+            .user-info-card {
+                padding: 20px;
+
+                .avatar-section {
+                    .avatar-container {
+                        .avatar,
+                        .avatar-placeholder {
+                            width: 60px;
+                            height: 60px;
+                        }
+
+                        .avatar-edit-btn {
+                            width: 28px;
+                            height: 28px;
+                        }
+                    }
+                }
+            }
+
+            .profile-nav {
+                .nav-item {
+                    padding: 14px 16px;
+                    font-size: 13px;
+                }
+            }
+        }
+
+        .profile-content {
+            order: 1;
+
+            .content-section {
+                padding: 20px;
+
+                .section-header {
+                    flex-direction: column;
+                    gap: 12px;
+                    align-items: stretch;
+
+                    h2 {
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+
+        .address-modal {
+            margin: 10px;
+            max-height: calc(100vh - 20px);
+
+            .modal-body {
+                padding: 20px;
+
+                .form-row {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .customer-profile {
+        padding: 8px;
+
+        .profile-sidebar {
+            .user-info-card {
+                padding: 16px;
+
+                .avatar-section {
+                    .user-details {
+                        h3 {
+                            font-size: 18px;
+                        }
+
+                        p {
+                            font-size: 13px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .profile-content {
+            .content-section {
+                padding: 16px;
+
+                .section-header {
+                    h2 {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+
+        .addresses-list {
+            .address-card {
+                padding: 16px;
+
+                .address-header {
+                    flex-direction: column;
+                    gap: 12px;
+                    align-items: flex-start;
+
+                    .address-actions {
+                        align-self: flex-end;
+                    }
+                }
+            }
+        }
+
+        .orders-list {
+            .order-card {
+                padding: 16px;
+
+                .order-header {
+                    flex-direction: column;
+                    gap: 8px;
+                    align-items: flex-start;
+
+                    .order-status {
+                        align-self: flex-start;
+                    }
+                }
+
+                .order-footer {
+                    flex-direction: column;
+                    gap: 12px;
+                    align-items: stretch;
+
+                    .btn-view-order {
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+
+        .security-options {
+            .security-item {
+                flex-direction: column;
+                gap: 16px;
+                text-align: left;
+
+                .btn-security {
+                    align-self: flex-start;
+                }
+            }
+
+            .password-form {
+                padding: 16px;
+
+                .password-actions {
+                    flex-direction: column;
+                }
+            }
+        }
+    }
+}

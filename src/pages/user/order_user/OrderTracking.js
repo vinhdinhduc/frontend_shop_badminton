@@ -48,7 +48,7 @@ const OrderTracking = () => {
   }, [orderUser]);
 
   useEffect(() => {
-    const filtered = orders;
+    const filtered = [...orders];
     if (statusFilter !== "all") {
       filtered = filtered.map((order) => order.status === statusFilter);
     }
@@ -67,7 +67,7 @@ const OrderTracking = () => {
   }, [orders, searchTerm, statusFilter]);
 
   const handleRefresh = () => {
-    dispatch(getAllOrders({ page: 1, limit: 100 }));
+    dispatch(getOrderByUserIdAction(userInfo.data.user.id));
   };
 
   const viewOrderDetail = (order) => {

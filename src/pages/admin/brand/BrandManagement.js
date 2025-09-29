@@ -10,16 +10,20 @@ import {
   updateBrandAction,
   deleteBrandAction,
 } from "../../../redux/actions/brandAction";
+import BrandDeleteModal from "./BrandDeleteModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const BrandManagement = () => {
   const dispatch = useDispatch();
   const { brands, loading, error, pagination } = useSelector(
     (state) => state.brandList
   );
+  console.log(brands);
 
   // Modal states
   const [showFormModal, setShowFormModal] = useState(false);
-  const [formModalMode, setFormModalMode] = useState("create"); // 'create' | 'edit'
+  const [formModalMode, setFormModalMode] = useState("create");
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [brandToDelete, setBrandToDelete] = useState(null);
@@ -92,10 +96,8 @@ const BrandManagement = () => {
     try {
       if (formModalMode === "create") {
         await dispatch(createBrandAction(formData));
-        toast.success("Thêm thương hiệu thành công!");
       } else {
         await dispatch(updateBrandAction(selectedBrand.id, formData));
-        toast.success("Cập nhật thương hiệu thành công!");
       }
 
       closeFormModal();
@@ -129,7 +131,7 @@ const BrandManagement = () => {
 
     try {
       await dispatch(deleteBrandAction(brandId));
-      toast.success("Xóa thương hiệu thành công!");
+
       closeDeleteModal();
       fetchBrands();
 
@@ -292,10 +294,6 @@ const BrandManagement = () => {
     );
   };
 
-  const getStatusText = (status) => {
-    return status === "active" ? "Hoạt động" : "Không hoạt động";
-  };
-
   const formatWebsiteUrl = (url) => {
     if (!url) return null;
     return url.startsWith("http") ? url : `https://${url}`;
@@ -399,7 +397,7 @@ const BrandManagement = () => {
               <i className="fas fa-check-circle"></i>
             </div>
             <div className="stat-content">
-              <h3>{brands.filter((b) => b.status === "active").length}</h3>
+              <h3>{brands.filter((b) => b.is_active).length}</h3>
               <p>Đang hoạt động</p>
             </div>
           </div>
@@ -408,7 +406,7 @@ const BrandManagement = () => {
               <i className="fas fa-pause-circle"></i>
             </div>
             <div className="stat-content">
-              <h3>{brands.filter((b) => b.status === "inactive").length}</h3>
+              <h3>{brands.filter((b) => !b.is_active).length}</h3>
               <p>Không hoạt động</p>
             </div>
           </div>
@@ -458,7 +456,7 @@ const BrandManagement = () => {
                         <div className="brand-logo">
                           {brand.logo && (
                             <img
-                              src={brand.logo}
+                              src={`http://localhost:8080${brand.logo}`}
                               alt={`Logo ${brand.name}`}
                               onError={handleImageError}
                             />
@@ -512,17 +510,17 @@ const BrandManagement = () => {
                       <td data-label="Trạng thái">
                         <span
                           className={`status-badge ${
-                            brand.status === "active" ? "active" : "inactive"
+                            brand.is_active ? "active" : "inactive"
                           }`}
                         >
                           <i
                             className={`fas ${
-                              brand.status === "active"
+                              brand.is_active
                                 ? "fa-check-circle"
                                 : "fa-pause-circle"
                             }`}
                           ></i>
-                          {getStatusText(brand.status)}
+                          {brand.is_active ? "Hoạt động" : "Không hoạt động"}
                         </span>
                       </td>
                       <td data-label="Thao tác">
@@ -532,14 +530,14 @@ const BrandManagement = () => {
                             onClick={() => openEditModal(brand)}
                             title="Chỉnh sửa thương hiệu"
                           >
-                            <i className="fas fa-edit"></i>
+                            <FontAwesomeIcon icon={faEdit} />
                           </button>
                           <button
                             className="btn btn-danger btn-sm"
                             onClick={() => openDeleteModal(brand)}
                             title="Xóa thương hiệu"
                           >
-                            <i className="fas fa-trash"></i>
+                            <FontAwesomeIcon icon={faTrash} />
                           </button>
                         </div>
                       </td>
@@ -585,6 +583,13 @@ const BrandManagement = () => {
         mode={formModalMode}
         brandData={selectedBrand}
         loading={formSubmitting}
+      />
+      <BrandDeleteModal
+        show={showDeleteModal}
+        onClose={closeDeleteModal}
+        onConfirm={handleDelete}
+        brand={brandToDelete}
+        loading={deleteSubmitting}
       />
     </div>
   );

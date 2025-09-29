@@ -1,6 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import "./BrandFormModal.scss";
+import {
+  faAlignLeft,
+  faCheck,
+  faCloudUploadAlt,
+  faEdit,
+  faExclamationCircle,
+  faExternalLinkAlt,
+  faImage,
+  faLink,
+  faStar,
+  faTag,
+  faTimes,
+  faToggleOn,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const BrandFormModal = ({
   show,
@@ -35,7 +52,6 @@ const BrandFormModal = ({
   const bannerFileInputRef = useRef(null);
   const firstInputRef = useRef(null);
 
-  // Danh sách quốc gia phổ biến
   const countries = [
     "Việt Nam",
     "United States",
@@ -276,7 +292,6 @@ const BrandFormModal = ({
   const validateForm = () => {
     const newErrors = {};
 
-    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Tên thương hiệu là bắt buộc";
     } else if (formData.name.trim().length < 2) {
@@ -285,7 +300,6 @@ const BrandFormModal = ({
       newErrors.name = "Tên thương hiệu không được vượt quá 100 ký tự";
     }
 
-    // Slug validation
     if (!formData.slug.trim()) {
       newErrors.slug = "Slug là bắt buộc";
     } else if (!/^[a-z0-9-]+$/.test(formData.slug)) {
@@ -296,18 +310,15 @@ const BrandFormModal = ({
       newErrors.slug = "Slug không được vượt quá 100 ký tự";
     }
 
-    // Website validation
     if (formData.website && !isValidUrl(formData.website)) {
       newErrors.website =
         "URL website không hợp lệ (ví dụ: https://example.com)";
     }
 
-    // Description validation
     if (formData.description && formData.description.length > 1000) {
       newErrors.description = "Mô tả không được vượt quá 1000 ký tự";
     }
 
-    // Founded year validation
     if (formData.founded_year) {
       const year = parseInt(formData.founded_year);
       const currentYear = new Date().getFullYear();
@@ -316,12 +327,10 @@ const BrandFormModal = ({
       }
     }
 
-    // Sort order validation
     if (formData.sort_order < 0) {
       newErrors.sort_order = "Thứ tự sắp xếp không được âm";
     }
 
-    // Meta validation
     if (formData.meta_title && formData.meta_title.length > 255) {
       newErrors.meta_title = "Tiêu đề SEO không được vượt quá 255 ký tự";
     }
@@ -420,7 +429,7 @@ const BrandFormModal = ({
             type="button"
             aria-label="Đóng modal"
           >
-            <i className="fas fa-times"></i>
+            <FontAwesomeIcon icon={faTimes} />
           </button>
         </div>
 
@@ -429,7 +438,7 @@ const BrandFormModal = ({
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="brand-name">
-                <i className="fas fa-tag"></i>
+                <FontAwesomeIcon icon={faTag} />
                 Tên thương hiệu <span className="required">*</span>
               </label>
               <input
@@ -452,7 +461,8 @@ const BrandFormModal = ({
               </div>
               {errors.name && (
                 <span className="error-message">
-                  <i className="fas fa-exclamation-circle"></i>
+                  <FontAwesomeIcon icon={faExclamationCircle} />
+
                   {errors.name}
                 </span>
               )}
@@ -460,7 +470,7 @@ const BrandFormModal = ({
 
             <div className="form-group">
               <label htmlFor="brand-slug">
-                <i className="fas fa-link"></i>
+                <FontAwesomeIcon icon={faLink} />
                 Slug <span className="required">*</span>
               </label>
               <input
@@ -485,7 +495,8 @@ const BrandFormModal = ({
               </div>
               {errors.slug && (
                 <span className="error-message">
-                  <i className="fas fa-exclamation-circle"></i>
+                  <FontAwesomeIcon icon={faExclamationCircle} />
+
                   {errors.slug}
                 </span>
               )}
@@ -495,7 +506,7 @@ const BrandFormModal = ({
           {/* Mô tả thương hiệu */}
           <div className="form-group">
             <label htmlFor="brand-description">
-              <i className="fas fa-align-left"></i>
+              <FontAwesomeIcon icon={faAlignLeft} />
               Mô tả thương hiệu
             </label>
             <textarea
@@ -516,7 +527,8 @@ const BrandFormModal = ({
             </div>
             {errors.description && (
               <span className="error-message">
-                <i className="fas fa-exclamation-circle"></i>
+                <FontAwesomeIcon icon={faExclamationCircle} />
+
                 {errors.description}
               </span>
             )}
@@ -526,7 +538,7 @@ const BrandFormModal = ({
           <div className="form-row">
             <div className="form-group">
               <label>
-                <i className="fas fa-image"></i>
+                <FontAwesomeIcon icon={faImage} />
                 Logo thương hiệu
               </label>
               <div
@@ -562,7 +574,7 @@ const BrandFormModal = ({
                           onClick={() => fileInputRef.current?.click()}
                           disabled={loading}
                         >
-                          <i className="fas fa-edit"></i>
+                          <FontAwesomeIcon icon={faEdit} />
                           Thay đổi
                         </button>
                         <button
@@ -571,7 +583,7 @@ const BrandFormModal = ({
                           onClick={() => handleRemoveImage("logo")}
                           disabled={loading}
                         >
-                          <i className="fas fa-trash"></i>
+                          <FontAwesomeIcon icon={faTrash} />
                           Xóa
                         </button>
                       </div>
@@ -580,7 +592,8 @@ const BrandFormModal = ({
                 ) : (
                   <label htmlFor="brand-logo" className="file-input-display">
                     <div className="upload-placeholder">
-                      <i className="fas fa-cloud-upload-alt"></i>
+                      <FontAwesomeIcon icon={faCloudUploadAlt} />
+
                       <h4>Tải lên logo</h4>
                       <p>Kéo thả file vào đây hoặc click để chọn</p>
                       <small>Hỗ trợ: PNG, JPG, GIF, WebP - Tối đa 5MB</small>
@@ -590,7 +603,8 @@ const BrandFormModal = ({
               </div>
               {errors.logo && (
                 <span className="error-message">
-                  <i className="fas fa-exclamation-circle"></i>
+                  <FontAwesomeIcon icon={faExclamationCircle} />
+
                   {errors.logo}
                 </span>
               )}
@@ -598,7 +612,7 @@ const BrandFormModal = ({
 
             <div className="form-group">
               <label>
-                <i className="fas fa-image"></i>
+                <FontAwesomeIcon icon={faImage} />
                 Banner thương hiệu
               </label>
               <div
@@ -634,7 +648,7 @@ const BrandFormModal = ({
                           onClick={() => bannerFileInputRef.current?.click()}
                           disabled={loading}
                         >
-                          <i className="fas fa-edit"></i>
+                          <FontAwesomeIcon icon={faEdit} />
                           Thay đổi
                         </button>
                         <button
@@ -643,7 +657,7 @@ const BrandFormModal = ({
                           onClick={() => handleRemoveImage("banner_image")}
                           disabled={loading}
                         >
-                          <i className="fas fa-trash"></i>
+                          <FontAwesomeIcon icon={faTrash} />
                           Xóa
                         </button>
                       </div>
@@ -652,7 +666,8 @@ const BrandFormModal = ({
                 ) : (
                   <label htmlFor="brand-banner" className="file-input-display">
                     <div className="upload-placeholder">
-                      <i className="fas fa-cloud-upload-alt"></i>
+                      <FontAwesomeIcon icon={faCloudUploadAlt} />
+
                       <h4>Tải lên banner</h4>
                       <p>Kéo thả file vào đây hoặc click để chọn</p>
                       <small>Hỗ trợ: PNG, JPG, GIF, WebP - Tối đa 5MB</small>
@@ -662,7 +677,8 @@ const BrandFormModal = ({
               </div>
               {errors.banner_image && (
                 <span className="error-message">
-                  <i className="fas fa-exclamation-circle"></i>
+                  <FontAwesomeIcon icon={faExclamationCircle} />
+
                   {errors.banner_image}
                 </span>
               )}
@@ -699,13 +715,14 @@ const BrandFormModal = ({
                     className="website-preview"
                     title="Xem trước website"
                   >
-                    <i className="fas fa-external-link-alt"></i>
+                    <FontAwesomeIcon icon={faExternalLinkAlt} />
                   </a>
                 )}
               </div>
               {errors.website && (
                 <span className="error-message">
-                  <i className="fas fa-exclamation-circle"></i>
+                  <FontAwesomeIcon icon={faExclamationCircle} />
+
                   {errors.website}
                 </span>
               )}
@@ -754,7 +771,7 @@ const BrandFormModal = ({
               />
               {errors.founded_year && (
                 <span className="error-message">
-                  <i className="fas fa-exclamation-circle"></i>
+                  <FontAwesomeIcon icon={faExclamationCircle} />
                   {errors.founded_year}
                 </span>
               )}
@@ -798,10 +815,10 @@ const BrandFormModal = ({
                   disabled={loading}
                 />
                 <span className="checkbox-custom">
-                  <i className="fas fa-check"></i>
+                  <FontAwesomeIcon icon={faCheck} />
                 </span>
                 <span className="checkbox-text">
-                  <i className="fas fa-toggle-on"></i>
+                  <FontAwesomeIcon icon={faToggleOn} />
                   Đang hoạt động
                 </span>
               </label>
@@ -820,10 +837,10 @@ const BrandFormModal = ({
                   disabled={loading}
                 />
                 <span className="checkbox-custom">
-                  <i className="fas fa-check"></i>
+                  <FontAwesomeIcon icon={faCheck} />
                 </span>
                 <span className="checkbox-text">
-                  <i className="fas fa-star"></i>
+                  <FontAwesomeIcon icon={faStar} />
                   Thương hiệu nổi bật
                 </span>
               </label>

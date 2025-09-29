@@ -10,7 +10,7 @@ import {
   FETCH_ORDER_BY_USER_ID_FAIL,
 } from "../constants/orderConstant";
 import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
+
 import { getAllOrder, getOrderByUserId } from "../../services/orderService";
 
 export const getAllOrders = (query) => async (dispatch) => {

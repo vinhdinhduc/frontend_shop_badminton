@@ -16,6 +16,6 @@ const updateBrand = (id, dataUpdate) => {
 };
 
 const deleteBrand = (id) => {
-  return axios.put(`/brand/delete-brand/${id}`);
+  return axios.delete(`/brand/delete-brand/${id}`);
 };
 export { getAllBrands, getBrandById, createBrand, updateBrand, deleteBrand };

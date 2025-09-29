@@ -1,4 +1,3 @@
-import "./App.css";
 import { Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/user/Home";
 import { ToastContainer } from "react-toastify";
@@ -22,6 +21,7 @@ import Cart from "./pages/user/cart/Cart";
 import CheckOut from "./pages/user/checkout/CheckOut";
 import BrandManagement from "./pages/admin/brand/BrandManagement";
 import OrderTracking from "./pages/user/order_user/OrderTracking";
+import CustomerProfile from "./pages/user/profile/CustomerProfile";
 
 function App() {
   return (
@@ -33,6 +33,7 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/profile" element={<CustomerProfile />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/view-order" element={<OrderTracking />} />
           <Route path="/intro" element={<About />} />

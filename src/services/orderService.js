@@ -8,8 +8,8 @@ const getOrderById = (id) => {
   return axios.get(`/order/get-by-id/${id}`);
 };
 
-const getOrderByUserId = (userId) => {
-  return axios.get(`/order/get-order-by-user/${userId}`);
+const getOrderByUserId = (userId, query) => {
+  return axios.get(`/order/get-order-by-user/${userId}`, { params: query });
 };
 const updateOrderStatus = (orderId, newStatus) => {
   return axios.patch(`/order/${orderId}/status`, { newStatus });

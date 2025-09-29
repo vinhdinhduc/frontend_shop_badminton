@@ -34,6 +34,31 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid rgba(220, 53, 69, 0.2);
 }
 
+// Brand Delete Modal Overlay
+.brand-delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    @include flex-center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
+
 // Brand Delete Modal
 .brand-delete-modal {
     @include glassmorphism-danger;
@@ -41,9 +66,10 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: $box-shadow-lg;
     width: 90%;
     max-width: 500px;
-    animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 90vh;
     overflow: hidden;
     position: relative;
+    animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     &::before {
         content: "";
@@ -62,6 +88,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         );
         background-size: 400% 100%;
         animation: dangerShimmer 3s ease-in-out infinite;
+        z-index: 1;
     }
 
     .modal__header {
@@ -69,6 +96,8 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 24px 28px;
         border-bottom: 1px solid rgba($danger-color, 0.2);
         background: linear-gradient(135deg, rgba($danger-color, 0.1), rgba($warning-color, 0.1));
+        position: relative;
+        z-index: 2;
 
         h2 {
             margin: 0;
@@ -139,6 +168,10 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     .modal__body {
         padding: 28px;
+        position: relative;
+        z-index: 2;
+        max-height: 60vh;
+        overflow-y: auto;
 
         .delete-confirmation {
             text-align: center;
@@ -238,6 +271,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                         align-items: center;
                         gap: 12px;
                         margin-bottom: 8px;
+                        flex-wrap: wrap;
 
                         .status-badge {
                             padding: 4px 12px;
@@ -247,6 +281,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                             text-transform: uppercase;
                             display: flex;
                             align-items: center;
+                            white-space: nowrap;
 
                             i {
                                 margin-right: 4px;
@@ -271,6 +306,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                             border-radius: 12px;
                             font-size: 10px;
                             font-weight: 600;
+                            white-space: nowrap;
 
                             i {
                                 margin-right: 4px;
@@ -309,10 +345,12 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                         color: $danger-color;
                         display: flex;
                         align-items: center;
+                        flex-wrap: wrap;
 
                         i {
                             margin-right: 10px;
                             font-size: 20px;
+                            flex-shrink: 0;
                         }
                     }
 
@@ -527,6 +565,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                             background: none;
                             padding: 0;
                             letter-spacing: 0.5px;
+                            word-break: break-all;
                         }
                     }
                 }
@@ -670,6 +709,8 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         @include flex-between;
         gap: 16px;
         background: linear-gradient(135deg, rgba($light-color, 0.8), rgba($danger-color, 0.05));
+        position: relative;
+        z-index: 2;
 
         .btn {
             padding: 14px 28px;
@@ -874,9 +915,14 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 // Responsive Design
 @media (max-width: 768px) {
+    .brand-delete-modal-overlay {
+        padding: 15px;
+    }
+
     .brand-delete-modal {
         width: 95%;
-        margin: 20px;
+        max-width: none;
+        margin: 0 auto;
 
         .modal__header {
             padding: 20px 24px;
@@ -900,6 +946,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         .modal__body {
             padding: 24px;
+            max-height: 65vh;
 
             .delete-confirmation {
                 .warning-animation {
@@ -979,24 +1026,27 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             .btn {
                 width: 100%;
                 padding: 14px;
+                min-width: auto;
             }
         }
     }
 }
 
 @media (max-width: 480px) {
+    .brand-delete-modal-overlay {
+        padding: 10px;
+    }
+
     .brand-delete-modal {
         width: 100%;
-        height: 100vh;
-        margin: 0;
+        max-height: 100vh;
         border-radius: 0;
-        display: flex;
-        flex-direction: column;
 
         .modal__body {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
+            max-height: calc(100vh - 140px);
 
             .delete-confirmation {
                 .warning-animation {
@@ -1124,12 +1174,13 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 // Reduced motion
 @media (prefers-reduced-motion: reduce) {
+    .brand-delete-modal-overlay,
     .brand-delete-modal {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
     }
 
-    * {
+    .brand-delete-modal * {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
@@ -1138,6 +1189,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 // Print styles (hide modal in print)
 @media print {
+    .brand-delete-modal-overlay,
     .brand-delete-modal {
         display: none !important;
     }

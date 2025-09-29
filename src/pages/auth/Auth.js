@@ -96,7 +96,7 @@ const Auth = () => {
     if (userInfo) {
       setLoginForm({ email: "", password: "" });
 
-      if (userInfo.data.user.role === "admin") {
+      if (userInfo.data?.user?.role === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/");
