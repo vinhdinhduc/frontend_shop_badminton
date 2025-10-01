@@ -11,11 +11,13 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
   const addingToCart = useSelector(
     (state) => state.cartList.selectAddingToCart
   );
+  console.log("Adding", addingToCart);
+  console.log("Check props", product);
+
   const cartError = useSelector((state) => state.cartList.selectCartError);
 
   // Local state
   const [selectedOptions, setSelectedOptions] = useState({
-    color: "Trong suốt",
     weight: "4U: 80g-84g",
     variation_id: null,
   });
@@ -25,13 +27,11 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
     if (isOpen && product) {
       setQuantity(1);
 
-      // Parse product variations to get available options
       const variations = getProductVariations();
       const firstVariation = variations[0];
 
       setSelectedOptions({
-        color: "Trong suốt",
-        weight: firstVariation?.variation_value || "4U: 80g-84g",
+        weight: firstVariation?.variation_value || getDefaultWeightOption(),
         variation_id: firstVariation?.id || null,
       });
     }
@@ -52,17 +52,49 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
   };
 
   // Parse product specifications for weight options
+  const getWeightFromSpecifications = () => {
+    try {
+      if (product?.specifications) {
+        const spec =
+          typeof product.specifications === "string"
+            ? JSON.parse(product.specifications)
+            : product.specifications;
+        return spec.weight;
+      }
+    } catch (error) {
+      console.error("Error parsing product specifications:", error);
+    }
+    return null;
+  };
+  const getUCategoryFromWeight = (weight) => {
+    if (!weight) return "Kích thước mặc định";
+    if (weight >= 75 && weight <= 79) return "5U: 75g-79g";
+    if (weight >= 80 && weight <= 84) return "4U: 80g-84g";
+    if (weight >= 85 && weight <= 89) return "3U: 85g-89g";
+    if (weight >= 90 && weight <= 94) return "2U: 90g-94g";
+    if (weight >= 95 && weight <= 99) return "1U: 95g-99g";
+    return;
+  };
+
+  const getDefaultWeightOption = () => {
+    const weight = getWeightFromSpecifications();
+    return getUCategoryFromWeight(weight);
+  };
   const getWeightOptions = () => {
+    const weight = getWeightFromSpecifications();
+    if (weight) {
+      const uCategory = getUCategoryFromWeight(weight);
+      return [uCategory];
+    }
+
     const variations = getProductVariations();
     if (variations.length > 0) {
       return variations.map((v) => v.variation_value);
     }
 
-    // Fallback to default options
-    return ["4U: 80g-84g", "3U: 85g-89g", "2U: 90g-94g"];
+    return ["4U: 80g-84g"];
   };
 
-  // Parse product images
   const getProductImage = () => {
     try {
       if (product?.images) {
@@ -95,7 +127,6 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
         [optionType]: value,
       };
 
-      // If changing weight, find matching variation ID
       if (optionType === "weight") {
         const variations = getProductVariations();
         const matchingVariation = variations.find(
@@ -131,18 +162,15 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
 
       await dispatch(addToCartAction(cartData));
 
-      // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess(cartData);
       }
 
-      // Close modal after successful add
       setTimeout(() => {
         onClose();
       }, 500);
     } catch (error) {
       console.error("Error adding to cart:", error);
-      // Error is handled by Redux action and will show toast
     }
   };
 
@@ -179,7 +207,7 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
   const productImage = getProductImage();
   const availableStock = getAvailableStock();
   const isOutOfStock = availableStock === 0;
-
+  const actualWeight = getWeightFromSpecifications();
   return (
     <div className="add-to-cart-modal-overlay" onClick={handleOverlayClick}>
       <div className="add-to-cart-modal">
@@ -218,34 +246,19 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
               )}
             </div>
             <div className="product-brand">{product.brand}</div>
-            <div className="product-brand">{product.brand}</div>
+            {actualWeight && (
+              <div className="product-spec">
+                Trọng lượng thực tế: {actualWeight}g
+              </div>
+            )}
           </div>
         </div>
 
         {/* Product Options */}
         <div className="modal-options">
-          {/* Color Options */}
-          <div className="option-group">
-            <label className="option-label">Chọn thuộc tính:</label>
-            <div className="option-values">
-              {["Trong suốt", "Đen", "Xanh"].map((option) => (
-                <button
-                  key={option}
-                  className={`option-btn ${
-                    selectedOptions.color === option ? "selected" : ""
-                  }`}
-                  onClick={() => handleOptionChange("color", option)}
-                  disabled={addingToCart}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Weight Options */}
           <div className="option-group">
-            <label className="option-label">Kích thước:</label>
+            <label className="option-label">Kích thước (U):</label>
             <div className="option-values weight-options">
               {weightOptions.map((weight) => {
                 const variations = getProductVariations();

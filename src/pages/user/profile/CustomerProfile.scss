@@ -1,4 +1,3 @@
-// Variables
 $primary-color: #3b82f6;
 $secondary-color: #64748b;
 $success-color: #10b981;
@@ -58,62 +57,61 @@ $shadow-lg:
         cursor: not-allowed;
         transform: none;
     }
+}
+// Loading & No Data States
+.loading-container {
+    @include flex-center;
+    flex-direction: column;
+    padding: 60px 20px;
 
-    // Loading & No Data States
-    .loading-container {
-        @include flex-center;
-        flex-direction: column;
-        padding: 60px 20px;
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid $border-color;
-            border-top: 4px solid $primary-color;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 16px;
-        }
-
-        p {
-            color: $text-secondary;
-            font-size: 16px;
-            margin: 0;
-        }
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid $border-color;
+        border-top: 4px solid $primary-color;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
     }
 
-    .no-data {
-        text-align: center;
-        padding: 60px 20px;
+    p {
         color: $text-secondary;
+        font-size: 16px;
+        margin: 0;
+    }
+}
 
-        svg {
-            opacity: 0.5;
-            margin-bottom: 16px;
-        }
+.no-data {
+    text-align: center;
+    padding: 60px 20px;
+    color: $text-secondary;
 
-        h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: $text-primary;
-            margin: 0 0 8px 0;
-        }
-
-        p {
-            font-size: 14px;
-            margin: 0;
-        }
+    svg {
+        opacity: 0.5;
+        margin-bottom: 16px;
     }
 
-    // Additional Button Styles
-    .btn-refresh {
-        @include button-base;
-        background-color: $secondary-color;
-        color: white;
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: $text-primary;
+        margin: 0 0 8px 0;
+    }
 
-        &:hover {
-            background-color: #475569;
-        }
+    p {
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+// Additional Button Styles
+.btn-refresh {
+    @include button-base;
+    background-color: $secondary-color;
+    color: white;
+
+    &:hover {
+        background-color: #475569;
     }
 }
 
@@ -513,7 +511,7 @@ $shadow-lg:
     }
 
     // Modal
-    .modal-overlay {
+    .address-modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
