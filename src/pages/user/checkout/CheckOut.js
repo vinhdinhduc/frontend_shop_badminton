@@ -51,8 +51,8 @@ const CheckOut = () => {
   const [errors, setErrors] = useState({});
 
   const [shippingInfo, setShippingInfo] = useState({
-    fullName: userInfo?.data.user?.name || "",
-    phone: userInfo?.data.user?.phone || "",
+    fullName: userInfo?.data.user?.fullName || "",
+    phone: userInfo?.data.user?.phone_number || "",
     email: userInfo?.data.user?.email || "",
     address: "",
     ward: "",
@@ -274,11 +274,12 @@ const CheckOut = () => {
       };
       const orderResponse = await createOrder(orderData);
       if (orderResponse && orderResponse.code === 0) {
-        const newOrder = orderResponse.data.data.order;
+        const newOrder = orderResponse.data?.order;
         const dataPayment = {
           order_id: newOrder.id,
           amount: newOrder.order_total,
           order_info: `Thanh toán đơn hàng ${newOrder.order_code}`,
+          order_type: "other",
           locale: "vn",
           client_ip: "127.0.0.1",
         };
@@ -287,13 +288,14 @@ const CheckOut = () => {
 
           try {
             const paymentResponse = await createPaymentUrl(dataPayment);
+            console.log("Check payment res", paymentMethod);
 
             if (paymentResponse && paymentResponse.code === 0) {
               sessionStorage.removeItem("checkout_data");
 
               //Redirect đến VNPay
 
-              window.location.href = paymentResponse.data.data.paymentUrl;
+              window.location.href = paymentResponse.data.paymentUrl;
               return;
             } else {
               throw new Error(

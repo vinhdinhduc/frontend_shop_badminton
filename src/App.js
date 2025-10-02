@@ -66,16 +66,16 @@ function App() {
         </Routes>
       </div>
       <ToastContainer
-        position="top-right" // Vị trí hiển thị
-        autoClose={3000} // Tự đóng sau 3s
-        hideProgressBar={false} // Hiện thanh tiến trình
-        newestOnTop={false} // Toast mới xuất hiện ở dưới
-        closeOnClick // Click vào toast để đóng
-        rtl={false} // Hỗ trợ ngôn ngữ RTL
-        pauseOnFocusLoss // Tạm dừng khi mất focus
-        draggable // Cho phép kéo toast
-        pauseOnHover // Tạm dừng khi hover
-        theme="colored" // Giao diện màu
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
       />
     </>
   );

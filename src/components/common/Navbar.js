@@ -219,6 +219,7 @@ const Navbar = () => {
       {/* Mobile Sidebar */}
       {isMobile && (
         <>
+          {console.log("Rendering sidebar overlay:", isSidebarOpen)}
           {/* Overlay */}
           <div
             className={`sidebar-overlay ${isSidebarOpen ? "active" : ""}`}
@@ -226,7 +227,7 @@ const Navbar = () => {
           />
 
           {/* Sidebar */}
-          <div className={`sidebar ${isSidebarOpen ? "active" : ""}`}>
+          <div className={`sidebar-home ${isSidebarOpen ? "active" : ""}`}>
             {/* Sidebar Header */}
             <div className="sidebar-header">
               <div className="sidebar-logo">Badminton Shop</div>
@@ -281,7 +282,7 @@ const Navbar = () => {
                   <span>{userInfo?.data?.user?.fullName}</span>
                 </NavLink>
               ) : (
-                <NavLink to="/login" onClick={closeSidebar}>
+                <NavLink to="/auth" onClick={closeSidebar}>
                   <button className="sidebar-btn-login">Đăng nhập</button>
                 </NavLink>
               )}

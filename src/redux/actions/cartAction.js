@@ -52,7 +52,46 @@ const getUserIdentifier = (getState) => {
     return { session_id: sessionId };
   }
 };
+export const buyNowAction = (productData) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: ADD_TO_CART_REQUEST });
 
+      const userIdentifier = getUserIdentifier(getState);
+      const cartData = {
+        ...userIdentifier,
+        product_id: productData.product.id,
+        variation_id: productData.selectedOptions?.variation_id || null,
+        quantity: productData.quantity || 1,
+        variation_info: productData.selectedOptions?.weight || null,
+      };
+      console.log("Check product data", productData);
+      console.log("Check cart data", cartData);
+
+      const res = await addToCart(cartData);
+      console.log("Check res buy now action", res);
+
+      dispatch({
+        type: ADD_TO_CART_SUCCESS,
+        payload: res,
+      });
+
+      //Get cart new
+
+      const cartResponse = await dispatch(getCartAction());
+      toast.success("Đã thêm sản phẩm! Đang chuyển đến trang thanh toán...");
+      return cartResponse;
+    } catch (error) {
+      dispatch({
+        type: ADD_TO_CART_FAILURE,
+        payload: error.message,
+      });
+
+      toast.error(error.message || "Không thể thêm sản phẩm");
+      throw error;
+    }
+  };
+};
 export const addToCartAction = (productData) => {
   return async (dispatch, getState) => {
     try {

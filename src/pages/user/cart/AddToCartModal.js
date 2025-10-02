@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { X, Plus, Minus, ShoppingCart, Loader2 } from "lucide-react";
 import "./AddToCartModal.scss";
-import { addToCartAction } from "../../../redux/actions/cartAction";
+import {
+  addToCartAction,
+  buyNowAction,
+} from "../../../redux/actions/cartAction";
 
 const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Redux state
   const addingToCart = useSelector(
@@ -178,9 +183,49 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
     if (addingToCart) return;
 
     try {
-      await handleAddToCart();
-      // Navigate to checkout - this should be handled by parent component
-      // or you can dispatch a navigation action here
+      const cartData = {
+        product,
+        selectedOptions,
+        quantity,
+        totalPrice: (product.discount_price || product.price) * quantity,
+      };
+      const cartResponse = await dispatch(buyNowAction(cartData));
+      console.log("Check cartresponse add tocart", cartResponse);
+
+      if (cartResponse && cartResponse.data) {
+        const checkoutData = {
+          items: cartResponse.data?.items?.map((item) => ({
+            id: item.id,
+            product_id: item.product_id,
+            product_name: item.product_name,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            total_price: item.total_price,
+            variation_info: item.variation_info,
+            image: item.product?.images
+              ? typeof item.product.images === "string"
+                ? JSON.parse(item.product.images)[0]?.url
+                : item.product.images[0]?.url
+              : null,
+          })),
+          pricing: {
+            subtotal: cartResponse.data.total || 0,
+            discount_amount: 0,
+            shipping_fee: 0,
+            total: cartResponse.data.total || 0,
+          },
+          coupon: null,
+        };
+        sessionStorage.setItem("checkout_data", JSON.stringify(checkoutData));
+        onClose();
+
+        setTimeout(() => {
+          navigate("/checkout");
+        }, [300]);
+      }
+      if (onSuccess) {
+        onSuccess(cartData);
+      }
     } catch (error) {
       console.error("Error buying now:", error);
     }

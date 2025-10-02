@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import "./Contact.scss";
 import Navbar from "../common/Navbar";
+import { toast } from "react-toastify";
+import { newsLetter, sendEmail } from "../../services/emailService";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     email: "",
     message: "",
   });
-
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -15,12 +19,72 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Form submitted:", formData);
-    alert("Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.");
-    setFormData({ email: "", message: "" });
+    if (!formData.email || !formData.message) {
+      toast.error("Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
+    setIsSubmitting(true);
+
+    try {
+      const res = await sendEmail(formData);
+
+      if (res && res.code === 0) {
+        toast.success(
+          "Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi sớm nhất."
+        );
+        setFormData({ email: "", message: "" });
+      } else {
+        toast.error(res.message || "Có lỗi xảy ra!");
+      }
+    } catch (error) {
+      console.error("Error sending contact email:", error);
+      toast.error(
+        error.res?.message || "Không thể gửi tin nhắn. Vui lòng thử lại sau!"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!newsletterEmail) {
+      toast.warning("Vui lòng nhập email!");
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newsletterEmail)) {
+      toast.warning("Email không hợp lệ!");
+      return;
+    }
+
+    setIsSubscribing(true);
+
+    try {
+      const response = await newsLetter(newsletterEmail);
+      if (response.code === 0) {
+        toast.success(
+          "Đăng ký thành công! Kiểm tra email để nhận mã giảm giá."
+        );
+        setNewsletterEmail("");
+      } else {
+        toast.error(response.message || "Có lỗi xảy ra!");
+      }
+    } catch (error) {
+      console.error("Error subscribing newsletter:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Không thể đăng ký. Vui lòng thử lại sau!"
+      );
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (
