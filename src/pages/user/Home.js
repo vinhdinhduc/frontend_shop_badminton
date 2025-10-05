@@ -113,10 +113,10 @@ const Home = () => {
               uy tín. Nâng tầm kỹ năng, chinh phục mọi trận đấu.
             </p>
             <div className="hero-buttons">
-              <Link to="/products" className="btn btn-primary">
+              <Link to="/products" className="btn-home btn-primary">
                 Xem sản phẩm
               </Link>
-              <Link to="/intro" className="btn btn-outline">
+              <Link to="/intro" className="btn-home btn-outline">
                 Tìm hiểu thêm
               </Link>
             </div>
@@ -226,10 +226,10 @@ const Home = () => {
               nhất
             </p>
             <div className="cta-buttons">
-              <Link to="/contact" className="btn btn-primary">
+              <Link to="/contact" className="btn-home btn-primary">
                 Liên hệ ngay
               </Link>
-              <Link to="/products" className="btn btn-outline">
+              <Link to="/products" className="btn-home btn-outline">
                 Xem sản phẩm
               </Link>
             </div>

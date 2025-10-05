@@ -31,5 +31,7 @@ export const login = (userData) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   dispatch({ type: USER_LOGOUT });
   localStorage.removeItem("userInfo");
+  localStorage.removeItem("chatbot_session_id");
+
   toast.info("Bạn đã đăng xuất!");
 };

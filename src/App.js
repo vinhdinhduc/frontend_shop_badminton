@@ -22,6 +22,7 @@ import CheckOut from "./pages/user/checkout/CheckOut";
 import BrandManagement from "./pages/admin/brand/BrandManagement";
 import OrderTracking from "./pages/user/order_user/OrderTracking";
 import CustomerProfile from "./pages/user/profile/CustomerProfile";
+import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ChatbotWidget />
       </div>
       <ToastContainer
         position="top-right"

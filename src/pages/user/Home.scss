@@ -196,7 +196,7 @@ $gradient-end: #7c3aed;
                 align-items: center;
             }
 
-            .btn {
+            .btn-home {
                 &.btn-primary {
                     @include button-style($white, $primary-color, transparent);
                 }
