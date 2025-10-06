@@ -24,6 +24,11 @@ const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const searchInputRef = useRef(null);
   const dropDownRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,6 +38,12 @@ const Navbar = () => {
   useEffect(() => {
     dispatch(getCartCountAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (showSearch && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [showSearch]);
   const handleLogout = () => {
     dispatch(logout());
     navigate("/auth");
@@ -103,6 +114,69 @@ const Navbar = () => {
     };
   }, []);
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setShowSearch(false);
+      setSearchQuery("");
+    }
+  };
+
+  const toggleSearch = () => {
+    setShowSearch(!showSearch);
+    if (showSearch) {
+      setSearchQuery("");
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutSide = (event) => {
+      console.log("event", event);
+
+      if (
+        showSearch &&
+        !event.target.closest(".search-overlay") &&
+        !event.target.closest(".nav-action")
+      ) {
+        setShowSearch(false);
+        setSearchQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutSide);
+    return () => document.removeEventListener("mousedown", handleClickOutSide);
+  }, [showSearch]);
+
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "Escape") {
+        if (showSearch) {
+          setShowSearch(false);
+          setSearchQuery("");
+        }
+        if (isSidebarOpen) {
+          setIsSidebarOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [showSearch, isSidebarOpen]);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 992);
+      if (window.innerWidth >= 992) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   const navLinks = [
     { to: "/", label: "Trang chủ" },
     { to: "/products", label: "Sản phẩm" },
@@ -148,9 +222,14 @@ const Navbar = () => {
 
             {/* Action Buttons */}
             <div className="nav-actions">
-              <NavLink to="/search" className="nav-action" title="Tìm kiếm">
+              <button
+                onClick={toggleSearch}
+                className="nav-action"
+                title="Tìm kiếm"
+                aria-label="Search"
+              >
                 <FontAwesomeIcon icon={faSearch} />
-              </NavLink>
+              </button>
               <NavLink
                 to="/cart"
                 className="nav-action has-items"
@@ -215,6 +294,63 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      {showSearch && (
+        <div className={`search-overlay ${showSearch ? "active" : ""}`}>
+          <div className="search-container">
+            <button
+              className="search-close"
+              onClick={toggleSearch}
+              aria-label="Close search"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+            <form onSubmit={handleSearchSubmit} className="search-form">
+              <div className="search-input-wrapper">
+                <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  className="search-input"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    className="search-clear"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                )}
+              </div>
+              <button type="submit" className="search-submit">
+                Tìm kiếm
+              </button>
+            </form>
+            <div className="search-suggestions">
+              <p className="search-label">Gợi ý tìm kiếm:</p>
+              <div className="search-tags">
+                {["Vợt cầu lông", "Giày cầu lông", "Yerak", "Valeer"].map(
+                  (tag) => (
+                    <button
+                      key={tag}
+                      className="search-tag"
+                      onClick={() => {
+                        setSearchQuery(tag);
+                        searchInputRef.current?.focus();
+                      }}
+                    >
+                      {tag}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Sidebar */}
       {isMobile && (
@@ -256,14 +392,16 @@ const Navbar = () => {
 
             {/* Sidebar Actions */}
             <div className="sidebar-actions">
-              <NavLink
-                to="/search"
+              <button
                 className="sidebar-action"
-                onClick={closeSidebar}
+                onClick={() => {
+                  closeSidebar();
+                  setShowSearch(true);
+                }}
               >
                 <FontAwesomeIcon icon={faSearch} />
                 <span>Tìm kiếm</span>
-              </NavLink>
+              </button>
               <NavLink
                 to="/cart"
                 className="sidebar-action"

@@ -519,6 +519,235 @@
         }
     }
 }
+.search-overlay {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+
+    &.active {
+        opacity: 07;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .search-container {
+        max-width: 500px;
+        margin-left: 700px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        background: #6e8ab9;
+        padding: 30px 20px;
+        border-radius: 18px;
+
+        position: relative;
+
+        .search-close {
+            display: none;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+
+            .search-input-wrapper {
+                flex: 1;
+                position: relative;
+                display: flex;
+                align-items: center;
+                background: #f5f5f5;
+                border-radius: 8px;
+                border: 2px solid #e0e0e0;
+                transition: all 0.3s ease;
+
+                &:focus-within {
+                    background: white;
+                    border-color: #667eea;
+                    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                }
+
+                .search-icon {
+                    position: absolute;
+                    left: 16px;
+                    color: #999;
+                    font-size: 18px;
+                    pointer-events: none;
+                }
+
+                .search-input {
+                    width: 100%;
+                    padding: 14px 45px 14px 50px;
+                    background: transparent;
+                    border: none;
+                    color: #333;
+                    font-size: 16px;
+                    outline: none;
+
+                    &::placeholder {
+                        color: #999;
+                    }
+                }
+
+                .search-clear {
+                    position: absolute;
+                    right: 12px;
+                    background: #e0e0e0;
+                    border: none;
+                    color: #666;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+
+                    &:hover {
+                        background: #d0d0d0;
+                        color: #333;
+                    }
+                }
+            }
+
+            .search-submit {
+                padding: 14px 32px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+        }
+
+        .search-suggestions {
+            .search-label {
+                color: #666;
+                font-size: 13px;
+                margin-bottom: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 600;
+            }
+
+            .search-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+
+                .search-tag {
+                    padding: 8px 16px;
+                    background: #f5f5f5;
+                    border: 1px solid #e0e0e0;
+                    color: #333;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        background: #667eea;
+                        border-color: #667eea;
+                        color: white;
+                        transform: translateY(-2px);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Responsive for Search
+@media (max-width: 768px) {
+    .search-overlay {
+        padding-top: 8vh;
+
+        .search-container {
+            width: 95%;
+
+            .search-close {
+                top: -45px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .search-form {
+                flex-direction: column;
+                gap: 12px;
+
+                .search-input-wrapper {
+                    .search-input {
+                        padding: 16px 55px 16px 55px;
+                        font-size: 16px;
+                    }
+
+                    .search-icon {
+                        left: 20px;
+                        font-size: 18px;
+                    }
+                }
+
+                .search-submit {
+                    padding: 16px 30px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .search-overlay {
+        padding-top: 6vh;
+
+        .search-container {
+            .search-form {
+                .search-input-wrapper {
+                    .search-input {
+                        padding: 14px 45px 14px 50px;
+                        font-size: 15px;
+                    }
+                }
+
+                .search-submit {
+                    padding: 14px 25px;
+                    font-size: 15px;
+                }
+            }
+
+            .search-suggestions {
+                .search-tags {
+                    gap: 8px;
+
+                    .search-tag {
+                        padding: 8px 16px;
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+    }
+}
 
 // Responsive breakpoints
 @media (max-width: 991.98px) {

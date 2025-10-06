@@ -149,6 +149,7 @@ const Contact = () => {
                       onChange={handleChange}
                       placeholder="Nhập email của bạn..."
                       required
+                      disabled={isSubmitting}
                     />
                   </div>
                   <div className="form-group">
@@ -161,10 +162,15 @@ const Contact = () => {
                       placeholder="Hãy nhập nội dung của bạn..."
                       rows="5"
                       required
+                      disabled={isSubmitting}
                     ></textarea>
                   </div>
-                  <button type="submit" className="submit-btn">
-                    Gửi tin nhắn
+                  <button
+                    type="submit"
+                    className="submit-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Đang gửi..." : " Gửi tin nhắn"}
                   </button>
                 </form>
               </div>

@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { getAllOrders } from "../../redux/actions/orderAction";
 import { getBrandsAction } from "../../redux/actions/brandAction";
+import useCountUp from "../../hooks/useCountUp";
+import { CirclesWithBar } from "react-loader-spinner";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,13 +34,16 @@ const Dashboard = () => {
   const { arrUsers, loading: userLoading } = useSelector(
     (state) => state.customerList
   );
+  const { arrOrders } = useSelector((state) => state.orderList);
+  console.log(arrOrders);
+
   const {
     arrProduct,
     loading: productLoading,
     totalProducts,
   } = useSelector((state) => state.productList);
   const totalRevenue = 51880000;
-  const totalOrders = arrUsers?.data?.length || 0;
+  const totalOrders = arrOrders?.data?.orders.length;
 
   const totalCustomers =
     arrUsers?.data?.users.filter((user) => user.role !== "admin")?.length || 0;
@@ -87,6 +92,15 @@ const Dashboard = () => {
     dispatch(getBrandsAction());
   }, [dispatch]);
 
+  const animatedRevenue = useCountUp(totalRevenue, 2000);
+  const animatedOrders = useCountUp(totalOrders, 1800);
+  const animatedCustomers = useCountUp(totalCustomers, 2000);
+  const animatedProducts = useCountUp(totalProducts || 0, 1800);
+
+  const animatedDelivered = useCountUp(orderStats.delivered, 1500);
+  const animatedCancelled = useCountUp(orderStats.cancelled, 1500);
+  const animatedProcessing = useCountUp(orderStats.processing, 1500);
+  const animatedShipping = useCountUp(orderStats.shipping, 1500);
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -100,7 +114,7 @@ const Dashboard = () => {
       <div className="dashboard-header">
         <h2>Tổng quan hệ thống Badminton shop</h2>
         <p className="total-revenue">
-          Tổng doanh thu: <strong>{formatCurrency(totalRevenue)} </strong>
+          Tổng doanh thu: <strong>{formatCurrency(animatedRevenue)} </strong>
         </p>
       </div>
 
@@ -112,7 +126,7 @@ const Dashboard = () => {
           </div>
           <div className="stat-info">
             <h3>Doanh thu</h3>
-            <div className="value">{formatCurrency(totalRevenue)} </div>
+            <div className="value">{formatCurrency(animatedRevenue)} </div>
             <div className="trend">+12% từ tháng trước</div>
           </div>
         </div>
@@ -124,12 +138,7 @@ const Dashboard = () => {
           </div>
           <div className="stat-info">
             <h3>Tổng đơn hàng</h3>
-            <div className="value">
-              {orderStats.delivered +
-                orderStats.cancelled +
-                orderStats.processing +
-                orderStats.shipping}
-            </div>
+            <div className="value">{animatedOrders}</div>
             <div className="trend">+8% từ tuần trước</div>
           </div>
         </div>
@@ -141,7 +150,9 @@ const Dashboard = () => {
           </div>
           <div className="stat-info">
             <h3>Tổng khách hàng</h3>
-            <div className="value">{userLoading ? "..." : totalCustomers}</div>
+            <div className="value">
+              {userLoading ? "..." : animatedCustomers}
+            </div>
             <div className="trend">
               +{Math.floor(totalCustomers * 0.1)} khách hàng mới
             </div>
@@ -156,7 +167,7 @@ const Dashboard = () => {
           <div className="stat-info">
             <h3>Tổng sản phẩm</h3>
             <div className="value">
-              {productLoading ? "..." : totalProducts || 0}
+              {productLoading ? "..." : animatedProducts}
             </div>
             <div className="trend">+2 sản phẩm mới</div>
           </div>
@@ -177,7 +188,7 @@ const Dashboard = () => {
                 </span>
                 <span>Đơn đã giao</span>
               </div>
-              <strong>{orderStats.delivered}</strong>
+              <strong>{animatedDelivered}</strong>
             </li>
             <li className="status-cancelled">
               <div className="status-info">
@@ -187,7 +198,7 @@ const Dashboard = () => {
                 </span>
                 <span>Đơn đã hủy</span>
               </div>
-              <strong>{orderStats.cancelled}</strong>
+              <strong>{animatedCancelled}</strong>
             </li>
             <li className="status-processing">
               <div className="status-info">
@@ -197,7 +208,7 @@ const Dashboard = () => {
                 </span>
                 <span>Đang xử lý</span>
               </div>
-              <strong>{orderStats.processing}</strong>
+              <strong>{animatedProcessing}</strong>
             </li>
             <li className="status-shipping">
               <div className="status-info">
@@ -207,7 +218,7 @@ const Dashboard = () => {
                 </span>
                 <span>Đang vận chuyển</span>
               </div>
-              <strong>{orderStats.shipping}</strong>
+              <strong>{animatedShipping}</strong>
             </li>
           </ul>
         </div>
@@ -266,7 +277,19 @@ const Dashboard = () => {
           <h3>Sản phẩm bán chạy</h3>
           <div className="product-list">
             {productLoading ? (
-              <div>Đang tải...</div>
+              <div className="loader">
+                <div className="loader-container">
+                  <CirclesWithBar
+                    height={100}
+                    width={100}
+                    color="#2563eb"
+                    ariaLabel="loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                  />
+                </div>
+              </div>
             ) : topProducts.length > 0 ? (
               topProducts.map((item, index) => (
                 <div className="product-item" key={index}>

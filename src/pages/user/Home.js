@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Footer from "../../components/common/Footer";
 import Navbar from "../../components/common/Navbar";
 import ProductCard from "../user/products/ProductCard";
 import { fetchProduct } from "../../redux/actions/productAction";
+import { getBrandsAction } from "../../redux/actions/brandAction";
 import { CirclesWithBar } from "react-loader-spinner";
 import "./Home.scss";
 
@@ -13,27 +14,34 @@ const Home = () => {
   const { arrProduct, loading, error } = useSelector(
     (state) => state.productList
   );
-
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [latestProducts, setLatestProducts] = useState([]);
+  const { brands } = useSelector((state) => state.brandList);
+  console.log("Check brand", brands);
 
   useEffect(() => {
     dispatch(fetchProduct());
+    dispatch(getBrandsAction());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (arrProduct && arrProduct.data) {
-      // Lọc sản phẩm nổi bật
-      const featured = arrProduct.data.filter((product) => product.is_featured);
-      setFeaturedProducts(featured.slice(0, 8)); // Lấy 8 sản phẩm nổi bật
+  // Sử dụng useMemo để tối ưu performance
+  const featuredProducts = useMemo(() => {
+    if (!arrProduct?.data || !Array.isArray(arrProduct.data)) return [];
 
-      // Lấy sản phẩm mới nhất (sắp xếp theo id giảm dần)
-      const latest = [...arrProduct.data]
-        .sort((a, b) => b.id - a.id)
-        .slice(0, 8);
-      setLatestProducts(latest);
-    }
+    return arrProduct.data
+      .filter((product) => product.is_featured === true)
+      .slice(0, 8);
   }, [arrProduct]);
+
+  const latestProducts = useMemo(() => {
+    if (!arrProduct?.data || !Array.isArray(arrProduct.data)) return [];
+
+    return [...arrProduct.data]
+      .sort((a, b) => (b.id || 0) - (a.id || 0))
+      .slice(0, 8);
+  }, [arrProduct]);
+
+  const topBrands = useMemo(() => {
+    return brands.slice(0, 3);
+  }, [brands]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -91,7 +99,15 @@ const Home = () => {
     return (
       <div>
         <Navbar />
-        <div className="error-message">{error}</div>
+        <div className="error-message">
+          <p>{error}</p>
+          <button
+            onClick={() => dispatch(fetchProduct())}
+            className="retry-btn"
+          >
+            Thử lại
+          </button>
+        </div>
         <Footer />
       </div>
     );
@@ -113,10 +129,10 @@ const Home = () => {
               uy tín. Nâng tầm kỹ năng, chinh phục mọi trận đấu.
             </p>
             <div className="hero-buttons">
-              <Link to="/products" className="btn-home btn-primary">
+              <Link to="/products" className="btn-homepage ">
                 Xem sản phẩm
               </Link>
-              <Link to="/intro" className="btn-home btn-outline">
+              <Link to="/intro" className="btn-homepage ">
                 Tìm hiểu thêm
               </Link>
             </div>
@@ -198,18 +214,12 @@ const Home = () => {
             </p>
           </div>
           <div className="brands-grid">
-            <div className="brand-card">
-              <h3>Yerak</h3>
-              <p>Thương hiệu uy tín hàng đầu</p>
-            </div>
-            <div className="brand-card">
-              <h3>Valeer</h3>
-              <p>Chất lượng quốc tế</p>
-            </div>
-            <div className="brand-card">
-              <h3>Living</h3>
-              <p>Thiết kế hiện đại</p>
-            </div>
+            {topBrands.map((brand, index) => (
+              <div className="brand-card" key={brand.id || index}>
+                <h3>{brand.name}</h3>
+                <p>{brand.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

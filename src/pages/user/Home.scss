@@ -187,6 +187,17 @@ $gradient-end: #7c3aed;
             gap: 16px;
             flex-wrap: wrap;
 
+            .btn-homepage {
+                background-color: #2563eb !important;
+                color: white !important;
+                border: none;
+                padding: 8px;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.1);
+                }
+            }
+
             @media (max-width: 768px) {
                 justify-content: center;
             }
@@ -194,21 +205,6 @@ $gradient-end: #7c3aed;
             @media (max-width: 480px) {
                 flex-direction: column;
                 align-items: center;
-            }
-
-            .btn-home {
-                &.btn-primary {
-                    @include button-style($white, $primary-color, transparent);
-                }
-
-                &.btn-outline {
-                    @include button-style(transparent, $white, rgba(255, 255, 255, 0.3));
-                    backdrop-filter: blur(10px);
-
-                    &:hover {
-                        background-color: rgba(255, 255, 255, 0.1);
-                    }
-                }
             }
         }
     }

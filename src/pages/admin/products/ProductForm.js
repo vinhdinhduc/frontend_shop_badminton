@@ -4,9 +4,10 @@ import {
   addProduct,
   updateProduct,
 } from "../../../redux/actions/productAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { PlusCircle, SquarePen } from "lucide-react";
+import { getBrandsAction } from "../../../redux/actions/brandAction";
 
 const ProductForm = ({
   initialData = null,
@@ -39,6 +40,12 @@ const ProductForm = ({
     },
     stock: 0,
   });
+  useEffect(() => {
+    dispatch(getBrandsAction());
+  }, []);
+
+  const { brands } = useSelector((state) => state.brandList);
+  console.log("brand form", brands);
 
   const [dragActive, setDragActive] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
@@ -46,15 +53,6 @@ const ProductForm = ({
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
-
-  const brands = [
-    "Yonex",
-    "Victor",
-    "Li-Ning",
-    "Mizuno",
-    "Kawasaki",
-    "FZ Forza",
-  ];
 
   const categories = [
     { id: 1, name: "Tấn công" },
@@ -568,8 +566,8 @@ const ProductForm = ({
                 onChange={handleInputChange}
               >
                 {brands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
+                  <option key={brand.id} value={brand.name}>
+                    {brand.name}
                   </option>
                 ))}
               </select>

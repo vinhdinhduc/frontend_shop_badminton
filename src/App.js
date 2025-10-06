@@ -23,6 +23,7 @@ import BrandManagement from "./pages/admin/brand/BrandManagement";
 import OrderTracking from "./pages/user/order_user/OrderTracking";
 import CustomerProfile from "./pages/user/profile/CustomerProfile";
 import ChatbotWidget from "./components/chatbot/ChatbotWidget";
+import Reports from "./pages/admin/report/Reports";
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
             <Route path="orders" element={<OrderManagement />} />
             <Route path="customers" element={<ManageCustomer />} />
             <Route path="brands" element={<BrandManagement />} />
+            <Route path="reports" element={<Reports />} />
             <Route
               path="trash-products"
               element={<AdminDeletedProductList />}

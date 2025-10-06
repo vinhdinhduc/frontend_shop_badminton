@@ -1,6 +1,7 @@
 import Footer from "../../../components/common/Footer";
 import Navbar from "../../../components/common/Navbar";
 import ProductCard from "./ProductCard";
+import { useSearchParams } from "react-router-dom";
 import { PaginationComponent } from "../../../components/ui/Pagination";
 import "./ProductList.scss";
 import "../../../components/ui/Pagination.scss";
@@ -12,13 +13,14 @@ import { getBrandsAction } from "../../../redux/actions/brandAction";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [arrBrands, setArrBrands] = useState([]);
   const [filters, setFilters] = useState({
-    category_id: "",
-    brand: "",
-    min_price: "",
-    max_price: "",
-    search: "",
+    category_id: searchParams.get("category_id") || "",
+    brand: searchParams.get("brand") || "",
+    min_price: searchParams.get("min_price") || "",
+    max_price: searchParams.get("max_price") || "",
+    search: searchParams.get("search") || "",
   });
   const [sortOption, setSortOption] = useState("newest");
   const dispatch = useDispatch();
@@ -112,11 +114,20 @@ const ProductList = () => {
   }, [filteredAndSortedProducts, currentPage, itemsPerPage]);
 
   const handleFilterChange = (filterType, value) => {
-    setFilters((prev) => ({
-      ...prev,
+    const newFilters = {
+      ...filters,
       [filterType]: value,
-    }));
-    setCurrentPage(1); // Reset to first page when filters change
+    };
+    setFilters(newFilters);
+
+    const params = {};
+    Object.keys(newFilters).forEach((key) => {
+      if (newFilters[key]) {
+        params[key] = newFilters[key];
+      }
+    });
+    setSearchParams(params);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
