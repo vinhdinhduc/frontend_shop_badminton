@@ -1,4 +1,4 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -161,11 +161,10 @@ const AdminProductList = () => {
       </div>
 
       {loading && (
-        <div className="loading-container">
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-            <p>Đang tải danh sách sản phẩm...</p>
-          </div>
+        <div className="spinner-loading">
+          <FontAwesomeIcon icon={faSpinner} className="loading-spinner" />
+
+          <p>Đang tải danh sách sản phẩm...</p>
         </div>
       )}
 

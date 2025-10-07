@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./BrandDeleteModal.scss";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const BrandDeleteModal = ({ show, onClose, onConfirm, brand, loading }) => {
   const [confirmText, setConfirmText] = useState("");
@@ -213,7 +215,10 @@ const BrandDeleteModal = ({ show, onClose, onConfirm, brand, loading }) => {
             {loading && (
               <div className="delete-progress">
                 <div className="progress-icon">
-                  <i className="fas fa-spinner"></i>
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    className="spinner-loading"
+                  />
                 </div>
                 <h4>Đang xóa thương hiệu...</h4>
                 <p>Vui lòng không đóng cửa sổ này</p>
@@ -293,7 +298,7 @@ const BrandDeleteModal = ({ show, onClose, onConfirm, brand, loading }) => {
           >
             {loading ? (
               <>
-                <i className="fas fa-spinner fa-spin"></i>
+                <FontAwesomeIcon icon={faSpinner} className="spinner-loading" />
                 Đang xóa...
               </>
             ) : showCountdown ? (

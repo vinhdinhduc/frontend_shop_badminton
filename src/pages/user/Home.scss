@@ -188,13 +188,21 @@ $gradient-end: #7c3aed;
             flex-wrap: wrap;
 
             .btn-homepage {
-                background-color: #2563eb !important;
-                color: white !important;
-                border: none;
-                padding: 8px;
+                display: inline-block;
+                background-color: $accent-color !important;
+                opacity: 0.9;
+                color: #fff !important;
+                border: none !important;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none !important;
+                font-weight: 500;
+                transition: all 0.3s ease;
 
                 &:hover {
-                    background-color: rgba(255, 255, 255, 0.1);
+                    opacity: 1;
+                    background-color: $accent-color !important;
+                    transform: translateY(-2px);
                 }
             }
 
@@ -554,18 +562,37 @@ $gradient-end: #7c3aed;
                 align-items: center;
             }
 
-            .btn {
-                &.btn-primary {
-                    @include button-style($white, $primary-color, transparent);
+            .btn-contact-home {
+                display: inline-block;
+                background-color: $white !important;
+                color: $primary-color !important;
+                border: none !important;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none !important;
+                font-weight: 500;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background-color: $white !important;
+                    opacity: 0.9;
+                    transform: translateY(-2px);
                 }
+            }
+            .btn-viewProduct-home {
+                display: inline-block;
+                background-color: transparent !important;
+                color: $white !important;
+                border: 2px solid $white !important;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none !important;
+                font-weight: 500;
+                transition: all 0.3s ease;
 
-                &.btn-outline {
-                    @include button-style(transparent, $white, rgba(255, 255, 255, 0.3));
-                    backdrop-filter: blur(10px);
-
-                    &:hover {
-                        background-color: rgba(255, 255, 255, 0.1);
-                    }
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                    transform: translateY(-2px);
                 }
             }
         }

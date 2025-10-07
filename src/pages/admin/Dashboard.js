@@ -42,17 +42,23 @@ const Dashboard = () => {
     loading: productLoading,
     totalProducts,
   } = useSelector((state) => state.productList);
-  const totalRevenue = 51880000;
+  const totalRevenue =
+    arrOrders?.data?.orders
+      ?.filter((o) => o.status === "delivered" && o.paymentStatus === "paid")
+      ?.reduce((sum, order) => sum + order.order_total, 0) || 2300000;
   const totalOrders = arrOrders?.data?.orders.length;
 
   const totalCustomers =
     arrUsers?.data?.users.filter((user) => user.role !== "admin")?.length || 0;
 
+  const orders = arrOrders?.data?.orders || [];
+  console.log("Check orders", orders);
   const orderStats = {
-    delivered: 8,
-    cancelled: 2,
-    processing: 4,
-    shipping: 1,
+    pending: orders.filter((o) => o.status === "pending").length,
+    processing: orders.filter((o) => o.status === "processing").length,
+    shipped: orders.filter((o) => o.status === "shipped").length,
+    delivered: orders.filter((o) => o.status === "delivered").length,
+    cancelled: orders.filter((o) => o.status === "cancelled").length,
   };
   const recentActivities = [
     {
@@ -96,11 +102,11 @@ const Dashboard = () => {
   const animatedOrders = useCountUp(totalOrders, 1800);
   const animatedCustomers = useCountUp(totalCustomers, 2000);
   const animatedProducts = useCountUp(totalProducts || 0, 1800);
-
+  const animatedPending = useCountUp(orderStats.pending, 1500);
   const animatedDelivered = useCountUp(orderStats.delivered, 1500);
   const animatedCancelled = useCountUp(orderStats.cancelled, 1500);
   const animatedProcessing = useCountUp(orderStats.processing, 1500);
-  const animatedShipping = useCountUp(orderStats.shipping, 1500);
+  const animatedShipped = useCountUp(orderStats.shipped, 1500);
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -180,45 +186,54 @@ const Dashboard = () => {
         <div className="card order-status">
           <h3>Trạng thái đơn hàng</h3>
           <ul>
-            <li className="status-delivered">
+            <li className="status-pending">
               <div className="status-info">
                 <span className="status-icon">
-                  {" "}
-                  <CheckCircle size={16} color="green" />
+                  <Clock size={16} color="gray" />
                 </span>
-                <span>Đơn đã giao</span>
+                <span>Chờ xác nhận</span>
               </div>
-              <strong>{animatedDelivered}</strong>
+              <strong>{animatedPending}</strong>
             </li>
-            <li className="status-cancelled">
-              <div className="status-info">
-                <span className="status-icon">
-                  {" "}
-                  <XCircle size={16} color="red" />
-                </span>
-                <span>Đơn đã hủy</span>
-              </div>
-              <strong>{animatedCancelled}</strong>
-            </li>
+
             <li className="status-processing">
               <div className="status-info">
                 <span className="status-icon">
-                  {" "}
                   <Clock size={16} color="orange" />
                 </span>
                 <span>Đang xử lý</span>
               </div>
               <strong>{animatedProcessing}</strong>
             </li>
-            <li className="status-shipping">
+
+            <li className="status-shipped">
               <div className="status-info">
                 <span className="status-icon">
-                  {" "}
                   <Truck size={16} color="#3e9392" />
                 </span>
-                <span>Đang vận chuyển</span>
+                <span>Đang giao</span>
               </div>
-              <strong>{animatedShipping}</strong>
+              <strong>{animatedShipped}</strong>
+            </li>
+
+            <li className="status-delivered">
+              <div className="status-info">
+                <span className="status-icon">
+                  <CheckCircle size={16} color="green" />
+                </span>
+                <span>Đã giao</span>
+              </div>
+              <strong>{animatedDelivered}</strong>
+            </li>
+
+            <li className="status-cancelled">
+              <div className="status-info">
+                <span className="status-icon">
+                  <XCircle size={16} color="red" />
+                </span>
+                <span>Đã hủy</span>
+              </div>
+              <strong>{animatedCancelled}</strong>
             </li>
           </ul>
         </div>

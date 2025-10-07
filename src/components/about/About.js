@@ -3,6 +3,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./About.scss";
 import Navbar from "../common/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBullseye, faEye } from "@fortawesome/free-solid-svg-icons";
 
 const About = () => {
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ const About = () => {
             <div className="container">
               <div className="mission-grid">
                 <div className="mission-icon">
-                  <i className="fas fa-bullseye"></i>
+                  <FontAwesomeIcon icon={faBullseye} />
                 </div>
                 <div className="mission-content">
                   <h2>Sứ mệnh</h2>
@@ -76,7 +78,7 @@ const About = () => {
                   </p>
                 </div>
                 <div className="vision-icon">
-                  <i className="fas fa-eye"></i>
+                  <FontAwesomeIcon icon={faEye} />
                 </div>
               </div>
             </div>

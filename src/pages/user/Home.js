@@ -83,7 +83,7 @@ const Home = () => {
               height={100}
               width={100}
               color="#2563eb"
-              ariaLabel="loading"
+              ariaLabel="Loading"
               wrapperStyle={{}}
               wrapperClass=""
               visible={true}
@@ -236,10 +236,10 @@ const Home = () => {
               nhất
             </p>
             <div className="cta-buttons">
-              <Link to="/contact" className="btn-home btn-primary">
+              <Link to="/contact" className="btn-contact-home">
                 Liên hệ ngay
               </Link>
-              <Link to="/products" className="btn-home btn-outline">
+              <Link to="/products" className="btn-viewProduct-home">
                 Xem sản phẩm
               </Link>
             </div>

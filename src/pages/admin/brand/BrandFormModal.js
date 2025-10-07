@@ -12,6 +12,7 @@ import {
   faExternalLinkAlt,
   faImage,
   faLink,
+  faSpinner,
   faStar,
   faTag,
   faTimes,
@@ -927,7 +928,10 @@ const BrandFormModal = ({
             >
               {loading ? (
                 <>
-                  <i className="fas fa-spinner fa-spin"></i>
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    className="spinner-loading"
+                  />
                   {mode === "create" ? "Đang thêm..." : "Đang cập nhật..."}
                 </>
               ) : (

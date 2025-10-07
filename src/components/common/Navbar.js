@@ -224,7 +224,7 @@ const Navbar = () => {
             <div className="nav-actions">
               <button
                 onClick={toggleSearch}
-                className="nav-action"
+                className="nav-action search-home"
                 title="Tìm kiếm"
                 aria-label="Search"
               >

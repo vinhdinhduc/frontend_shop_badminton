@@ -12,7 +12,7 @@ import {
 } from "../../../redux/actions/brandAction";
 import BrandDeleteModal from "./BrandDeleteModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faSpinner, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const BrandManagement = () => {
   const dispatch = useDispatch();
@@ -416,7 +416,9 @@ const BrandManagement = () => {
       {/* Loading State */}
       {loading && (
         <div className="loading-wrapper">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner">
+            <FontAwesomeIcon icon={faSpinner} className="spinner-loading" />
+          </div>
           <p>Đang tải danh sách thương hiệu...</p>
         </div>
       )}

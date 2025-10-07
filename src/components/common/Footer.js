@@ -2,6 +2,10 @@ import React from "react";
 import "./Footer.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCcAmex,
+  faCcMastercard,
+  faCcPaypal,
+  faCcVisa,
   faFacebook,
   faInstagram,
   faTwitter,
@@ -127,10 +131,10 @@ const Footer = () => {
         <div className="footer-bottom-content">
           <p>&copy; 2025 Badminton Shop. Not copy right.Developer Đức Vình! </p>
           <div className="payment-methods">
-            <i className="fab fa-cc-visa"></i>
-            <i className="fab fa-cc-mastercard"></i>
-            <i className="fab fa-cc-paypal"></i>
-            <i className="fab fa-cc-amex"></i>
+            <FontAwesomeIcon icon={faCcVisa} />
+            <FontAwesomeIcon icon={faCcMastercard} />
+            <FontAwesomeIcon icon={faCcPaypal} />
+            <FontAwesomeIcon icon={faCcAmex} />
           </div>
         </div>
       </div>

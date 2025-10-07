@@ -1,12 +1,10 @@
 @import "../../../../styles/variables.scss";
-@import "../../../../styles/mixins.scss";
 
 .admin-deleted-product-list-container {
     padding: 0 20px;
     min-height: 100vh;
     background: $background-light;
 
-    // Success Message
     .success-message {
         position: fixed;
         top: 20px;
@@ -879,56 +877,6 @@
 
             tbody tr.deleted-row {
                 background: #f8f9fa !important;
-            }
-        }
-    }
-
-    // Dark mode support
-    @media (prefers-color-scheme: dark) {
-        background: #1a1a1a;
-
-        .table-container,
-        .mobile-cards .product-card {
-            background: #2d2d2d;
-            color: #e5e5e5;
-        }
-
-        .deleted-product-table {
-            tbody tr.deleted-row {
-                background: rgba($error-color, 0.05);
-                border-bottom-color: #404040;
-
-                &:hover {
-                    background: rgba($error-color, 0.1);
-                }
-            }
-
-            .product-info .product-name {
-                color: #e5e5e5;
-            }
-
-            .product-slug {
-                color: #9ca3af;
-            }
-        }
-
-        .admin-search-container .search-box .search-input {
-            background: #2d2d2d;
-            border-color: #404040;
-            color: #e5e5e5;
-
-            &::placeholder {
-                color: #9ca3af;
-            }
-        }
-
-        .empty-state .empty-content {
-            h3 {
-                color: #e5e5e5;
-            }
-
-            p {
-                color: #9ca3af;
             }
         }
     }

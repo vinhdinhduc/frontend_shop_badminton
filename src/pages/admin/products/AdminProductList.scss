@@ -1,86 +1,4 @@
 @import "../../../styles/variables.scss";
-@import "../../../styles/mixins.scss";
-$primary-color: #3b82f6;
-$primary-hover: #2563eb;
-$danger-color: #dc2626;
-$danger-light: #fef2f2;
-$danger-hover: #fee2e2;
-$warning-color: #d97706;
-$warning-light: #fef3c7;
-$success-color: #059669;
-$success-light: #d1fae5;
-$edit-color: #0369a1;
-$edit-light: #f0f9ff;
-$edit-hover: #e0f2fe;
-
-$gray-50: #f8fafc;
-$gray-100: #f1f5f9;
-$gray-200: #e2e8f0;
-$gray-300: #cbd5e1;
-$gray-400: #94a3b8;
-$gray-500: #64748b;
-$gray-600: #475569;
-$gray-700: #334155;
-$gray-800: #1e293b;
-$gray-900: #0f172a;
-
-$white: #ffffff;
-$black: #000000;
-
-$border-radius: 8px;
-$border-radius-lg: 12px;
-$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-$shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-
-// Breakpoints
-$breakpoint-xs: 480px;
-$breakpoint-sm: 640px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 1024px;
-$breakpoint-xl: 1280px;
-
-// Mixins
-@mixin flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-@mixin flex-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-@mixin transition($property: all, $duration: 0.2s, $timing: ease) {
-    transition: $property $duration $timing;
-}
-
-@mixin button-base {
-    border: none;
-    border-radius: $border-radius;
-    cursor: pointer;
-    font-weight: 500;
-    @include transition();
-
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
-    }
-}
-
-@mixin responsive($breakpoint) {
-    @media (max-width: $breakpoint) {
-        @content;
-    }
-}
-
-@mixin responsive-up($breakpoint) {
-    @media (min-width: $breakpoint) {
-        @content;
-    }
-}
 
 .admin-product-list-container {
     padding: 24px;
@@ -603,23 +521,15 @@ $breakpoint-xl: 1280px;
     }
 
     // Loading State
-    .loading-spinner {
+    .spinner-loading {
         @include flex-center;
         padding: 48px;
 
-        .spinner {
+        .loading-spinner {
             width: 32px;
             height: 32px;
-            border: 3px solid $gray-200;
-            border-top-color: $primary-color;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-    }
 
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
+            animation: spin 1s linear infinite;
         }
     }
 
@@ -666,5 +576,13 @@ $breakpoint-xl: 1280px;
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
         }
+    }
+}
+@keyframes spin {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

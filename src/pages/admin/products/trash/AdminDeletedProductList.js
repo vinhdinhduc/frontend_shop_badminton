@@ -138,7 +138,7 @@ const AdminDeletedProductList = () => {
           </span>
           <button
             className="back-btn"
-            onClick={() => navigate("/admin/products")}
+            onClick={() => navigate("/admin/list-products")}
           >
             <Eye size={16} />
             Xem sản phẩm hoạt động

@@ -1,219 +1,1369 @@
-// Color System
+// _variables.scss - File chứa tất cả biến SCSS chung
+
+// ==========================================
+// COLOR PALETTE
+// ==========================================
+
 // Primary Colors
-$primary-color: #3b82f6; // Blue-500
-$primary-light: #60a5fa; // Blue-400
-$primary-dark: #1d4ed8; // Blue-700
-$primary-50: #eff6ff; // Blue-50
-$primary-100: #dbeafe; // Blue-100
-$primary-200: #bfdbfe; // Blue-200
+$primary-color: #667eea;
+$primary-hover: #1d4ed8;
+$primary-dark: #1976d2;
+$primary-light: #3b82f6;
 
 // Secondary Colors
-$secondary-color: #6b7280; // Gray-500
-$secondary-light: #9ca3af; // Gray-400
-$secondary-dark: #374151; // Gray-700
-
-// Success Colors
-$success-color: #10b981; // Emerald-500
-$success-light: #34d399; // Emerald-400
-$success-dark: #047857; // Emerald-700
-$success-50: #ecfdf5; // Emerald-50
-$success-100: #d1fae5; // Emerald-100
-
-// Error Colors
-$error-color: #ef4444; // Red-500
-$error-light: #f87171; // Red-400
-$error-dark: #dc2626; // Red-600
-$error-50: #fef2f2; // Red-50
-$error-100: #fee2e2; // Red-100
-
-// Warning Colors
-$warning-color: #f59e0b; // Amber-500
-$warning-light: #fbbf24; // Amber-400
-$warning-dark: #d97706; // Amber-600
-$warning-50: #fffbeb; // Amber-50
-$warning-100: #fef3c7; // Amber-100
-
-// Info Colors
-$info-color: #06b6d4; // Cyan-500
-$info-light: #22d3ee; // Cyan-400
-$info-dark: #0891b2; // Cyan-600
-$info-50: #ecfeff; // Cyan-50
-$info-100: #cffafe; // Cyan-100
-
-// Text Colors
-$text-primary: #111827; // Gray-900
-$text-secondary: #374151; // Gray-700
-$text-muted: #6b7280; // Gray-500
-$text-light: #9ca3af; // Gray-400
-$text-white: #ffffff;
-
-// Background Colors
-$background-primary: #ffffff;
-$background-secondary: #f9fafb; // Gray-50
-$background-light: #f3f4f6; // Gray-100
-$background-dark: #1f2937; // Gray-800
-$background-darker: #111827; // Gray-900
-
-// Border Colors
-$border-light: #e5e7eb; // Gray-200
-$border-medium: #d1d5db; // Gray-300
-$border-dark: #6b7280; // Gray-500
-
-// Shadow Colors
-$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-$shadow-md:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-$shadow-lg:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-$shadow-xl:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-// Brand Colors (for product brands)
-$brand-apple: #007aff;
-$brand-apple-bg: rgba(0, 122, 255, 0.1);
-
-$brand-samsung: #1473e6;
-$brand-samsung-bg: rgba(20, 115, 230, 0.1);
-
-$brand-xiaomi: #ff6700;
-$brand-xiaomi-bg: rgba(255, 103, 0, 0.1);
-
-$brand-oppo: #1abc9c;
-$brand-oppo-bg: rgba(26, 188, 156, 0.1);
-
-$brand-vivo: #9b59b6;
-$brand-vivo-bg: rgba(155, 89, 182, 0.1);
-
-$brand-huawei: #e74c3c;
-$brand-huawei-bg: rgba(231, 76, 60, 0.1);
-
-$brand-realme: #f1c40f;
-$brand-realme-bg: rgba(241, 196, 15, 0.1);
-
-$brand-oneplus: #eb5757;
-$brand-oneplus-bg: rgba(235, 87, 87, 0.1);
+$secondary-color: #764ba2;
+$secondary-light: #6c757d;
+$secondary-dark: #f3f4f6;
 
 // Status Colors
-$status-active: $success-color;
-$status-inactive: $error-color;
-$status-pending: $warning-color;
-$status-draft: $secondary-color;
+$success-color: #28a745;
+$success-light: #d1fae5;
+$success-dark: #10b981;
 
-// Stock Status Colors
-$stock-in-stock: $success-color;
-$stock-low-stock: $warning-color;
-$stock-out-of-stock: $error-color;
+$danger-color: #dc3545;
+$danger-light: #fef2f2;
+$danger-hover: #fee2e2;
+$danger-dark: #dc2626;
 
-// Admin Theme Colors
-$admin-sidebar: #1e293b; // Slate-800
-$admin-sidebar-hover: #334155; // Slate-700
-$admin-header: #ffffff;
-$admin-content: #f8fafc; // Slate-50
+$warning-color: #ffc107;
+$warning-light: #fef3c7;
+$warning-dark: #f39c12;
+$warning-darker: #d97706;
 
-// Spacing System
+$info-color: #17a2b8;
+
+$error-color: #ef4444;
+
+// Neutral Colors
+$white: #ffffff;
+$black: #000000;
+
+$light-color: #f8f9fa;
+$light-bg: #f5f7fa;
+
+$dark-color: #343a40;
+
+// Gray Scale
+$gray-50: #f8fafc;
+$gray-100: #f1f5f9;
+$gray-200: #e2e8f0;
+$gray-300: #cbd5e1;
+$gray-400: #94a3b8;
+$gray-500: #64748b;
+$gray-600: #475569;
+$gray-700: #334155;
+$gray-800: #1e293b;
+$gray-900: #0f172a;
+
+// Special Colors
+$edit-color: #0369a1;
+$edit-light: #f0f9ff;
+$edit-hover: #e0f2fe;
+
+// ==========================================
+// TEXT COLORS
+// ==========================================
+$text-color: #333;
+$text-primary: #1f2937;
+$text-secondary: #6b7280;
+$text-light: #64748b;
+$text-muted: #94a3b8;
+$text-dark: #1f2937;
+$text-white: #ffffff;
+
+// ==========================================
+// BACKGROUND COLORS
+// ==========================================
+$background-light: #f5f6fa;
+$card-bg: #ffffff;
+
+// ==========================================
+// BORDER & DIVIDER
+// ==========================================
+$border-color: #e0e0e0;
+$border-light: #e5e7eb;
+$border-dark: #d1d5db;
+
+// ==========================================
+// SPACING
+// ==========================================
 $spacing-xs: 4px;
 $spacing-sm: 8px;
 $spacing-md: 16px;
 $spacing-lg: 24px;
 $spacing-xl: 32px;
 $spacing-2xl: 48px;
-$spacing-3xl: 64px;
 
-// Border Radius
+// ==========================================
+// BORDER RADIUS
+// ==========================================
+$border-radius: 12px;
+$border-radius-sm: 8px;
+$border-radius-md: 10px;
+$border-radius-lg: 16px;
+$border-radius-xl: 20px;
+$border-radius-full: 9999px;
+
 $radius-sm: 4px;
 $radius-md: 6px;
 $radius-lg: 8px;
 $radius-xl: 12px;
-$radius-2xl: 16px;
-$radius-full: 9999px;
+$radius-full: 50%;
 
-// Font Sizes
-$text-xs: 12px;
-$text-sm: 14px;
-$text-base: 16px;
-$text-lg: 18px;
-$text-xl: 20px;
-$text-2xl: 24px;
-$text-3xl: 30px;
-$text-4xl: 36px;
+// ==========================================
+// BOX SHADOWS
+// ==========================================
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
-// Font Weights
-$font-light: 300;
+$box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+$box-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+$box-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+$button-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+$button-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+// ==========================================
+// TRANSITIONS & ANIMATIONS
+// ==========================================
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast: all 0.2s ease;
+$transition-slow: all 0.5s ease;
+
+$duration-200: 0.2s;
+$duration-300: 0.3s;
+$duration-500: 0.5s;
+
+// ==========================================
+// TYPOGRAPHY
+// ==========================================
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+
+$font-size-xs: 0.75rem; // 12px
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem; // 16px
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.25rem; // 20px
+$font-size-2xl: 1.5rem; // 24px
+$font-size-3xl: 1.875rem; // 30px
+$font-size-4xl: 2rem; // 32px
+
+$text-xs: 0.625rem; // 10px
+$text-sm: 0.75rem; // 12px
+$text-base: 0.875rem; // 14px
+$text-lg: 1rem; // 16px
+$text-xl: 1.125rem; // 18px
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+
 $font-normal: 400;
 $font-medium: 500;
 $font-semibold: 600;
 $font-bold: 700;
-$font-extrabold: 800;
 
-// Line Heights
-$leading-tight: 1.25;
-$leading-normal: 1.5;
-$leading-relaxed: 1.625;
+// ==========================================
+// LAYOUT & SIZING (Updated with missing variables)
+// ==========================================
+$sidebar-width-expanded: 250px;
+$sidebar-width-collapsed: 70px;
+$header-height: 70px;
 
-// Breakpoints
+$container-max-width: 1200px;
+
+// ==========================================
+// BREAKPOINTS (Updated with missing variables)
+// ==========================================
+$breakpoint-xs: 480px;
 $breakpoint-sm: 640px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
 $breakpoint-xl: 1280px;
 $breakpoint-2xl: 1536px;
 
-// Z-index Scale
-$z-dropdown: 1000;
-$z-sticky: 1020;
-$z-fixed: 1030;
-$z-modal-backdrop: 1040;
-$z-modal: 1050;
-$z-popover: 1060;
-$z-tooltip: 1070;
-$z-toast: 1080;
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
 
-// Transition Durations
-$duration-75: 75ms;
-$duration-100: 100ms;
-$duration-150: 150ms;
-$duration-200: 200ms;
-$duration-300: 300ms;
-$duration-500: 500ms;
-$duration-700: 700ms;
-$duration-1000: 1000ms;
+// ==========================================
+// Z-INDEX (Updated with missing variables)
+// ==========================================
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
 
-// Transition Timing Functions
-$ease-linear: linear;
-$ease-in: cubic-bezier(0.4, 0, 1, 1);
-$ease-out: cubic-bezier(0, 0, 0.2, 1);
+// ==========================================
+// OPACITY (Updated with missing variables)
+// ==========================================
+$opacity-disabled: 0.5;
+$opacity-hover: 0.8;
+$opacity-active: 1;
+
+// ==========================================
+// FORM ELEMENTS (Updated with missing variables)
+// ==========================================
+$input-padding: 12px 16px;
+$input-border: 2px solid $border-light;
+$input-border-radius: $border-radius-sm;
+$input-focus-border: $primary-color;
+$input-shadow-focus: 0 0 0 3px rgba($primary-color, 0.1);
+$input-border-focus: $primary-color;
+
+// Missing form variables
+$background-primary: $white;
+$background-light: $gray-100;
+$border-medium: $gray-300;
+$border-dark: $gray-400;
+
+// ==========================================
+// TABLE VARIABLES (Missing)
+// ==========================================
+$table-border: $gray-200;
+$table-header-bg: $gray-700;
+$table-row-hover: $gray-50;
+
+// ==========================================
+// BADGE COLORS (Missing)
+// ==========================================
+$success-100: rgba($success-color, 0.1);
+$success-dark: darken($success-color, 10%);
+$error-100: rgba($danger-color, 0.1);
+$error-dark: darken($danger-color, 10%);
+$warning-100: rgba($warning-color, 0.1);
+$warning-dark: darken($warning-color, 10%);
+$info-100: rgba($info-color, 0.1);
+$info-dark: darken($info-color, 10%);
+
+// ==========================================
+// CARD SHADOWS (Missing)
+// ==========================================
+$card-shadow: $shadow;
+$card-shadow-hover: $shadow-lg;
+
+// ==========================================
+// EASING & DURATION (Missing)
+// ==========================================
 $ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$ease-in: cubic-bezier(0.4, 0, 1, 1);
 
-// Component Specific Variables
-// Table
-$table-header-bg: linear-gradient(135deg, $primary-color, $primary-dark);
-$table-row-hover: rgba($primary-color, 0.05);
-$table-border: $border-light;
+$duration-150: 0.15s;
+$duration-200: 0.2s;
+$duration-300: 0.3s;
+$duration-500: 0.5s;
 
-// Button
-$button-shadow:
-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
-    0 1px 2px 0 rgba(0, 0, 0, 0.06);
-$button-shadow-hover:
+// ==========================================
+// BUTTONS
+// ==========================================
+$button-padding: 10px 20px;
+$button-padding-sm: 8px 16px;
+$button-padding-lg: 12px 24px;
+$button-border-radius: $border-radius-sm;
+
+// ==========================================
+// CARDS
+// ==========================================
+$card-padding: 1.5rem;
+$card-border-radius: $border-radius;
+$card-shadow: $box-shadow;
+
+// ==========================================
+// NAVBAR
+// ==========================================
+$navbar-height: 70px;
+$navbar-padding: 0 20px;
+
+// ==========================================
+// FOOTER
+// ==========================================
+$footer-padding: 40px 0 0;
+
+// ==========================================
+// GRADIENTS
+// ==========================================
+@mixin gradient-primary {
+    background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+}
+
+@mixin gradient-success {
+    background: linear-gradient(135deg, $success-color 0%, darken($success-color, 10%) 100%);
+}
+
+@mixin gradient-danger {
+    background: linear-gradient(135deg, $danger-color 0%, darken($danger-color, 10%) 100%);
+}
+
+@mixin gradient-warning {
+    background: linear-gradient(135deg, $warning-color 0%, darken($warning-color, 10%) 100%);
+}
+
+// ==========================================
+// HEADER & NAVIGATION
+// ==========================================
+$header-bg: #ffffff;
+$header-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$header-height: 70px;
+$notification-color: #dc3545;
+
+// Sidebar specific
+$sidebar-bg: #2c3e50;
+$sidebar-text: #ecf0f1;
+$sidebar-text-muted: #bdc3c7;
+$sidebar-hover: #34495e;
+$sidebar-active: #3498db;
+$sidebar-border: rgba(255, 255, 255, 0.1);
+
+// ==========================================
+// MANAGE CUSTOMER MODULE
+// ==========================================
+$manage-customer-primary-color: #3b82f6;
+$manage-customer-primary-hover: #2563eb;
+$manage-customer-secondary-color: #6b7280;
+$manage-customer-success-color: #10b981;
+$manage-customer-danger-color: #ef4444;
+$manage-customer-warning-color: #f59e0b;
+$manage-customer-bg-light: #f9fafb;
+$manage-customer-bg-white: #ffffff;
+$manage-customer-border-color: #e5e7eb;
+$manage-customer-text-primary: #111827;
+$manage-customer-text-secondary: #6b7280;
+$manage-customer-border-radius: 8px;
+$manage-customer-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$manage-customer-shadow-md:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
-// Form
-$input-border: $border-medium;
-$input-border-focus: $primary-color;
-$input-shadow-focus: 0 0 0 3px rgba($primary-color, 0.1);
+// ==========================================
+// TRASH CUSTOMER MODULE
+// ==========================================
+$trash-customer-primary-color: #3b82f6;
+$trash-customer-primary-hover: #2563eb;
+$trash-customer-secondary-color: #6b7280;
+$trash-customer-success-color: #10b981;
+$trash-customer-success-hover: #059669;
+$trash-customer-danger-color: #ef4444;
+$trash-customer-danger-hover: #dc2626;
+$trash-customer-warning-color: #f59e0b;
+$trash-customer-bg-light: #f9fafb;
+$trash-customer-bg-white: #ffffff;
+$trash-customer-bg-danger: #fef2f2;
+$trash-customer-border-color: #e5e7eb;
+$trash-customer-border-danger: #fecaca;
+$trash-customer-text-primary: #111827;
+$trash-customer-text-secondary: #6b7280;
+$trash-customer-text-danger: #991b1b;
 
-// Card
-$card-shadow: $shadow-md;
-$card-shadow-hover: $shadow-lg;
+// ==========================================
+// CART & CHECKOUT
+// ==========================================
+$cart-primary-color: #ff6b35;
+$cart-primary-hover: #e55a2b;
+$cart-dark-bg: #1a2332;
+$cart-light-gray: #f8f9fa;
+$cart-border-color: #e0e6ed;
+$cart-text-dark: #2d3748;
+$cart-text-light: #718096;
 
-// Dark Mode Variables
-$dark-bg-primary: #111827; // Gray-900
-$dark-bg-secondary: #1f2937; // Gray-800
-$dark-bg-tertiary: #374151; // Gray-700
-$dark-text-primary: #f9fafb; // Gray-50
-$dark-text-secondary: #d1d5db; // Gray-300
-$dark-text-muted: #9ca3af; // Gray-400
-$dark-border: #4b5563; // Gray-600
+// ==========================================
+// ORDER TRACKING
+// ==========================================
+$order-tracking-primary: #3b82f6;
+$order-tracking-secondary: #64748b;
+$order-tracking-success: #10b981;
+$order-tracking-warning: #f59e0b;
+$order-tracking-error: #ef4444;
+$order-tracking-info: #06b6d4;
+$order-tracking-background: #f8fafc;
+
+// ==========================================
+// PRODUCT COLORS
+// ==========================================
+$product-primary: #f97316;
+$product-primary-hover: #ea580c;
+$product-discount-color: #ff5722;
+$product-featured-color: #ffc107;
+
+// ==========================================
+// HOME PAGE
+// ==========================================
+$home-gradient-start: #2563eb;
+$home-gradient-end: #7c3aed;
+$home-accent-color: #f59e0b;
+$home-text-dark: #1e293b;
+$home-text-light: #64748b;
+$home-text-muted: #94a3b8;
+
+// ==========================================
+// 404 NOT FOUND
+// ==========================================
+$notfound-bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$notfound-btn-primary: #ff6b6b;
+$notfound-btn-primary-gradient: linear-gradient(45deg, #ff6b6b, #ee5a52);
+
+// ==========================================
+// COMMON MIXINS
+// ==========================================
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+    transition: $property $duration $timing;
+}
+
+@mixin button-base {
+    border: none;
+    border-radius: $button-border-radius;
+    cursor: pointer;
+    font-weight: $font-weight-medium;
+    @include transition();
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    &:disabled {
+        opacity: $opacity-disabled;
+        cursor: not-allowed;
+    }
+}
+
+// Manage Customer Mixins
+@mixin manage-customer-button-base {
+    padding: 8px 16px;
+    border: none;
+    border-radius: $manage-customer-border-radius;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+@mixin manage-customer-form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $manage-customer-border-color;
+    border-radius: $manage-customer-border-radius;
+    font-size: 14px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:focus {
+        outline: none;
+        border-color: $manage-customer-primary-color;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &.error {
+        border-color: $manage-customer-danger-color;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+}
+
+// Trash Customer Mixins
+@mixin trash-customer-button-base {
+    padding: 8px 16px;
+    border: none;
+    border-radius: $border-radius;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// Section Spacing Mixins
+@mixin section-spacing {
+    padding: 80px 0;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 50px 0;
+    }
+}
+
+@mixin container-width {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 0 15px;
+    }
+}
+
+// Home Button Style Mixin
+@mixin home-button-style($bg-color, $text-color, $border-color: $bg-color) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid $border-color;
+    border-radius: 12px;
+    background-color: $bg-color;
+    color: $text-color;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba($bg-color, 0.3);
+    }
+
+    @media (max-width: $breakpoint-md) {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+// 404 Not Found Button Mixin
+@mixin notfound-button-styles {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    min-width: 140px;
+    cursor: pointer;
+}
+
+// Element Animation Mixin
+@mixin element-animation($delay) {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: $delay;
+}
+
+// ==========================================
+// ADVANCED BUTTON MIXINS
+// ==========================================
+@mixin button-primary {
+    @include button-base;
+    background: $primary-color;
+    color: $text-white;
+    box-shadow: $button-shadow;
+
+    &:hover:not(:disabled) {
+        background: $primary-dark;
+        box-shadow: $button-shadow-hover;
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@mixin button-secondary {
+    @include button-base;
+    background: $background-primary;
+    color: $text-secondary;
+    border: 1px solid $border-medium;
+
+    &:hover:not(:disabled) {
+        background: $background-light;
+        border-color: $border-dark;
+    }
+}
+
+@mixin button-success {
+    @include button-base;
+    background: $success-color;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+        background: $success-dark;
+    }
+}
+
+@mixin button-danger {
+    @include button-base;
+    background: $error-color;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+        background: $error-dark;
+    }
+}
+
+@mixin button-warning {
+    @include button-base;
+    background: $warning-color;
+    color: $text-white;
+
+    &:hover:not(:disabled) {
+        background: $warning-dark;
+    }
+}
+
+// Button Sizes
+@mixin button-sm {
+    padding: $spacing-sm $spacing-md;
+    font-size: $text-sm;
+    border-radius: $radius-md;
+    min-height: 32px;
+}
+
+@mixin button-md {
+    padding: $spacing-sm $spacing-lg;
+    font-size: $text-base;
+    border-radius: $radius-lg;
+    min-height: 40px;
+}
+
+@mixin button-lg {
+    padding: $spacing-md $spacing-xl;
+    font-size: $text-lg;
+    border-radius: $radius-lg;
+    min-height: 48px;
+}
+
+@mixin button-style($bg-color, $hover-color) {
+    background: linear-gradient(135deg, $bg-color, darken($bg-color, 5%));
+    color: $white;
+    border: none;
+    padding: $button-padding;
+    border-radius: $button-border-radius;
+    cursor: pointer;
+    transition: $transition;
+    font-weight: $font-weight-semibold;
+    text-decoration: none;
+    @include flex-center;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, $hover-color, darken($hover-color, 5%));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba($bg-color, 0.4);
+
+        &::before {
+            left: 100%;
+        }
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        opacity: $opacity-disabled;
+        cursor: not-allowed;
+        transform: none;
+
+        &::before {
+            display: none;
+        }
+    }
+}
+
+// ==========================================
+// CARD & INPUT MIXINS
+// ==========================================
+@mixin card {
+    background: $background-primary;
+    border-radius: $radius-xl;
+    box-shadow: $card-shadow;
+    overflow: hidden;
+
+    &:hover {
+        box-shadow: $card-shadow-hover;
+    }
+}
+
+@mixin input-base {
+    width: 100%;
+    padding: $spacing-md;
+    border: 1px solid $input-border;
+    border-radius: $radius-lg;
+    font-size: $text-base;
+    transition: all $duration-200 $ease-in-out;
+    background: $background-primary;
+    color: $text-primary;
+
+    &:focus {
+        outline: none;
+        border-color: $input-border-focus;
+        box-shadow: $input-shadow-focus;
+    }
+
+    &::placeholder {
+        color: $text-muted;
+    }
+
+    &:disabled {
+        background: $background-light;
+        color: $text-muted;
+        cursor: not-allowed;
+    }
+}
+
+// ==========================================
+// BADGE MIXINS
+// ==========================================
+@mixin badge-base {
+    display: inline-flex;
+    align-items: center;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-full;
+    font-size: $text-xs;
+    font-weight: $font-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+@mixin badge-success {
+    @include badge-base;
+    background: $success-100;
+    color: $success-dark;
+}
+
+@mixin badge-error {
+    @include badge-base;
+    background: $error-100;
+    color: $error-dark;
+}
+
+@mixin badge-warning {
+    @include badge-base;
+    background: $warning-100;
+    color: $warning-dark;
+}
+
+@mixin badge-info {
+    @include badge-base;
+    background: $info-100;
+    color: $info-dark;
+}
+
+// ==========================================
+// LOADING SPINNER MIXIN
+// ==========================================
+@mixin loading-spinner($size: 24px, $color: $primary-color) {
+    width: $size;
+    height: $size;
+    border: 2px solid rgba($color, 0.2);
+    border-top: 2px solid $color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+// ==========================================
+// FLEXBOX UTILITIES
+// ==========================================
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+// ==========================================
+// TEXT UTILITIES
+// ==========================================
+@mixin text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+// ==========================================
+// POSITIONING UTILITIES
+// ==========================================
+@mixin absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@mixin absolute-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+// ==========================================
+// TABLE MIXINS
+// ==========================================
+@mixin table-base {
+    width: 100%;
+    border-collapse: collapse;
+    background: $background-primary;
+
+    th,
+    td {
+        padding: $spacing-md;
+        text-align: left;
+        border-bottom: 1px solid $table-border;
+    }
+
+    th {
+        background: $table-header-bg;
+        color: $text-white;
+        font-weight: $font-semibold;
+        font-size: $text-sm;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    tbody tr {
+        transition: background-color $duration-150 $ease-in-out;
+
+        &:hover {
+            background: $table-row-hover;
+        }
+    }
+}
+
+// ==========================================
+// ANIMATION MIXINS
+// ==========================================
+@mixin fade-in($duration: $duration-300) {
+    animation: fadeIn $duration $ease-out;
+}
+
+@mixin slide-in-right($duration: $duration-300) {
+    animation: slideInRight $duration $ease-out;
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+}
+
+@mixin slide-in-up($duration: $duration-300) {
+    animation: slideInUp $duration $ease-out;
+}
+
+@mixin scale-in($duration: $duration-200) {
+    animation: scaleIn $duration $ease-out;
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+}
+
+// ==========================================
+// SHADOW UTILITIES
+// ==========================================
+@mixin elevation-1 {
+    box-shadow: $shadow-sm;
+}
+
+@mixin elevation-2 {
+    box-shadow: $shadow-md;
+}
+
+@mixin elevation-3 {
+    box-shadow: $shadow-lg;
+}
+
+@mixin elevation-4 {
+    box-shadow: $shadow-xl;
+}
+
+// ==========================================
+// FOCUS & ACCESSIBILITY
+// ==========================================
+@mixin focus-ring($color: $primary-color) {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba($color, 0.1);
+}
+
+@mixin focus-visible {
+    &:focus-visible {
+        outline: 3px solid $primary-color;
+        outline-offset: 2px;
+    }
+}
+
+// ==========================================
+// SCROLLBAR STYLING
+// ==========================================
+@mixin custom-scrollbar($thumb-color: $border-dark, $track-color: $background-light) {
+    scrollbar-width: thin;
+    scrollbar-color: $thumb-color $track-color;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $track-color;
+        border-radius: $radius-md;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $thumb-color;
+        border-radius: $radius-md;
+
+        &:hover {
+            background: darken($thumb-color, 10%);
+        }
+    }
+}
+
+@mixin glassmorphism {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@mixin glassmorphism-danger {
+    background: rgba(248, 215, 218, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+@mixin scrollbar {
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $gray-100;
+        border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $gray-400;
+        border-radius: 3px;
+
+        &:hover {
+            background: $gray-500;
+        }
+    }
+}
+
+// ==========================================
+// RESPONSIVE MIXINS
+// ==========================================
+@mixin responsive($breakpoint) {
+    @media (max-width: $breakpoint) {
+        @content;
+    }
+}
+
+@mixin responsive-up($breakpoint) {
+    @media (min-width: $breakpoint) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+// Manage Customer Responsive Mixins
+@mixin manage-customer-mobile {
+    @media (max-width: 767px) {
+        @content;
+    }
+}
+
+@mixin manage-customer-tablet {
+    @media (min-width: 768px) and (max-width: 1023px) {
+        @content;
+    }
+}
+
+@mixin manage-customer-desktop {
+    @media (min-width: 1024px) {
+        @content;
+    }
+}
+
+// Trash Customer Responsive Mixins
+@mixin trash-customer-mobile {
+    @media (max-width: 767px) {
+        @content;
+    }
+}
+
+@mixin trash-customer-tablet {
+    @media (min-width: 768px) and (max-width: 1023px) {
+        @content;
+    }
+}
+
+@mixin trash-customer-desktop {
+    @media (min-width: 1024px) {
+        @content;
+    }
+}
+
+// Advanced Responsive Mixins from _mixins.scss
+@mixin mobile-only {
+    @media (max-width: #{$breakpoint-sm - 1px}) {
+        @content;
+    }
+}
+
+@mixin tablet-up {
+    @media (min-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin tablet-only {
+    @media (min-width: $breakpoint-sm) and (max-width: #{$breakpoint-lg - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop-up {
+    @media (min-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+@mixin desktop-only {
+    @media (min-width: $breakpoint-lg) and (max-width: #{$breakpoint-xl - 1px}) {
+        @content;
+    }
+}
+
+@mixin large-desktop-up {
+    @media (min-width: $breakpoint-xl) {
+        @content;
+    }
+}
+
+// ==========================================
+// MEDIA QUERY UTILITIES
+// ==========================================
+@mixin dark-mode {
+    @media (prefers-color-scheme: dark) {
+        @content;
+    }
+}
+
+@mixin reduce-motion {
+    @media (prefers-reduced-motion: reduce) {
+        @content;
+    }
+}
+
+@mixin high-contrast {
+    @media (prefers-contrast: high) {
+        @content;
+    }
+}
+
+// ==========================================
+// SECTION PADDING
+// ==========================================
+@mixin section-padding {
+    padding: 60px 0;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 40px 0;
+    }
+}
+
+// ==========================================
+// PRINT STYLES
+// ==========================================
+@mixin print-hide {
+    @media print {
+        display: none !important;
+    }
+}
+
+// ==========================================
+// ACCESSIBILITY
+// ==========================================
+@mixin sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@mixin focus-visible {
+    &:focus-visible {
+        outline: 3px solid $primary-color;
+        outline-offset: 2px;
+    }
+}
+
+// ==========================================
+// ANIMATIONS
+// ==========================================
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(0.95);
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+        opacity: 0.8;
+    }
+}
+
+@keyframes drift {
+    from {
+        transform: translate(0, 0);
+    }
+    to {
+        transform: translate(-50px, -50px);
+    }
+}
+
+@keyframes typing {
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    30% {
+        transform: translateY(-15px);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+// Additional animations for specific modules
+@keyframes dangerShimmer {
+    0% {
+        background-position: -400% 0;
+    }
+    100% {
+        background-position: 400% 0;
+    }
+}
+
+@keyframes bounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-5px);
+    }
+    50% {
+        transform: translateY(0);
+    }
+    75% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes pulseBorder {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-2px);
+    }
+    75% {
+        transform: translateX(2px);
+    }
+}
+
+@keyframes progressFill {
+    0% {
+        width: 0%;
+    }
+    50% {
+        width: 60%;
+    }
+    100% {
+        width: 100%;
+    }
+}
