@@ -107,15 +107,18 @@ export const addToCartAction = (productData) => {
       };
 
       const response = await addToCart(cartData);
+      if (response && response.code === 0) {
+        dispatch({
+          type: ADD_TO_CART_SUCCESS,
+          payload: response,
+        });
 
-      dispatch({
-        type: ADD_TO_CART_SUCCESS,
-        payload: response,
-      });
+        dispatch(getCartAction());
 
-      dispatch(getCartAction());
-
-      toast.success("Đã thêm sản phẩm vào giỏ hàng!");
+        toast.success("Đã thêm sản phẩm vào giỏ hàng!", {
+          autoClose: 8000,
+        });
+      }
 
       return response;
     } catch (error) {

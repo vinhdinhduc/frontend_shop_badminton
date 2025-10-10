@@ -50,6 +50,9 @@ const AdminHeader = ({ sidebarOpen, setSidebarOpen }) => {
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
+  const handleViewNotifications = () => {
+    navigate("/admin/notifications");
+  };
 
   const getPageTitle = () => {
     const pathnames = location.pathname.split("/").filter(Boolean);
@@ -131,7 +134,11 @@ const AdminHeader = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
 
         <div className="header-actions">
-          <button className="notification-btn" aria-label="Thông báo">
+          <button
+            className="notification-btn"
+            aria-label="Thông báo"
+            onClick={() => handleViewNotifications()}
+          >
             <span className="bell-icon">
               <FontAwesomeIcon icon={faBell} />
             </span>

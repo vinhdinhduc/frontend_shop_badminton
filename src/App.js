@@ -1,6 +1,7 @@
-import { Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/user/Home";
+import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Home from "./pages/user/Home";
 import Auth from "./pages/auth/Auth";
 import Dashboard from "./pages/admin/Dashboard";
 import AddProduct from "./pages/admin/products/AddProduct";
@@ -24,6 +25,7 @@ import OrderTracking from "./pages/user/order_user/OrderTracking";
 import CustomerProfile from "./pages/user/profile/CustomerProfile";
 import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 import Reports from "./pages/admin/report/Reports";
+import NotificationPanel from "./pages/admin/notifications/NotificationPanel";
 
 function App() {
   return (
@@ -57,7 +59,8 @@ function App() {
             <Route path="orders" element={<OrderManagement />} />
             <Route path="customers" element={<ManageCustomer />} />
             <Route path="brands" element={<BrandManagement />} />
-            <Route path="reports" element={<Reports />} />
+            {/* <Route path="reports" element={<Reports />} /> */}
+            <Route path="notifications" element={<NotificationPanel />} />
             <Route
               path="trash-products"
               element={<AdminDeletedProductList />}
@@ -71,10 +74,10 @@ function App() {
       </div>
       <ToastContainer
         position="top-right"
-        autoClose={4000}
-        hideProgressBar={false}
+        autoClose={8}
+        hideProgressBar={true}
         newestOnTop={false}
-        closeOnClick
+        closeOnClick={false}
         rtl={false}
         pauseOnFocusLoss
         draggable

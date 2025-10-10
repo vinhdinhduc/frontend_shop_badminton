@@ -1,0 +1,353 @@
+@import "../../../styles/variables.scss";
+
+.notification-container {
+    position: relative;
+
+    .notification-btn {
+        position: relative;
+        background: transparent;
+        border: none;
+        color: $text-secondary;
+        font-size: 1.25rem;
+        cursor: pointer;
+        padding: $spacing-sm;
+        border-radius: $border-radius-sm;
+        transition: $transition-fast;
+
+        &:hover {
+            background: $gray-100;
+            color: $primary-color;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: linear-gradient(135deg, $danger-color, $danger-dark);
+            color: $white;
+            font-size: 0.65rem;
+            font-weight: $font-weight-bold;
+            padding: 2px 6px;
+            border-radius: $border-radius-full;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: $shadow-md;
+            animation: pulse 2s infinite;
+        }
+    }
+
+    .notification-panel {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: 420px;
+        max-height: 600px;
+        background: $white;
+        border-radius: $border-radius-lg;
+        box-shadow: $shadow-2xl;
+        z-index: $z-index-dropdown;
+        display: flex;
+        flex-direction: column;
+        animation: slideInDown 0.3s ease-out;
+
+        @media (max-width: $breakpoint-sm) {
+            width: 100vw;
+            max-width: 100vw;
+            right: -20px;
+            max-height: 80vh;
+        }
+
+        .notification-header {
+            padding: $spacing-lg;
+            border-bottom: 1px solid $border-light;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, $primary-color, $primary-dark);
+            color: $white;
+            border-radius: $border-radius-lg $border-radius-lg 0 0;
+
+            h3 {
+                margin: 0;
+                font-size: $font-size-lg;
+                font-weight: $font-weight-bold;
+            }
+
+            .mark-all-read-btn {
+                background: rgba($white, 0.2);
+                border: 1px solid rgba($white, 0.3);
+                color: $white;
+                padding: $spacing-xs $spacing-sm;
+                border-radius: $border-radius-sm;
+                font-size: $text-sm;
+                cursor: pointer;
+                transition: $transition-fast;
+                display: flex;
+                align-items: center;
+                gap: $spacing-xs;
+
+                &:hover {
+                    background: rgba($white, 0.3);
+                }
+
+                svg {
+                    font-size: 0.875rem;
+                }
+            }
+        }
+
+        .notification-filters {
+            display: flex;
+            padding: $spacing-md;
+            gap: $spacing-sm;
+            border-bottom: 1px solid $border-light;
+            background: $gray-50;
+
+            .filter-btn {
+                flex: 1;
+                padding: $spacing-sm $spacing-md;
+                border: 1px solid $border-light;
+                background: $white;
+                color: $text-secondary;
+                border-radius: $border-radius-sm;
+                font-size: $text-sm;
+                font-weight: $font-weight-medium;
+                cursor: pointer;
+                transition: $transition-fast;
+
+                &:hover {
+                    border-color: $primary-color;
+                    color: $primary-color;
+                }
+
+                &.active {
+                    background: $primary-color;
+                    color: $white;
+                    border-color: $primary-color;
+                }
+            }
+        }
+
+        .notification-list {
+            flex: 1;
+            overflow-y: auto;
+            @include custom-scrollbar;
+
+            .notification-loading {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: $spacing-2xl;
+                color: $text-secondary;
+
+                .spinner {
+                    @include loading-spinner(32px, $primary-color);
+                    margin-bottom: $spacing-md;
+                }
+            }
+
+            .notification-empty {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: $spacing-2xl;
+                color: $text-muted;
+
+                svg {
+                    font-size: 3rem;
+                    margin-bottom: $spacing-md;
+                    opacity: 0.5;
+                }
+
+                p {
+                    margin: 0;
+                    font-size: $text-base;
+                }
+            }
+
+            .notification-item {
+                display: flex;
+                gap: $spacing-md;
+                padding: $spacing-md $spacing-lg;
+                border-bottom: 1px solid $border-light;
+                cursor: pointer;
+                transition: $transition-fast;
+                position: relative;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                &:hover {
+                    background: $gray-50;
+                }
+
+                &.unread {
+                    background: lighten($primary-color, 45%);
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 4px;
+                        background: $primary-color;
+                    }
+                }
+
+                &.priority-high {
+                    border-left: 3px solid $warning-color;
+                }
+
+                &.priority-urgent {
+                    border-left: 3px solid $danger-color;
+                    background: lighten($danger-color, 42%);
+                }
+
+                .notification-icon {
+                    flex-shrink: 0;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: $primary-color;
+                    color: $white;
+                    border-radius: 50%;
+                    font-size: 1rem;
+
+                    .priority-high & {
+                        background: $warning-color;
+                    }
+
+                    .priority-urgent & {
+                        background: $danger-color;
+                    }
+                }
+
+                .notification-content {
+                    flex: 1;
+                    min-width: 0;
+
+                    h4 {
+                        margin: 0 0 $spacing-xs 0;
+                        font-size: $text-base;
+                        font-weight: $font-weight-semibold;
+                        color: $text-primary;
+                        @include text-truncate;
+                    }
+
+                    p {
+                        margin: 0 0 $spacing-xs 0;
+                        font-size: $text-sm;
+                        color: $text-secondary;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                    }
+
+                    .notification-time {
+                        font-size: $text-xs;
+                        color: $text-muted;
+                    }
+                }
+
+                .notification-actions {
+                    display: flex;
+                    flex-direction: column;
+                    gap: $spacing-xs;
+                    opacity: 0;
+                    transition: $transition-fast;
+
+                    .action-btn {
+                        width: 32px;
+                        height: 32px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: 1px solid $border-light;
+                        background: $white;
+                        border-radius: $border-radius-sm;
+                        cursor: pointer;
+                        transition: $transition-fast;
+                        font-size: 0.875rem;
+
+                        &.read-btn {
+                            color: $success-color;
+
+                            &:hover {
+                                background: $success-light;
+                                border-color: $success-color;
+                            }
+                        }
+
+                        &.delete-btn {
+                            color: $danger-color;
+
+                            &:hover {
+                                background: $danger-light;
+                                border-color: $danger-color;
+                            }
+                        }
+                    }
+                }
+
+                &:hover .notification-actions {
+                    opacity: 1;
+                }
+            }
+        }
+
+        .notification-footer {
+            padding: $spacing-md;
+            border-top: 1px solid $border-light;
+            background: $gray-50;
+            border-radius: 0 0 $border-radius-lg $border-radius-lg;
+
+            .view-all-btn {
+                width: 100%;
+                padding: $spacing-sm $spacing-md;
+                background: $white;
+                border: 1px solid $primary-color;
+                color: $primary-color;
+                border-radius: $border-radius-sm;
+                font-weight: $font-weight-medium;
+                cursor: pointer;
+                transition: $transition-fast;
+
+                &:hover {
+                    background: $primary-color;
+                    color: $white;
+                }
+            }
+        }
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}

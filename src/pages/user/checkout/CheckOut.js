@@ -26,14 +26,23 @@ import { toast } from "react-toastify";
 import "./CheckOut.scss";
 import { createOrder, getProvince } from "../../../services/orderService";
 import { createPaymentUrl } from "../../../services/paymentService";
+import {
+  createAddressAction,
+  getUserAddressesAction,
+} from "../../../redux/actions/profileAction";
 
 const CheckOut = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { userInfo } = useSelector((state) => state.userLogin);
+  const { addresses } = useSelector((state) => state.profileList);
 
   const [checkoutData, setCheckoutData] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [useNewAddress, setUseNewAddress] = useState(false);
+  const [saveAddressToProfile, setSaveAddressToProfile] = useState(false);
+
   console.log("Check out data", checkoutData);
 
   const [currentStep, setCurrentStep] = useState(2);
@@ -60,10 +69,53 @@ const CheckOut = () => {
     province: "",
     note: "",
   });
-
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(getUserAddressesAction());
+    }
+  }, [dispatch, userInfo]);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  //Auto chọn địa chỉ
+
+  useEffect(() => {
+    if (addresses && addresses.length > 0) {
+      const defaultAddress = addresses.find((addr) => addr.is_default);
+      if (defaultAddress) {
+        setSelectedAddressId(defaultAddress.id);
+        fillAddressForm(defaultAddress);
+      } else {
+        setSelectedAddressId(addresses[0].id);
+        fillAddressForm(addresses[0]);
+      }
+    } else {
+      setUseNewAddress(true);
+    }
+  }, [addresses]);
+
+  const fillAddressForm = (address) => {
+    setShippingInfo({
+      fullName: address.fullName,
+      phone: address.phone_number,
+      email: userInfo?.data.user?.email || shippingInfo.email,
+      address: address.address_line1,
+      ward: address.ward || "",
+      district: address.district || "",
+      province: address.province || "",
+      note: "",
+    });
+  };
+
+  const handleSelectAddress = (addrId) => {
+    setSelectedAddressId(addrId);
+    const selectedAddr = addresses.find((addr) => addr.id === addrId);
+    if (selectedAddr) {
+      fillAddressForm(selectedAddr);
+    }
+    setUseNewAddress(false);
+    setErrors({});
+  };
   useEffect(() => {
     const fetchProvinces = async () => {
       try {
@@ -138,7 +190,7 @@ const CheckOut = () => {
   }, [selectedDistrict]);
 
   useEffect(() => {
-    if (selectedWard) {
+    if (selectedWard && wards.length > 0) {
       const wardName = wards.find((w) => w.code === selectedWard)?.name;
       if (wardName && wardName !== "Chọn xã/phường") {
         handleInputChange("ward", wardName);
@@ -192,6 +244,11 @@ const CheckOut = () => {
 
   const validateShippingInfo = () => {
     const newErrors = {};
+
+    if (!useNewAddress && selectedAddressId) {
+      setErrors(newErrors);
+      return true;
+    }
     if (!shippingInfo.fullName.trim()) {
       newErrors.fullName = "Vui lòng nhập họ tên";
     }
@@ -220,6 +277,7 @@ const CheckOut = () => {
     if (!selectedWard) {
       newErrors.ward = "Vui lòng chọn phường/xã";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -257,6 +315,27 @@ const CheckOut = () => {
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
     setLoading(true);
+
+    if (useNewAddress && saveAddressToProfile) {
+      const newAddressData = {
+        fullName: shippingInfo.fullName,
+        phone_number: shippingInfo.phone,
+        email: shippingInfo.email,
+        address_line1: shippingInfo.address,
+        address_line2: "",
+        city: shippingInfo.district,
+        region: shippingInfo.province,
+        ward: shippingInfo.ward,
+        postal_code: "",
+        country: "Việt Nam",
+        is_default: addresses.length === 0 ? 1 : 0,
+      };
+      try {
+        dispatch(createAddressAction(newAddressData));
+      } catch (error) {
+        console.error("Error saving address:", error);
+      }
+    }
 
     try {
       const fullShippingAddress = `${shippingInfo.address}, ${shippingInfo.ward}, ${shippingInfo.district}, ${shippingInfo.province}`;
@@ -371,8 +450,13 @@ const CheckOut = () => {
       description: "Thanh toán qua cổng VNPay",
     },
   ];
+  console.log("Check out data", checkoutData);
 
-  if (!checkoutData) {
+  if (
+    !checkoutData ||
+    !checkoutData.items ||
+    checkoutData.items?.length === 0
+  ) {
     return (
       <>
         <Navbar />
@@ -447,154 +531,240 @@ const CheckOut = () => {
           {currentStep === 2 && (
             <div className="checkout-step">
               <div className="step-content">
-                <div className="shipping-info-section">
-                  <h3>
-                    <MapPin size={20} />
-                    Thông tin giao hàng
-                  </h3>
+                {addresses && addresses.length > 0 && (
+                  <div className="saved-address-section">
+                    <div className="section-header-choice">
+                      <h3>
+                        <MapPin size={20} />
+                        Chọn địa chỉ giao hàng
+                      </h3>
+                      <button
+                        className={`btn-new-address ${
+                          useNewAddress ? "active" : ""
+                        }`}
+                        onClick={() => {
+                          setUseNewAddress(!useNewAddress);
 
-                  <div className="form-grid">
-                    <div className="form-group">
-                      <label>Họ và tên *</label>
-                      <div className="input-wrapper">
-                        <User size={16} className="input-icon" />
-                        <input
-                          type="text"
-                          value={shippingInfo.fullName}
-                          onChange={(e) =>
-                            handleInputChange("fullName", e.target.value)
+                          if (!useNewAddress) {
+                            setErrors({});
                           }
-                          className={errors.fullName ? "error" : ""}
-                          placeholder="Nhập họ và tên"
-                        />
-                      </div>
-                      {errors.fullName && (
-                        <span className="error-text">{errors.fullName}</span>
-                      )}
-                    </div>
-
-                    <div className="form-group">
-                      <label>Số điện thoại *</label>
-                      <div className="input-wrapper">
-                        <Phone size={16} className="input-icon" />
-                        <input
-                          type="tel"
-                          value={shippingInfo.phone}
-                          onChange={(e) =>
-                            handleInputChange("phone", e.target.value)
-                          }
-                          className={errors.phone ? "error" : ""}
-                          placeholder="Nhập số điện thoại"
-                        />
-                      </div>
-                      {errors.phone && (
-                        <span className="error-text">{errors.phone}</span>
-                      )}
-                    </div>
-
-                    <div className="form-group full-width">
-                      <label>Email *</label>
-                      <div className="input-wrapper">
-                        <Mail size={16} className="input-icon" />
-                        <input
-                          type="email"
-                          value={shippingInfo.email}
-                          onChange={(e) =>
-                            handleInputChange("email", e.target.value)
-                          }
-                          className={errors.email ? "error" : ""}
-                          placeholder="Nhập địa chỉ email"
-                        />
-                      </div>
-                      {errors.email && (
-                        <span className="error-text">{errors.email}</span>
-                      )}
-                    </div>
-
-                    <div className="form-group">
-                      <label>Tỉnh/Thành phố *</label>
-                      <select
-                        value={selectedProvince}
-                        onChange={(e) => setSelectedProvince(e.target.value)}
-                        className={errors.provinces ? "error" : ""}
+                        }}
                       >
-                        {provinces &&
-                          provinces?.map((p) => (
-                            <option key={p.code} value={p.code}>
-                              {p.name}
+                        {useNewAddress
+                          ? "Chọn địa chỉ đã lưu"
+                          : "Thêm địa chỉ mới"}
+                      </button>
+                    </div>
+                    {!useNewAddress && (
+                      <div className="address-list">
+                        {addresses.map((address) => (
+                          <div
+                            key={address.id}
+                            className={`address-item ${
+                              selectedAddressId === address.id ? "selected" : ""
+                            }`}
+                            onClick={() =>
+                              !loading && handleSelectAddress(address.id)
+                            }
+                          >
+                            <div className="address-radio">
+                              <input
+                                type="radio"
+                                name="selectedAddress"
+                                checked={selectedAddressId === address.id}
+                                readOnly
+                              />
+                            </div>
+                            <div className="address-content">
+                              <div className="address-header">
+                                <strong>{address.fullName}</strong>
+                                {address.is_default && (
+                                  <span className="default-badge">
+                                    Mặc định
+                                  </span>
+                                )}
+                              </div>
+                              <p className="address-phone">
+                                <Phone size={14} /> {address.phone_number}
+                              </p>
+                              <p className="address-detail">
+                                <MapPin size={14} />
+                                {address.address_line1}
+                                {address.address_line2 &&
+                                  `, ${address.address_line2}`}
+                                , {address.ward}, {address.district},{" "}
+                                {address.province}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {(useNewAddress || !addresses || addresses.length === 0) && (
+                  <div className="shipping-info-section">
+                    <h3>
+                      <MapPin size={20} />
+                      Thông tin giao hàng
+                    </h3>
+
+                    <div className="form-grid">
+                      <div className="form-group">
+                        <label>Họ và tên *</label>
+                        <div className="input-wrapper">
+                          <User size={16} className="input-icon" />
+                          <input
+                            type="text"
+                            value={shippingInfo.fullName}
+                            onChange={(e) =>
+                              handleInputChange("fullName", e.target.value)
+                            }
+                            className={errors.fullName ? "error" : ""}
+                            placeholder="Nhập họ và tên"
+                          />
+                        </div>
+                        {errors.fullName && (
+                          <span className="error-text">{errors.fullName}</span>
+                        )}
+                      </div>
+
+                      <div className="form-group">
+                        <label>Số điện thoại *</label>
+                        <div className="input-wrapper">
+                          <Phone size={16} className="input-icon" />
+                          <input
+                            type="tel"
+                            value={shippingInfo.phone}
+                            onChange={(e) =>
+                              handleInputChange("phone", e.target.value)
+                            }
+                            className={errors.phone ? "error" : ""}
+                            placeholder="Nhập số điện thoại"
+                          />
+                        </div>
+                        {errors.phone && (
+                          <span className="error-text">{errors.phone}</span>
+                        )}
+                      </div>
+
+                      <div className="form-group full-width">
+                        <label>Email *</label>
+                        <div className="input-wrapper">
+                          <Mail size={16} className="input-icon" />
+                          <input
+                            type="email"
+                            value={shippingInfo.email}
+                            onChange={(e) =>
+                              handleInputChange("email", e.target.value)
+                            }
+                            className={errors.email ? "error" : ""}
+                            placeholder="Nhập địa chỉ email"
+                          />
+                        </div>
+                        {errors.email && (
+                          <span className="error-text">{errors.email}</span>
+                        )}
+                      </div>
+
+                      <div className="form-group">
+                        <label>Tỉnh/Thành phố *</label>
+                        <select
+                          value={selectedProvince}
+                          onChange={(e) => setSelectedProvince(e.target.value)}
+                          className={errors.provinces ? "error" : ""}
+                        >
+                          {provinces &&
+                            provinces?.map((p) => (
+                              <option key={p.code} value={p.code}>
+                                {p.name}
+                              </option>
+                            ))}
+                        </select>
+                        {errors.provinces && (
+                          <span className="error-text">{errors.provinces}</span>
+                        )}
+                      </div>
+
+                      <div className="form-group">
+                        <label>Quận/Huyện *</label>
+                        <select
+                          value={selectedDistrict}
+                          onChange={(e) => setSelectedDistrict(e.target.value)}
+                          className={errors.district ? "error" : ""}
+                        >
+                          {districts?.map((d) => (
+                            <option key={d.code} value={d.code}>
+                              {d.name}
                             </option>
                           ))}
-                      </select>
-                      {errors.provinces && (
-                        <span className="error-text">{errors.provinces}</span>
-                      )}
-                    </div>
+                        </select>
+                        {errors.district && (
+                          <span className="error-text">{errors.district}</span>
+                        )}
+                      </div>
 
-                    <div className="form-group">
-                      <label>Quận/Huyện *</label>
-                      <select
-                        value={selectedDistrict}
-                        onChange={(e) => setSelectedDistrict(e.target.value)}
-                        className={errors.district ? "error" : ""}
-                      >
-                        {districts?.map((d) => (
-                          <option key={d.code} value={d.code}>
-                            {d.name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.district && (
-                        <span className="error-text">{errors.district}</span>
-                      )}
-                    </div>
+                      <div className="form-group">
+                        <label>Phường/Xã *</label>
+                        <select
+                          value={selectedWard}
+                          onChange={(e) => setSelectedWard(e.target.value)}
+                          className={errors.ward ? "error" : ""}
+                        >
+                          {wards?.map((w) => (
+                            <option key={w.code} value={w.code}>
+                              {w.name}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.ward && (
+                          <span className="error-text">{errors.ward}</span>
+                        )}
+                      </div>
 
-                    <div className="form-group">
-                      <label>Phường/Xã *</label>
-                      <select
-                        value={selectedWard}
-                        onChange={(e) => setSelectedWard(e.target.value)}
-                        className={errors.ward ? "error" : ""}
-                      >
-                        {wards?.map((w) => (
-                          <option key={w.code} value={w.code}>
-                            {w.name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.ward && (
-                        <span className="error-text">{errors.ward}</span>
-                      )}
-                    </div>
+                      <div className="form-group full-width">
+                        <label>Địa chỉ cụ thể *</label>
+                        <input
+                          type="text"
+                          value={shippingInfo.address}
+                          onChange={(e) =>
+                            handleInputChange("address", e.target.value)
+                          }
+                          className={errors.address ? "error" : ""}
+                          placeholder="Số nhà, tên đường..."
+                        />
+                        {errors.address && (
+                          <span className="error-text">{errors.address}</span>
+                        )}
+                      </div>
 
-                    <div className="form-group full-width">
-                      <label>Địa chỉ cụ thể *</label>
-                      <input
-                        type="text"
-                        value={shippingInfo.address}
-                        onChange={(e) =>
-                          handleInputChange("address", e.target.value)
-                        }
-                        className={errors.address ? "error" : ""}
-                        placeholder="Số nhà, tên đường..."
-                      />
-                      {errors.address && (
-                        <span className="error-text">{errors.address}</span>
-                      )}
-                    </div>
-
-                    <div className="form-group full-width">
-                      <label>Ghi chú (Tùy chọn)</label>
-                      <textarea
-                        value={shippingInfo.note}
-                        onChange={(e) =>
-                          handleInputChange("note", e.target.value)
-                        }
-                        placeholder="Ghi chú thêm cho đơn hàng..."
-                        rows={3}
-                      />
+                      <div className="form-group full-width">
+                        <label>Ghi chú (Tùy chọn)</label>
+                        <textarea
+                          value={shippingInfo.note}
+                          onChange={(e) =>
+                            handleInputChange("note", e.target.value)
+                          }
+                          placeholder="Ghi chú thêm cho đơn hàng..."
+                          rows={3}
+                        />
+                      </div>
+                      <div className="saved-address-section">
+                        <label htmlFor="" className="checkbox-lab">
+                          <input
+                            type="checkbox"
+                            checked={saveAddressToProfile}
+                            onChange={(e) =>
+                              setSaveAddressToProfile(e.target.checked)
+                            }
+                          />
+                          <span>Lưu địa chỉ này vào tài khoản</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="order-summary">
