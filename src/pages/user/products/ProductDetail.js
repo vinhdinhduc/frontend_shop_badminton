@@ -23,6 +23,7 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [isAddToCartOpen, setIsAddToCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isBuyNow, setIsBuyNow] = useState(false);
 
   const { id } = useParams();
   const { arrProductId } = useSelector((state) => state.productList);
@@ -201,7 +202,8 @@ const ProductDetail = () => {
       />
     ));
   };
-  const handleClickAddCart = (product) => {
+  const handleClickAddCart = (product, buyNow = false) => {
+    setIsBuyNow(buyNow);
     setIsAddToCartOpen(true);
     setSelectedProduct(product);
   };
@@ -327,7 +329,12 @@ const ProductDetail = () => {
                       <ShoppingCart size={20} />
                       Thêm vào giỏ
                     </button>
-                    <button className="buy-now-btn">Mua ngay</button>
+                    <button
+                      className="buy-now-btn"
+                      onClick={() => handleClickAddCart(product, true)}
+                    >
+                      Mua ngay
+                    </button>
                   </div>
 
                   <div className="secondary-actions">

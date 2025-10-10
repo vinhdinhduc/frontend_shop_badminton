@@ -49,6 +49,7 @@ const Cart = () => {
   useEffect(() => {
     setCartItems(items);
   }, [items]);
+  console.log("Cjeck cartitem", cartItems);
 
   const updateQuantity = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
@@ -108,8 +109,16 @@ const Cart = () => {
         : null,
     })),
     pricing: {
+      subtotal: cartItems.reduce(
+        (sum, item) => sum + item.unit_price * item.quantity,
+        0
+      ),
       discount_amount: discountAmount,
       shipping_fee: shippingFee,
+      total: cartItems.reduce(
+        (sum, item) => sum + item.unit_price * item.quantity,
+        0
+      ),
     },
     coupon: coupon
       ? {

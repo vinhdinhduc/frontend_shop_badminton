@@ -26,6 +26,7 @@ import CustomerProfile from "./pages/user/profile/CustomerProfile";
 import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 import Reports from "./pages/admin/report/Reports";
 import NotificationPanel from "./pages/admin/notifications/NotificationPanel";
+import OrderSuccess from "./pages/user/order_user/OrderSuccess";
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
           <Route path="/profile" element={<CustomerProfile />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/view-order" element={<OrderTracking />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
+
           <Route path="/intro" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 
@@ -59,7 +62,7 @@ function App() {
             <Route path="orders" element={<OrderManagement />} />
             <Route path="customers" element={<ManageCustomer />} />
             <Route path="brands" element={<BrandManagement />} />
-            {/* <Route path="reports" element={<Reports />} /> */}
+            <Route path="reports" element={<Reports />} />
             <Route path="notifications" element={<NotificationPanel />} />
             <Route
               path="trash-products"
@@ -74,7 +77,7 @@ function App() {
       </div>
       <ToastContainer
         position="top-right"
-        autoClose={8}
+        autoClose={8000}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick={false}

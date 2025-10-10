@@ -1,13 +1,13 @@
 import axios from "../setup/axios";
 
 const getProfileService = (id) => {
-  return axios.get("/profile-get", id);
+  return axios.get("profile/profile-get", id);
 };
 const getUserAddressService = (id) => {
   return axios.get("/profile/get-addresses", id);
 };
 const updateProfileService = (dataProfile) => {
-  return axios.put("/profile-update", dataProfile);
+  return axios.put("/profile/profile-update", dataProfile);
 };
 const updateAvatarService = (avatarFile) => {
   return axios.post("/profile/avatar", avatarFile, {

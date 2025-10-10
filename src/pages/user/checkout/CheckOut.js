@@ -352,6 +352,7 @@ const CheckOut = () => {
         customer_note: shippingInfo.note,
       };
       const orderResponse = await createOrder(orderData);
+      console.log("Check order res", orderResponse);
       if (orderResponse && orderResponse.code === 0) {
         const newOrder = orderResponse.data?.order;
         const dataPayment = {
@@ -390,7 +391,7 @@ const CheckOut = () => {
         } else {
           sessionStorage.removeItem("checkout_data");
 
-          navigate("/order/success", {
+          navigate("/order-success", {
             state: {
               orderData: newOrder,
               orderId: newOrder.id,

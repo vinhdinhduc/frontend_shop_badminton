@@ -1,10 +1,10 @@
 import axios from "../setup/axios";
 
 const registerUser = (data) => {
-  return axios.post("/register", data);
+  return axios.post("auth/register", data);
 };
 const loginUser = (data) => {
-  return axios.post("/login", data);
+  return axios.post("auth/login", data);
 };
 
 const getAllUserService = (query = {}) => {

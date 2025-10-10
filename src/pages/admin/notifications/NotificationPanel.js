@@ -14,8 +14,14 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import "./NotificationPanel.scss";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+  getNotificationService,
+  getUnreadCountService,
+  markAllAsReadService,
+  markAsReadService,
+  deleteNotificationService,
+} from "../../../services/notificationService";
 
 const NotificationPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,19 +57,11 @@ const NotificationPanel = () => {
       if (filter === "unread") params.is_read = false;
       if (filter === "read") params.is_read = true;
 
-      const response = await axios.get(
-        "http://localhost:8080/api/v1/notifications",
-        {
-          params,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await getNotificationService(params);
 
-      if (response.data.code === 0) {
-        setNotifications(response.data.data.notifications);
-        setUnreadCount(response.data.data.unreadCount);
+      if (response && response.code === 0) {
+        setNotifications(response.data.notifications);
+        setUnreadCount(response.data.unreadCount);
       }
     } catch (error) {
       console.error("Fetch notifications error:", error);
@@ -75,17 +73,10 @@ const NotificationPanel = () => {
   // Lấy số lượng chưa đọc
   const fetchUnreadCount = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/v1/notifications/unread-count",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await getUnreadCountService();
 
-      if (response.data.code === 0) {
-        setUnreadCount(response.data.data.count);
+      if (response && response.code === 0) {
+        setUnreadCount(response.data.count);
       }
     } catch (error) {
       console.error("Fetch unread count error:", error);
@@ -106,17 +97,9 @@ const NotificationPanel = () => {
   // Đánh dấu đã đọc
   const handleMarkAsRead = async (id) => {
     try {
-      const response = await axios.put(
-        `http://localhost:8080/api/v1/notifications/${id}/read`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await markAsReadService(id);
 
-      if (response.data.code === 0) {
+      if (response && response.code === 0) {
         fetchNotifications();
         fetchUnreadCount();
       }
@@ -128,17 +111,9 @@ const NotificationPanel = () => {
   // Đánh dấu tất cả đã đọc
   const handleMarkAllAsRead = async () => {
     try {
-      const response = await axios.put(
-        "http://localhost:8080/api/v1/notifications/mark-all-read",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await markAllAsReadService();
 
-      if (response.data.code === 0) {
+      if (response && response.code === 0) {
         fetchNotifications();
         setUnreadCount(0);
       }
@@ -150,16 +125,9 @@ const NotificationPanel = () => {
   // Xóa thông báo
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:8080/api/v1/notifications/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await deleteNotificationService(id);
 
-      if (response.data.code === 0) {
+      if (response && response.code === 0) {
         fetchNotifications();
         fetchUnreadCount();
       }
@@ -219,131 +187,115 @@ const NotificationPanel = () => {
 
   return (
     <div className="notification-container" ref={panelRef}>
-      <button
-        className="notification-btn"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Thông báo"
-      >
-        <FontAwesomeIcon icon={faBell} />
-        {unreadCount > 0 && (
-          <span className="notification-badge">{unreadCount}</span>
-        )}
-      </button>
-
-      {isOpen && (
-        <div className="notification-panel">
-          <div className="notification-header">
-            <h3>Thông báo</h3>
-            {unreadCount > 0 && (
-              <button
-                className="mark-all-read-btn"
-                onClick={handleMarkAllAsRead}
-              >
-                <FontAwesomeIcon icon={faCheck} />
-                Đánh dấu tất cả đã đọc
-              </button>
-            )}
-          </div>
-
-          <div className="notification-filters">
-            <button
-              className={`filter-btn ${filter === "all" ? "active" : ""}`}
-              onClick={() => setFilter("all")}
-            >
-              Tất cả
+      <div className="notification-panel">
+        <div className="notification-header">
+          <h3>Thông báo</h3>
+          {unreadCount > 0 && (
+            <button className="mark-all-read-btn" onClick={handleMarkAllAsRead}>
+              <FontAwesomeIcon icon={faCheck} />
+              Đánh dấu tất cả đã đọc
             </button>
-            <button
-              className={`filter-btn ${filter === "unread" ? "active" : ""}`}
-              onClick={() => setFilter("unread")}
-            >
-              Chưa đọc ({unreadCount})
-            </button>
-            <button
-              className={`filter-btn ${filter === "read" ? "active" : ""}`}
-              onClick={() => setFilter("read")}
-            >
-              Đã đọc
-            </button>
-          </div>
-
-          <div className="notification-list">
-            {loading ? (
-              <div className="notification-loading">
-                <div className="spinner"></div>
-                <p>Đang tải...</p>
-              </div>
-            ) : notifications.length === 0 ? (
-              <div className="notification-empty">
-                <FontAwesomeIcon icon={faBell} />
-                <p>Không có thông báo nào</p>
-              </div>
-            ) : (
-              notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className={`notification-item ${
-                    !notification.is_read ? "unread" : ""
-                  } ${getPriorityClass(notification.priority)}`}
-                  onClick={() => handleNotificationClick(notification)}
-                >
-                  <div className="notification-icon">
-                    <FontAwesomeIcon
-                      icon={getNotificationIcon(notification.type)}
-                    />
-                  </div>
-
-                  <div className="notification-content">
-                    <h4>{notification.title}</h4>
-                    <p>{notification.message}</p>
-                    <span className="notification-time">
-                      {formatTime(notification.created_at)}
-                    </span>
-                  </div>
-
-                  <div className="notification-actions">
-                    {!notification.is_read && (
-                      <button
-                        className="action-btn read-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleMarkAsRead(notification.id);
-                        }}
-                        title="Đánh dấu đã đọc"
-                      >
-                        <FontAwesomeIcon icon={faCheck} />
-                      </button>
-                    )}
-                    <button
-                      className="action-btn delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(notification.id);
-                      }}
-                      title="Xóa"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {notifications.length > 0 && (
-            <div className="notification-footer">
-              <button
-                className="view-all-btn"
-                onClick={() => {
-                  navigate("/admin/notifications");
-                  setIsOpen(false);
-                }}
-              >
-                Xem tất cả thông báo
-              </button>
-            </div>
           )}
         </div>
-      )}
+
+        <div className="notification-filters">
+          <button
+            className={`filter-btn ${filter === "all" ? "active" : ""}`}
+            onClick={() => setFilter("all")}
+          >
+            Tất cả
+          </button>
+          <button
+            className={`filter-btn ${filter === "unread" ? "active" : ""}`}
+            onClick={() => setFilter("unread")}
+          >
+            Chưa đọc ({unreadCount})
+          </button>
+          <button
+            className={`filter-btn ${filter === "read" ? "active" : ""}`}
+            onClick={() => setFilter("read")}
+          >
+            Đã đọc
+          </button>
+        </div>
+
+        <div className="notification-list">
+          {loading ? (
+            <div className="notification-loading">
+              <div className="spinner"></div>
+              <p>Đang tải...</p>
+            </div>
+          ) : notifications.length === 0 ? (
+            <div className="notification-empty">
+              <FontAwesomeIcon icon={faBell} />
+              <p>Không có thông báo nào</p>
+            </div>
+          ) : (
+            notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className={`notification-item ${
+                  !notification.is_read ? "unread" : ""
+                } ${getPriorityClass(notification.priority)}`}
+                onClick={() => handleNotificationClick(notification)}
+              >
+                <div className="notification-icon">
+                  <FontAwesomeIcon
+                    icon={getNotificationIcon(notification.type)}
+                  />
+                </div>
+
+                <div className="notification-content">
+                  <h4>{notification.title}</h4>
+                  <p>{notification.message}</p>
+                  <span className="notification-time">
+                    {formatTime(notification.created_at)}
+                  </span>
+                </div>
+
+                <div className="notification-actions">
+                  {!notification.is_read && (
+                    <button
+                      className="action-btn read-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMarkAsRead(notification.id);
+                      }}
+                      title="Đánh dấu đã đọc"
+                    >
+                      <FontAwesomeIcon icon={faCheck} />
+                    </button>
+                  )}
+                  <button
+                    className="action-btn delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(notification.id);
+                    }}
+                    title="Xóa"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {notifications.length > 0 && (
+          <div className="notification-footer">
+            <button
+              className="view-all-btn"
+              onClick={() => {
+                navigate("/admin/notifications");
+                setIsOpen(false);
+              }}
+            >
+              Xem tất cả thông báo
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
