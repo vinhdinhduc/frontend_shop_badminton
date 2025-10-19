@@ -27,6 +27,7 @@ import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 import Reports from "./pages/admin/report/Reports";
 import NotificationPanel from "./pages/admin/notifications/NotificationPanel";
 import OrderSuccess from "./pages/user/order_user/OrderSuccess";
+import AuthCallback from "./pages/auth/AuthCallBack";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckOut />} />

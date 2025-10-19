@@ -130,11 +130,11 @@ const Auth = () => {
   };
   const handleSocialLogin = (provider) => {
     setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-      showNotification("success", `${provider} login successful!`);
-    }, 2000);
+    if (provider === "Google") {
+      window.location.href = `http://localhost:8080/api/v1/auth/google`;
+    } else if (provider === "Facebook") {
+      window.location.href = `http://localhost:8080/api/v1/auth/facebook`;
+    }
   };
 
   useEffect(() => {
