@@ -243,7 +243,7 @@ const TrashCustomer = () => {
     if (!avatar) return "/default-avatar.png";
 
     if (avatar.startsWith("/uploads/avatars/")) {
-      return `http://localhost:8080${avatar}`;
+      return `${process.env.REACT_APP_URL_IMAGE}${avatar}`;
     }
 
     if (avatar.startsWith("data:image") || avatar.startsWith("http")) {

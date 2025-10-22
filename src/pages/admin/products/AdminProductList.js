@@ -209,7 +209,7 @@ const AdminProductList = () => {
                           <div className="product-image">
                             {productImages.length > 0 ? (
                               <img
-                                src={`http://localhost:8080${productImages[0].url}`}
+                                src={`${process.env.REACT_APP_URL_IMAGE}${productImages[0].url}`}
                                 alt={product.name}
                                 onError={() => handleError(product.id)}
                                 onLoad={() => handleLoadImgae(product.id)}
@@ -345,7 +345,7 @@ const AdminProductList = () => {
                     <div className="product-image">
                       {productImages.length > 0 ? (
                         <img
-                          src={`http://localhost:8080${productImages[0].url}`}
+                          src={`${process.env.REACT_APP_URL_IMAGE}${productImages[0].url}`}
                           alt={product.name}
                           onError={() => handleError(product.id)}
                           onLoad={() => handleLoadImgae(product.id)}

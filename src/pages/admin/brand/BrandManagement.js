@@ -458,7 +458,7 @@ const BrandManagement = () => {
                         <div className="brand-logo">
                           {brand.logo && (
                             <img
-                              src={`http://localhost:8080${brand.logo}`}
+                              src={`${process.env.REACT_APP_URL_IMAGE}${brand.logo}`}
                               alt={`Logo ${brand.name}`}
                               onError={handleImageError}
                             />

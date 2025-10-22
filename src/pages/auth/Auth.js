@@ -131,9 +131,9 @@ const Auth = () => {
   const handleSocialLogin = (provider) => {
     setIsLoading(true);
     if (provider === "Google") {
-      window.location.href = `http://localhost:8080/api/v1/auth/google`;
+      window.location.href = `${process.env.REACT_APP_URL_API}/api/v1/auth/google`;
     } else if (provider === "Facebook") {
-      window.location.href = `http://localhost:8080/api/v1/auth/facebook`;
+      window.location.href = `${process.env.REACT_APP_URL_API}/api/v1/auth/facebook`;
     }
   };
 

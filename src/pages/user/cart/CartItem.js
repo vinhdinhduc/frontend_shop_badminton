@@ -47,7 +47,7 @@ const CartItem = React.memo(
         if (imageURL) {
           return imageURL.startsWith("http")
             ? imageURL
-            : `http://localhost:8080${imageURL}`;
+            : `${process.env.REACT_APP_URL_IMAGE}${imageURL}`;
         }
       }
 

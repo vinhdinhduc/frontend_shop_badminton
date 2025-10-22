@@ -37,7 +37,9 @@ const CustomerModal = ({
         });
         if (customer.avatar) {
           if (customer.avatar.startsWith("/uploads/avatars/")) {
-            setAvatarPreview(`http://localhost:8080${customer.avatar}`);
+            setAvatarPreview(
+              `${process.env.REACT_APP_URL_IMAGE}${customer.avatar}`
+            );
           } else {
             setAvatarPreview(customer.avatar);
           }

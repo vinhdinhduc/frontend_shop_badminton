@@ -186,7 +186,7 @@ const OrderSuccess = () => {
                       <img
                         src={
                           item.image
-                            ? `http://localhost:8080${item.image}`
+                            ? `${process.env.REACT_APP_URL_IMAGE}${item.image}`
                             : "/api/placeholder/80/80"
                         }
                         alt={item.product_name}

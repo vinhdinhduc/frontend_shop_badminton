@@ -112,7 +112,7 @@ const AddToCartModal = ({ isOpen, onClose, product, onSuccess }) => {
           const imageUrl = images[0].url;
           return imageUrl.startsWith("http")
             ? imageUrl
-            : `http://localhost:8080${imageUrl}`;
+            : `${process.env.REACT_APP_URL_IMAGE}${imageUrl}`;
         }
       }
     } catch (error) {

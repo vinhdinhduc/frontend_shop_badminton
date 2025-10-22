@@ -54,7 +54,7 @@ const ProductDetail = () => {
   const getProductImages = () => {
     try {
       if (product.images) {
-        const API_URL = process.env.URL_API || "http://localhost:8080";
+        const API_URL = process.env.REACT_APP_URL_IMAGE;
         const parsedImages = JSON.parse(product.images);
         return parsedImages.map((img) =>
           img.url.startsWith("/uploads") ? `${API_URL}${img.url}` : img.url
@@ -463,8 +463,7 @@ const ProductDetail = () => {
                         if (item.images) {
                           const parsedImages = JSON.parse(item.images);
 
-                          const baseURL =
-                            process.env.URL_API || "http://localhost:8080";
+                          const baseURL = process.env.REACT_APP_URL_IMAGE;
                           const imgURL = parsedImages[0]?.url;
 
                           if (imgURL && imgURL.startsWith("/uploads")) {

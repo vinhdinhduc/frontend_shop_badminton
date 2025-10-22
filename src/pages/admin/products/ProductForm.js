@@ -145,7 +145,7 @@ const ProductForm = ({
 
       if (images.length > 0) {
         const existingImages = images.map((img, index) => ({
-          url: img.url ? `http://localhost:8080${img.url}` : img,
+          url: img.url ? `${process.env.REACT_APP_URL_IMAGE}${img.url}` : img,
           name: img.name || `image-${index + 1}`,
           isExisting: true,
           id: img.id || index,

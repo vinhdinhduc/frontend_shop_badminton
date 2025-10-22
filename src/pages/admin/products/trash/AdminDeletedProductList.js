@@ -210,7 +210,7 @@ const AdminDeletedProductList = () => {
                           <div className="product-image deleted">
                             {productImages.length > 0 ? (
                               <img
-                                src={`http://localhost:8080${productImages[0].url}`}
+                                src={`${process.env.REACT_APP_URL_IMAGE}${productImages[0].url}`}
                                 alt={product.name}
                                 onError={(e) => {
                                   e.target.onerror = null;
@@ -348,7 +348,7 @@ const AdminDeletedProductList = () => {
                     <div className="product-image deleted">
                       {productImages.length > 0 ? (
                         <img
-                          src={`http://localhost:8080${productImages[0].url}`}
+                          src={`${process.env.REACT_APP_URL_IMAGE}${productImages[0].url}`}
                           alt={product.name}
                           onError={(e) => {
                             e.target.onerror = null;

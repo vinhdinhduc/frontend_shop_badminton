@@ -2,7 +2,9 @@ import axios from "axios";
 
 // Tạo instance axios
 const axiosClient = axios.create({
-  baseURL: process.env.URL_API || "http://localhost:8080/api/v1",
+  baseURL:
+    process.env.REACT_APP_URL_API ||
+    "https://backend-shop-badminton.onrender.com/api/v1",
   //   timeout: 10000, // 10s
   headers: {
     "Content-Type": "application/json",

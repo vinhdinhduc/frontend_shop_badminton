@@ -284,7 +284,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="avatar">
               {userInfo?.data?.user?.avatar ? (
                 <img
-                  src={`http://localhost:8080${userInfo.data.user.avatar}`}
+                  src={`${process.env.REACT_APP_URL_IMAGE}${userInfo.data.user.avatar}`}
                   alt={userInfo.data.user.fullName}
                 />
               ) : (

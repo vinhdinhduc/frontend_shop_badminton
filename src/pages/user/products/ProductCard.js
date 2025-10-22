@@ -51,7 +51,7 @@ const ProductCard = React.memo(({ product }) => {
         if (imageUrl) {
           return imageUrl.startsWith("http")
             ? imageUrl
-            : `http://localhost:8080${imageUrl}`;
+            : `${process.env.REACT_APP_URL_IMAGE}${imageUrl}`;
         }
       }
       return null;

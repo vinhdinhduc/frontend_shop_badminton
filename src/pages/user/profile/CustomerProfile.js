@@ -310,7 +310,7 @@ const CustomerProfile = () => {
                 <div className="avatar-container">
                   {profile?.avatar ? (
                     <img
-                      src={`http://localhost:8080${profile.avatar} `}
+                      src={`${process.env.REACT_APP_URL_IMAGE}${profile.avatar} `}
                       alt="Avatar"
                       className="avatar"
                     />
