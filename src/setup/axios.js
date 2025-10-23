@@ -4,7 +4,7 @@ import axios from "axios";
 const axiosClient = axios.create({
   baseURL:
     process.env.REACT_APP_URL_API ||
-    "https://backend-shop-badminton.onrender.com/api/v1",
+    "https://0f7469w4-8080.asse.devtunnels.ms/api/v1",
   //   timeout: 10000, // 10s
   headers: {
     "Content-Type": "application/json",
