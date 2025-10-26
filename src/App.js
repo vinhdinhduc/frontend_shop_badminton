@@ -28,8 +28,10 @@ import Reports from "./pages/admin/report/Reports";
 import NotificationPanel from "./pages/admin/notifications/NotificationPanel";
 import OrderSuccess from "./pages/user/order_user/OrderSuccess";
 import AuthCallback from "./pages/auth/AuthCallBack";
+import useChatbotVisibility from "./hooks/useChatbotVisibility";
 
 function App() {
+  const showChatbot = useChatbotVisibility();
   return (
     <>
       <div className="app-container">
@@ -75,7 +77,7 @@ function App() {
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <ChatbotWidget />
+        {showChatbot && <ChatbotWidget />}
       </div>
       <ToastContainer
         position="top-right"

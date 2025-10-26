@@ -500,16 +500,19 @@
 @media (max-width: 767.98px) {
     .login-page-container {
         padding: 15px;
+        flex-direction: column;
 
         .back-home-btn {
-            top: 15px;
-            left: 15px;
-            padding: 8px 12px;
-            font-size: 13px;
+            position: relative; // Thay vì absolute
+            top: auto;
+            left: auto;
+            margin: 15px auto;
+            align-self: flex-start;
+            order: 2; // Đưa xuống dưới
+        }
 
-            svg {
-                font-size: 12px;
-            }
+        .login-container {
+            order: 1; // Form lên trên
         }
 
         .notification {
